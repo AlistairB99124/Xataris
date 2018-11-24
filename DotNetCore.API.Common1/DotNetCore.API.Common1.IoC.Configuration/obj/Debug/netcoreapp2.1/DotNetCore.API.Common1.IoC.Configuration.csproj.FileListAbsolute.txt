@@ -1,0 +1,16 @@
+C:\Users\Alistair\source\repos\Xataris\DotNetCore.API.Common1\DotNetCore.API.Common1.IoC.Configuration\bin\Debug\netcoreapp2.1\DotNetCore.API.Common1.IoC.Configuration.deps.json
+C:\Users\Alistair\source\repos\Xataris\DotNetCore.API.Common1\DotNetCore.API.Common1.IoC.Configuration\bin\Debug\netcoreapp2.1\DotNetCore.API.Common1.IoC.Configuration.dll
+C:\Users\Alistair\source\repos\Xataris\DotNetCore.API.Common1\DotNetCore.API.Common1.IoC.Configuration\bin\Debug\netcoreapp2.1\DotNetCore.API.Common1.IoC.Configuration.pdb
+C:\Users\Alistair\source\repos\Xataris\DotNetCore.API.Common1\DotNetCore.API.Common1.IoC.Configuration\bin\Debug\netcoreapp2.1\DotNetCore.API.Common1.API.Common.dll
+C:\Users\Alistair\source\repos\Xataris\DotNetCore.API.Common1\DotNetCore.API.Common1.IoC.Configuration\bin\Debug\netcoreapp2.1\DotNetCore.API.Common1.API.DataContracts.dll
+C:\Users\Alistair\source\repos\Xataris\DotNetCore.API.Common1\DotNetCore.API.Common1.IoC.Configuration\bin\Debug\netcoreapp2.1\DotNetCore.API.Common1.Services.dll
+C:\Users\Alistair\source\repos\Xataris\DotNetCore.API.Common1\DotNetCore.API.Common1.IoC.Configuration\bin\Debug\netcoreapp2.1\DotNetCore.API.Common1.API.DataContracts.pdb
+C:\Users\Alistair\source\repos\Xataris\DotNetCore.API.Common1\DotNetCore.API.Common1.IoC.Configuration\bin\Debug\netcoreapp2.1\DotNetCore.API.Common1.Services.pdb
+C:\Users\Alistair\source\repos\Xataris\DotNetCore.API.Common1\DotNetCore.API.Common1.IoC.Configuration\bin\Debug\netcoreapp2.1\DotNetCore.API.Common1.API.Common.pdb
+C:\Users\Alistair\source\repos\Xataris\DotNetCore.API.Common1\DotNetCore.API.Common1.IoC.Configuration\obj\Debug\netcoreapp2.1\DotNetCore.API.Common1.IoC.Configuration.csprojAssemblyReference.cache
+C:\Users\Alistair\source\repos\Xataris\DotNetCore.API.Common1\DotNetCore.API.Common1.IoC.Configuration\obj\Debug\netcoreapp2.1\DotNetCore.API.Common1.IoC.Configuration.csproj.CoreCompileInputs.cache
+C:\Users\Alistair\source\repos\Xataris\DotNetCore.API.Common1\DotNetCore.API.Common1.IoC.Configuration\obj\Debug\netcoreapp2.1\DotNetCore.API.Common1.IoC.Configuration.AssemblyInfoInputs.cache
+C:\Users\Alistair\source\repos\Xataris\DotNetCore.API.Common1\DotNetCore.API.Common1.IoC.Configuration\obj\Debug\netcoreapp2.1\DotNetCore.API.Common1.IoC.Configuration.AssemblyInfo.cs
+C:\Users\Alistair\source\repos\Xataris\DotNetCore.API.Common1\DotNetCore.API.Common1.IoC.Configuration\obj\Debug\netcoreapp2.1\DotNetCore.API.Common1.IoC.Configuration.csproj.CopyComplete
+C:\Users\Alistair\source\repos\Xataris\DotNetCore.API.Common1\DotNetCore.API.Common1.IoC.Configuration\obj\Debug\netcoreapp2.1\DotNetCore.API.Common1.IoC.Configuration.dll
+C:\Users\Alistair\source\repos\Xataris\DotNetCore.API.Common1\DotNetCore.API.Common1.IoC.Configuration\obj\Debug\netcoreapp2.1\DotNetCore.API.Common1.IoC.Configuration.pdb

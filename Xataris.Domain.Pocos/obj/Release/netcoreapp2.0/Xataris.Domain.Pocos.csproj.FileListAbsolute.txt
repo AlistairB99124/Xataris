@@ -1,0 +1,36 @@
+C:\Users\Alistair\Documents\Visual Studio 2017\Projects\Xataris\Xataris.Domain.Pocos\bin\Release\netcoreapp2.0\Xataris.Domain.Pocos.deps.json
+C:\Users\Alistair\Documents\Visual Studio 2017\Projects\Xataris\Xataris.Domain.Pocos\bin\Release\netcoreapp2.0\Xataris.Domain.Pocos.dll
+C:\Users\Alistair\Documents\Visual Studio 2017\Projects\Xataris\Xataris.Domain.Pocos\bin\Release\netcoreapp2.0\Xataris.Domain.Pocos.pdb
+C:\Users\Alistair\Documents\Visual Studio 2017\Projects\Xataris\Xataris.Domain.Pocos\bin\Release\netcoreapp2.0\Xataris.Infrastructure.ApplicationVariables.dll
+C:\Users\Alistair\Documents\Visual Studio 2017\Projects\Xataris\Xataris.Domain.Pocos\bin\Release\netcoreapp2.0\Xataris.Infrastructure.ApplicationVariables.pdb
+C:\Users\Alistair\Documents\Visual Studio 2017\Projects\Xataris\Xataris.Domain.Pocos\obj\Release\netcoreapp2.0\Xataris.Domain.Pocos.csprojAssemblyReference.cache
+C:\Users\Alistair\Documents\Visual Studio 2017\Projects\Xataris\Xataris.Domain.Pocos\obj\Release\netcoreapp2.0\Xataris.Domain.Pocos.csproj.CoreCompileInputs.cache
+C:\Users\Alistair\Documents\Visual Studio 2017\Projects\Xataris\Xataris.Domain.Pocos\obj\Release\netcoreapp2.0\Xataris.Domain.Pocos.AssemblyInfoInputs.cache
+C:\Users\Alistair\Documents\Visual Studio 2017\Projects\Xataris\Xataris.Domain.Pocos\obj\Release\netcoreapp2.0\Xataris.Domain.Pocos.AssemblyInfo.cs
+C:\Users\Alistair\Documents\Visual Studio 2017\Projects\Xataris\Xataris.Domain.Pocos\obj\Release\netcoreapp2.0\Xataris.Domain.Pocos.csproj.CopyComplete
+C:\Users\Alistair\Documents\Visual Studio 2017\Projects\Xataris\Xataris.Domain.Pocos\obj\Release\netcoreapp2.0\Xataris.Domain.Pocos.dll
+C:\Users\Alistair\Documents\Visual Studio 2017\Projects\Xataris\Xataris.Domain.Pocos\obj\Release\netcoreapp2.0\Xataris.Domain.Pocos.pdb
+P:\Xataris\Xataris.Domain.Pocos\bin\Release\netcoreapp2.0\Xataris.Domain.Pocos.deps.json
+P:\Xataris\Xataris.Domain.Pocos\bin\Release\netcoreapp2.0\Xataris.Domain.Pocos.dll
+P:\Xataris\Xataris.Domain.Pocos\bin\Release\netcoreapp2.0\Xataris.Domain.Pocos.pdb
+P:\Xataris\Xataris.Domain.Pocos\bin\Release\netcoreapp2.0\Xataris.Infrastructure.ApplicationVariables.dll
+P:\Xataris\Xataris.Domain.Pocos\bin\Release\netcoreapp2.0\Xataris.Infrastructure.ApplicationVariables.pdb
+P:\Xataris\Xataris.Domain.Pocos\obj\Release\netcoreapp2.0\Xataris.Domain.Pocos.csprojAssemblyReference.cache
+P:\Xataris\Xataris.Domain.Pocos\obj\Release\netcoreapp2.0\Xataris.Domain.Pocos.csproj.CoreCompileInputs.cache
+P:\Xataris\Xataris.Domain.Pocos\obj\Release\netcoreapp2.0\Xataris.Domain.Pocos.AssemblyInfoInputs.cache
+P:\Xataris\Xataris.Domain.Pocos\obj\Release\netcoreapp2.0\Xataris.Domain.Pocos.AssemblyInfo.cs
+P:\Xataris\Xataris.Domain.Pocos\obj\Release\netcoreapp2.0\Xataris.Domain.Pocos.csproj.CopyComplete
+P:\Xataris\Xataris.Domain.Pocos\obj\Release\netcoreapp2.0\Xataris.Domain.Pocos.dll
+P:\Xataris\Xataris.Domain.Pocos\obj\Release\netcoreapp2.0\Xataris.Domain.Pocos.pdb
+C:\Users\Alistair\source\repos\Xataris\Xataris.Domain.Pocos\bin\Release\netcoreapp2.0\Xataris.Domain.Pocos.deps.json
+C:\Users\Alistair\source\repos\Xataris\Xataris.Domain.Pocos\bin\Release\netcoreapp2.0\Xataris.Domain.Pocos.dll
+C:\Users\Alistair\source\repos\Xataris\Xataris.Domain.Pocos\bin\Release\netcoreapp2.0\Xataris.Domain.Pocos.pdb
+C:\Users\Alistair\source\repos\Xataris\Xataris.Domain.Pocos\bin\Release\netcoreapp2.0\Xataris.Infrastructure.ApplicationVariables.dll
+C:\Users\Alistair\source\repos\Xataris\Xataris.Domain.Pocos\bin\Release\netcoreapp2.0\Xataris.Infrastructure.ApplicationVariables.pdb
+C:\Users\Alistair\source\repos\Xataris\Xataris.Domain.Pocos\obj\Release\netcoreapp2.0\Xataris.Domain.Pocos.csprojAssemblyReference.cache
+C:\Users\Alistair\source\repos\Xataris\Xataris.Domain.Pocos\obj\Release\netcoreapp2.0\Xataris.Domain.Pocos.csproj.CoreCompileInputs.cache
+C:\Users\Alistair\source\repos\Xataris\Xataris.Domain.Pocos\obj\Release\netcoreapp2.0\Xataris.Domain.Pocos.AssemblyInfoInputs.cache
+C:\Users\Alistair\source\repos\Xataris\Xataris.Domain.Pocos\obj\Release\netcoreapp2.0\Xataris.Domain.Pocos.AssemblyInfo.cs
+C:\Users\Alistair\source\repos\Xataris\Xataris.Domain.Pocos\obj\Release\netcoreapp2.0\Xataris.Domain.Pocos.csproj.CopyComplete
+C:\Users\Alistair\source\repos\Xataris\Xataris.Domain.Pocos\obj\Release\netcoreapp2.0\Xataris.Domain.Pocos.dll
+C:\Users\Alistair\source\repos\Xataris\Xataris.Domain.Pocos\obj\Release\netcoreapp2.0\Xataris.Domain.Pocos.pdb

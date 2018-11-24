@@ -1,0 +1,5 @@
+C:\Users\Alistair\source\repos\Xataris\Xataris.API
+--output-path=obj\Release\netcoreapp2.0\
+--application-name=Xataris.API
+--content-root=C:\Users\Alistair\source\repos\Xataris\Xataris.API
+--file=C:\Users\Alistair\source\repos\Xataris\Xataris.API\Views\Index\Index.cshtml

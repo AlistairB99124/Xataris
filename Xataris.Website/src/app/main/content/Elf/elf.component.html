@@ -1,0 +1,354 @@
+<mat-tab-group fxFlex>
+        <mat-tab label="{{'JOEY.TAB1.LABEL' | translate}}">
+            <div class="m-12" fxLayout="column" fxFlex>
+                <mat-toolbar class="p-0">
+                    <mat-card fxFlex FxLayout="column" class="p-0">
+                        <mat-toolbar-row>
+                            <h1 fxFlex>Items</h1>
+                            <span>test</span>
+                        </mat-toolbar-row>
+                    </mat-card>
+                </mat-toolbar>
+                <mat-divider></mat-divider>
+                <mat-card>
+                    <mat-card-content>
+                        <h1>Content 1</h1>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </mat-tab>
+        <mat-tab label="{{'JOEY.TAB2.LABEL' | translate}}">
+            <div class="m-12" fxLayout="column" fxFlex>
+                <div fxLayout="row">
+                    <div fxLayout="column" fxFlex>
+                        <mat-toolbar class="p-0">
+                            <mat-card fxFlex FxLayout="column" class="p-0">
+                                <mat-toolbar-row>
+                                    <h1 fxFlex>Summary</h1>
+                                    <button *ngIf="!data.isSummaryCollapsed" mat-button mat-icon-button (click)="addDetail()">
+                                        <mat-icon>add</mat-icon>
+                                    </button>
+                                    <button *ngIf="!data.isSummaryCollapsed" [disabled]="isEditDisabled()" mat-button mat-icon-button (click)="openDetails()">
+                                        <mat-icon>create</mat-icon>
+                                    </button>
+                                    <button mat-button mat-icon-button (click)="data.isSummaryCollapsed = !data.isSummaryCollapsed">
+                                        <mat-icon *ngIf="!data.isSummaryCollapsed">keyboard_arrow_down</mat-icon>
+                                        <mat-icon *ngIf="data.isSummaryCollapsed">keyboard_arrow_left</mat-icon>
+                                    </button>
+                                </mat-toolbar-row>
+                            </mat-card>
+                        </mat-toolbar>
+                        <mat-divider></mat-divider>
+                        <mat-card *ngIf="!data.isSummaryCollapsed" class="p-0">
+                            <mat-card-content>
+                                <div fxLayout="row" style="margin: 16px 16px 16px 16px">
+                                    <mat-form-field style="width: 200px;">
+                                        <mat-select placeholder="Select Data" [(ngModel)]="data.selectedDataOptions">
+                                            <mat-option *ngFor="let opt of data.dataOptions" [value]="opt">
+                                                {{opt.text}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <mat-divider></mat-divider>
+                                <div fxLayout="row" *ngIf="data.selectedDataOptions.value === 0">
+                                    <fuse-grid style="width: 100%" [gridOptions]="data.grids.customersGrid"></fuse-grid>
+                                </div>
+                                <div fxLayout="row" *ngIf="data.selectedDataOptions.value === 1">
+                                    <mat-table fxFlex #table [dataSource]="data.grids.predefinedItemsGrid">
+                                        <ng-container matColumnDef="item">
+                                            <mat-header-cell *matHeaderCellDef class="header-cell"> Item </mat-header-cell>
+                                            <mat-cell *matCellDef="let element"> {{element.item}} </mat-cell>
+                                        </ng-container>
+                                        <ng-container matColumnDef="product">
+                                            <mat-header-cell *matHeaderCellDef class="header-cell"> Product </mat-header-cell>
+                                            <mat-cell *matCellDef="let element"> {{element.product}} </mat-cell>
+                                        </ng-container>
+                                        <ng-container matColumnDef="quantity">
+                                            <mat-header-cell *matHeaderCellDef class="header-cell"> Quantity </mat-header-cell>
+                                            <mat-cell *matCellDef="let element"> {{element.quantity}} </mat-cell>
+                                        </ng-container>
+                                        <mat-header-row *matHeaderRowDef="data.grids.predefinedItemsGridColumns"></mat-header-row>
+                                        <mat-row *matRowDef="let row; columns: data.grids.predefinedItemsGridColumns;"></mat-row>
+                                    </mat-table>
+                                </div>
+                                <div fxLayout="row" *ngIf="data.selectedDataOptions.value === 2">
+                                    <mat-table fxFlex #table [dataSource]="data.grids.productsGrid">
+                                        <ng-container matColumnDef="name">
+                                            <mat-header-cell *matHeaderCellDef class="header-cell"> Name </mat-header-cell>
+                                            <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+                                        </ng-container>
+                                        <ng-container matColumnDef="description">
+                                            <mat-header-cell *matHeaderCellDef class="header-cell"> Description </mat-header-cell>
+                                            <mat-cell *matCellDef="let element"> {{element.description}} </mat-cell>
+                                        </ng-container>
+                                        <mat-header-row *matHeaderRowDef="data.grids.productsGridColumns"></mat-header-row>
+                                        <mat-row *matRowDef="let row; columns: data.grids.productsGridColumns;"></mat-row>
+                                    </mat-table>
+                                </div>
+                                <div fxLayout="row" *ngIf="data.selectedDataOptions.value === 3">
+                                    <mat-table fxFlex #table [dataSource]="data.grids.itemsGrid">
+                                        <ng-container matColumnDef="name">
+                                            <mat-header-cell *matHeaderCellDef class="header-cell"> Name </mat-header-cell>
+                                            <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+                                        </ng-container>
+                                        <ng-container matColumnDef="itemType">
+                                            <mat-header-cell *matHeaderCellDef class="header-cell"> Type </mat-header-cell>
+                                            <mat-cell *matCellDef="let element"> {{element.itemType}} </mat-cell>
+                                        </ng-container>
+                                        <ng-container matColumnDef="supplier">
+                                            <mat-header-cell *matHeaderCellDef class="header-cell"> Supplier </mat-header-cell>
+                                            <mat-cell *matCellDef="let element"> {{element.supplier}} </mat-cell>
+                                        </ng-container>
+                                        <ng-container matColumnDef="unitPrice">
+                                            <mat-header-cell *matHeaderCellDef class="header-cell"> Unit Price </mat-header-cell>
+                                            <mat-cell *matCellDef="let element"> {{element.unitPrice}} </mat-cell>
+                                        </ng-container>
+                                        <mat-header-row *matHeaderRowDef="data.grids.itemsGridColumns"></mat-header-row>
+                                        <mat-row *matRowDef="let row; columns: data.grids.itemsGridColumns;"></mat-row>
+                                    </mat-table>
+                                </div>
+                                <div fxLayout="row" *ngIf="data.selectedDataOptions.value === 4">
+                                    <mat-table fxFlex #table [dataSource]="data.grids.itemTypesGrid">
+                                        <ng-container matColumnDef="name">
+                                            <mat-header-cell *matHeaderCellDef class="header-cell"> Name </mat-header-cell>
+                                            <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+                                        </ng-container>
+                                        <ng-container matColumnDef="group">
+                                            <mat-header-cell *matHeaderCellDef class="header-cell"> Group </mat-header-cell>
+                                            <mat-cell *matCellDef="let element"> {{element.group}} </mat-cell>
+                                        </ng-container>
+                                        <mat-header-row *matHeaderRowDef="data.grids.itemTypesGridColumns"></mat-header-row>
+                                        <mat-row *matRowDef="let row; columns: data.grids.itemTypesGridColumns;"></mat-row>
+                                    </mat-table>
+                                </div>
+                                <div fxLayout="row" *ngIf="data.selectedDataOptions.value === 5">
+                                        <mat-table fxFlex #table [dataSource]="data.grids.itemTypeGroupsGrid">
+                                            <ng-container matColumnDef="name">
+                                                <mat-header-cell *matHeaderCellDef class="header-cell"> Name </mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+                                            </ng-container>
+                                            <mat-header-row *matHeaderRowDef="data.grids.itemTypeGroupsGridColumns"></mat-header-row>
+                                            <mat-row *matRowDef="let row; columns: data.grids.itemTypeGroupsGridColumns;"></mat-row>
+                                    </mat-table>
+                                </div>
+                                <div fxLayout="row" *ngIf="data.selectedDataOptions.value === 6">
+                                        <mat-table fxFlex #table [dataSource]="data.grids.suppliersGrid">
+                                            <ng-container matColumnDef="name">
+                                                <mat-header-cell *matHeaderCellDef class="header-cell"> Name </mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="webAddress">
+                                                <mat-header-cell *matHeaderCellDef class="header-cell"> Web Address </mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.webAddress}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="telephone">
+                                                <mat-header-cell *matHeaderCellDef class="header-cell"> Telphone </mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.telephone}} </mat-cell>
+                                            </ng-container>
+                                            <mat-header-row *matHeaderRowDef="data.grids.suppliersGridColumns"></mat-header-row>
+                                            <mat-row *matRowDef="let row; columns: data.grids.suppliersGridColumns;"></mat-row>
+                                    </mat-table>
+                                </div>
+                                <div fxLayout="row" *ngIf="data.selectedDataOptions.value === 7">
+                                        <mat-table fxFlex #table [dataSource]="data.grids.quotesGrid">
+                                            <ng-container matColumnDef="user">
+                                                <mat-header-cell *matHeaderCellDef class="header-cell"> Created By </mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.user}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="customer">
+                                                <mat-header-cell *matHeaderCellDef class="header-cell"> Customer </mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.customer}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="subtotal">
+                                                <mat-header-cell *matHeaderCellDef class="header-cell"> Subtotal </mat-header-cell>
+                                                <mat-cell *matCellDef="let element" class="cell-numeric"> £ {{element.subtotal}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="discount">
+                                                <mat-header-cell *matHeaderCellDef class="header-cell"> Discount </mat-header-cell>
+                                                <mat-cell *matCellDef="let element" class="cell-numeric"> {{element.discount}} % </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="vat">
+                                                <mat-header-cell *matHeaderCellDef class="header-cell"> VAT </mat-header-cell>
+                                                <mat-cell *matCellDef="let element" class="cell-numeric"> {{element.vat}} % </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="total">
+                                                <mat-header-cell *matHeaderCellDef class="header-cell"> Total </mat-header-cell>
+                                                <mat-cell *matCellDef="let element" class="cell-numeric"> £ {{element.total}} </mat-cell>
+                                            </ng-container>
+                                            <mat-header-row *matHeaderRowDef="data.grids.quotesGridColumns"></mat-header-row>
+                                            <mat-row *matRowDef="let row; columns: data.grids.quotesGridColumns;"></mat-row>
+                                    </mat-table>
+                                </div>
+                            </mat-card-content>
+                        </mat-card>
+                        <mat-toolbar *ngIf="data.showDetailsPanel" class="p-0 mt-16">
+                                <mat-toolbar-row>
+                                    <h1 fxFlex>Details{{data.selectedCustomer ? ": " + data.selectedCustomer.name : ""}}</h1>
+                                    <button *ngIf="!data.isDetailsCollapsed" mat-button mat-icon-button (click)="closeDetails()">
+                                        <mat-icon>close</mat-icon>
+                                    </button>
+                                    <button mat-button mat-icon-button (click)="data.isDetailsCollapsed = !data.isDetailsCollapsed">
+                                        <mat-icon *ngIf="!data.isDetailsCollapsed">keyboard_arrow_down</mat-icon>
+                                        <mat-icon *ngIf="data.isDetailsCollapsed">keyboard_arrow_left</mat-icon>
+                                    </button>
+                                </mat-toolbar-row>
+                        </mat-toolbar>
+                        <mat-divider></mat-divider>
+                        <mat-card *ngIf="!data.isDetailsCollapsed && data.showDetailsPanel" class="p-0">
+                            <mat-card-content fxLayout="row">
+                                <form fxLayout="column" fxFlex name="customer" [formGroup]="data.customerForm">
+                                    <div fxLayout="row">
+                                        <mat-form-field fxFlex>
+                                            <input autocomplete="off" matInput placeholder="Name" formControlName="name">
+                                            <mat-error *ngIf="data.customerFormErrors.name.required">
+                                                Name Is Required
+                                            </mat-error>
+                                        </mat-form-field>
+
+                                    </div>
+                                    <div fxLayout="row">
+                                        <mat-form-field fxFlex>
+                                                <input autocomplete="off" matInput placeholder="Address" formControlName="address">
+                                                <mat-error *ngIf="data.customerFormErrors.address.required">
+                                                    Address Is Required
+                                                </mat-error>
+                                            </mat-form-field>                                        
+                                        </div>
+                                        <div fxLayout="row">
+                                            <mat-form-field fxFlex>
+                                                <input autocomplete="off" matInput placeholder="Company" formControlName="company">
+                                                    <mat-error *ngIf="data.customerFormErrors.company.required">
+                                                        Company Is Required
+                                                    </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                    </form>
+                                <div fxLayout="column" class="save-area" fxFlex fxLayoutAlign="center center">
+                                        <button mat-button type="submit" class="save-button" mat-icon-button (click)="submitCustomer()">
+                                            <mat-icon>save</mat-icon>
+                                        </button>
+                                </div>
+                                
+                            </mat-card-content>
+                        </mat-card>
+                        
+                        
+                        <mat-toolbar *ngIf="data.showCustomersDetailsGrid" class="p-0 mt-16">
+                                <mat-card fxFlex FxLayout="column" class="p-0">
+                                    <mat-toolbar-row>
+                                        <h1 fxFlex>Quotes: {{data.listTitle}}</h1>
+                                        <button *ngIf="!data.isCustomersQuotesDetailsCollapsed" mat-button mat-icon-button (click)="data.showCustomersDetailsGrid = false">
+                                                <mat-icon>close</mat-icon>
+                                            </button>
+                                        <button mat-button mat-icon-button (click)="data.isCustomersQuotesDetailsCollapsed = !data.isCustomersQuotesDetailsCollapsed">
+                                                <mat-icon *ngIf="!data.isCustomersQuotesDetailsCollapsed">keyboard_arrow_down</mat-icon>
+                                                <mat-icon *ngIf="data.isCustomersQuotesDetailsCollapsed">keyboard_arrow_left</mat-icon>
+                                            </button>
+                                    </mat-toolbar-row>
+                                </mat-card>
+                        </mat-toolbar>
+                        <mat-divider></mat-divider>
+                        <mat-card class="p-0" *ngIf="data.showCustomersDetailsGrid && !data.isCustomersQuotesDetailsCollapsed">
+                            <mat-card-content>
+                                <fuse-grid style="width: 100%" [gridOptions]="data.grids.customerQuoteDetailsGrid"></fuse-grid>
+                            </mat-card-content>
+                        </mat-card>
+
+
+                        <mat-toolbar *ngIf="data.showProductsGrid" class="p-0 mt-16">
+                                <mat-card fxFlex FxLayout="column" class="p-0">
+                                    <mat-toolbar-row>
+                                        <h1 fxFlex>Products: {{data.listTitle}}</h1>
+                                        <button *ngIf="!data.isProductsGridCollapsed" mat-button mat-icon-button (click)="data.showProductsGrid = false">
+                                                <mat-icon>close</mat-icon>
+                                            </button>
+                                        <button mat-button mat-icon-button (click)="data.isProductsGridCollapsed = !data.isProductsGridCollapsed">
+                                                <mat-icon *ngIf="!data.isProductsGridCollapsed">keyboard_arrow_down</mat-icon>
+                                                <mat-icon *ngIf="data.isProductsGridCollapsed">keyboard_arrow_left</mat-icon>
+                                            </button>
+                                    </mat-toolbar-row>
+                                </mat-card>
+                        </mat-toolbar>
+                        <mat-divider></mat-divider>
+                        <mat-card class="p-0" *ngIf="data.showProductsGrid && !data.isProductsGridCollapsed">
+                            <mat-card-content>
+                                <fuse-grid style="width: 100%" [gridOptions]="data.grids.productsGrid"></fuse-grid>
+                            </mat-card-content>
+                        </mat-card>
+
+
+                        <mat-toolbar *ngIf="data.showQuoteItems" class="p-0 mt-16">
+                                <mat-card fxFlex FxLayout="column" class="p-0">
+                                    <mat-toolbar-row>
+                                        <h1 fxFlex>Items: {{data.listTitle}}</h1>
+                                        <button *ngIf="!data.isQuoteItemsGridCollapsed" mat-button mat-icon-button (click)="data.showQuoteItems = false">
+                                                <mat-icon>close</mat-icon>
+                                            </button>
+                                        <button mat-button mat-icon-button (click)="data.isQuoteItemsGridCollapsed = !data.isQuoteItemsGridCollapsed">
+                                                <mat-icon *ngIf="!data.isQuoteItemsGridCollapsed">keyboard_arrow_down</mat-icon>
+                                                <mat-icon *ngIf="data.isQuoteItemsGridCollapsed">keyboard_arrow_left</mat-icon>
+                                            </button>
+                                    </mat-toolbar-row>
+                                </mat-card>
+                        </mat-toolbar>
+                        <mat-divider></mat-divider>
+                        <mat-card class="p-0" *ngIf="data.showQuoteItems && !data.isQuoteItemsGridCollapsed">
+                            <mat-card-content>
+                                <fuse-grid style="width: 100%" [gridOptions]="data.grids.customerQuoteItemsGrid"></fuse-grid>
+                            </mat-card-content>
+                        </mat-card>
+
+
+                        <mat-toolbar *ngIf="data.showPredefinedItemsGrid" class="p-0 mt-16">
+                                <mat-card fxFlex FxLayout="column" class="p-0">
+                                    <mat-toolbar-row>
+                                        <h1 fxFlex>Predefined Items: {{data.listTitle}}</h1>
+                                        <button *ngIf="!data.isPredefinedItemsGridCollapsed" mat-button mat-icon-button (click)="data.showPredefinedItemsGrid = false">
+                                                <mat-icon>close</mat-icon>
+                                            </button>
+                                        <button mat-button mat-icon-button (click)="data.isPredefinedItemsGridCollapsed = !data.isPredefinedItemsGridCollapsed">
+                                                <mat-icon *ngIf="!data.isPredefinedItemsGridCollapsed">keyboard_arrow_down</mat-icon>
+                                                <mat-icon *ngIf="data.isPredefinedItemsGridCollapsed">keyboard_arrow_left</mat-icon>
+                                            </button>
+                                    </mat-toolbar-row>
+                                </mat-card>
+                        </mat-toolbar>
+                        <mat-divider></mat-divider>
+                        <mat-card class="p-0" *ngIf="data.showPredefinedItemsGrid && !data.isPredefinedItemsGridCollapsed">
+                            <mat-card-content>
+                                <fuse-grid style="width: 100%" [gridOptions]="data.grids.predefinedProductsGrid"></fuse-grid>
+                            </mat-card-content>
+                        </mat-card>
+                    </div>
+                </div>
+            </div>
+        </mat-tab>
+        <mat-tab label="{{'JOEY.TAB3.LABEL' | translate}}">
+            <div class="m-12" fxLayout="column" fxFlex>
+                <mat-toolbar class="p-0">
+                    <mat-card fxFlex FxLayout="column" class="p-0">
+                        <mat-toolbar-row>
+                            <h1 fxFlex>Items</h1>
+                            <span>test</span>
+                        </mat-toolbar-row>
+                    </mat-card>
+                </mat-toolbar>
+                <mat-divider></mat-divider>
+                <mat-card>
+                    <mat-card-content>
+                        <div fxLayout="column" fxFlex>
+                            <form>
+                                <h1>test</h1>
+                            </form>
+                        </div>
+                        <div fxLayout="column" fxFlex>
+                            <form>
+                                <h1>Test</h1>    
+                            </form>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </mat-tab>
+</mat-tab-group>

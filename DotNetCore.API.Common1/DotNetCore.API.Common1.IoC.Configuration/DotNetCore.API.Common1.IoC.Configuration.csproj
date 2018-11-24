@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="7.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DotNetCore.API.Common1.API.DataContracts\DotNetCore.API.Common1.API.DataContracts.csproj" />
+    <ProjectReference Include="..\DotNetCore.API.Common1.Services\DotNetCore.API.Common1.Services.csproj" />
+  </ItemGroup>
+
+</Project>

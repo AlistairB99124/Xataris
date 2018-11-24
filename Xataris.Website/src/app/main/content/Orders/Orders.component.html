@@ -1,0 +1,265 @@
+<div *ngIf="!data.confirmForm" id="forms" class="page-layout simple fullwidth" fxLayout="column" fusePerfectScrollbar>
+        <!-- HEADER -->
+        <div class="header xataris-accent-bg p-24 h-160" fxLayout="row" fxLayoutAlign="start center">
+            <div fxLayout="column" fxLayoutAlign="center start">
+                <div class="black-fg" fxLayout="row" fxLayoutAlign="start center">
+                    <mat-icon class="secondary-text s-16">home</mat-icon>
+                    <mat-icon class="secondary-text s-16">chevron_right</mat-icon>
+                    <span class="secondary-text">{{'ORDERS.TITLE' | translate}}</span>
+                </div>
+                <div class="h1 mt-16">{{'ORDERS.TITLE' | translate}}</div>
+            </div>
+        </div>
+        <!-- / HEADER -->
+        <!-- CONTENT -->
+        <mat-progress-bar *ngIf="data.loader" mode="indeterminate"></mat-progress-bar>
+        <div class="content p-16">
+            <div class="fuse-widget-front mat-white-bg mat-elevation-z2">
+                <mat-toolbar class="mat-white-bg mat-elevation-z4">
+                    <mat-toolbar-row fxFlex>
+                        <span fxFlex>{{'ORDERS.DETAILS.TEXT.LISTTITLE' | translate}}</span>
+                        <button matTooltip="Download Order" [disabled]="!enableEdit()" mat-icon-button class="mat-icon-button" (click)="downloadPdf()"
+                            aria-label="Add Order">
+                        <mat-icon class="s-24">cloud_upload</mat-icon>
+                    </button>
+                        <button *ngIf="data.isOrderListCollapsed !== true" matTooltip="Add a New Order" mat-icon-button class="mat-icon-button" (click)="showDetailsPanel()"
+                                aria-label="Add Order">
+                            <mat-icon class="s-24">add</mat-icon>
+                        </button>
+                        <button *ngIf="data.isOrderListCollapsed !== true" matTooltip="Delete Order" [disabled]="!enableDelete()" mat-icon-button class="mat-icon-button" (click)="deleteOrder()"
+                                aria-label="Delete Order(s)">
+                            <mat-icon class="s-24">delete</mat-icon>
+                        </button>
+                        <!--<button *ngIf="data.isOrderListCollapsed !== true" matTooltip="Edit Order" [disabled]="!enableEdit()" mat-icon-button class="mat-icon-button" (click)="showDetailsPanel()"
+                                aria-label="Edit Order">
+                            <mat-icon class="s-24">mode_edit</mat-icon>
+                        </button>-->
+                        <button mat-icon-button class="fuse-search-bar-collapser mat-icon-button" matTooltip="Collapse" (click)="data.isOrderListCollapsed = !data.isOrderListCollapsed"
+                                aria-label="Collapse Search Bar">
+                            <mat-icon *ngIf="data.isOrderListCollapsed === true" class="s-24">keyboard_arrow_left</mat-icon>
+                            <mat-icon *ngIf="data.isOrderListCollapsed !== true" class="s-24">keyboard_arrow_down</mat-icon>
+                        </button>
+                    </mat-toolbar-row>
+                </mat-toolbar>
+                <mat-divider></mat-divider>
+                <mat-card *ngIf="!data.isOrderListCollapsed">
+                    <mat-card-content>
+                        <div>
+                            <fuse-grid [gridOptions]="data.ordersGrid" style="width: 100%"></fuse-grid>                           
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+                <mat-toolbar class="mat-white-bg mat-elevation-z4" style="margin-top: 20px;" *ngIf="data.showDetailsPanel">
+                    <mat-toolbar-row fxFlex>
+                        <span fxFlex>{{'ORDERS.DETAILS.TEXT.DETAILSTITLE' | translate}}: {{data.ordersDetail.id}}</span>
+                        <button matTooltip="Save" mat-icon-button class="mat-icon-button" [disabled]="disableSave()" (click)="add()"
+                                aria-label="Save">
+                            <mat-icon class="s-24">save</mat-icon>
+                        </button>
+                        <button matTooltip="Cancel" mat-icon-button class="mat-icon-button" (click)="data.showDetailsPanel = false; data.isGroupListCollapsed = false; data.isOrderListCollapsed = !data.isOrderListCollapsed;"
+                                aria-label="Cancel">
+                            <mat-icon class="s-24">clear</mat-icon>
+                        </button>
+                        <button mat-icon-button matTooltip="Collapse" class="fuse-search-bar-collapser mat-icon-button" (click)="data.isOrderDetailCollapsed = !data.isOrderDetailCollapsed"
+                                aria-label="Collapse Search Bar">
+                            <mat-icon *ngIf="data.isOrderDetailCollapsed === true" class="s-24">keyboard_arrow_left</mat-icon>
+                            <mat-icon *ngIf="data.isOrderDetailCollapsed !== true" class="s-24">keyboard_arrow_down</mat-icon>
+                        </button>
+                    </mat-toolbar-row>
+                </mat-toolbar>
+                <mat-divider></mat-divider>
+                <mat-card *ngIf="!data.isOrderDetailCollapsed && data.showDetailsPanel">
+                    <mat-card-content>
+                        <div class="p-0" fxLayout="column" fxLayoutAlign="start"
+                              fxFlex name="editForm">
+                            <div fxLayout="row">
+                                <div fxLayout="column" fxFlex fxLayoutAlign="start center">
+                                    <div fxLayout="row" style="width:100%">
+                                        <mat-form-field fxFlex>
+                                            <mat-select fxFlex matInput #modules placeholder="Plumber" [(ngModel)]="data.userSelected">
+                                                <mat-option *ngFor="let user of data.usersAvailable" [value]="user">
+                                                    {{user.firstName + ' ' + user.lastName}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <div fxLayout="row" style="width:100%">
+                                        <mat-form-field fxFlex>
+                                            <mat-select fxFlex matInput #accessLevel placeholder="Site" [(ngModel)]="data.siteSelected">
+                                                <mat-option *ngFor="let site of data.sitesAvailable" [value]="site">
+                                                    {{site.name}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <div fxLayout="row" style="width:100%">
+                                            <div fxLayout="column" class="pt-12" fxFlex="15">                                           
+                                                    <mat-checkbox matInput #useNonMaterialField [(ngModel)]="data.useNonMaterialField">
+                                                        Non-Material?
+                                                    </mat-checkbox>
+                                                </div>
+                                            <mat-form-field fxFlex="30" *ngIf="!data.useNonMaterialField">                                           
+                                                <input matInput placeholder="Search Materials...." [(ngModel)]="searchInput" (change)="searchMaterials()" /> 
+                                            </mat-form-field>
+                                            <mat-form-field fxFlex="55" *ngIf="!data.useNonMaterialField">
+                                                <mat-select fxFlex matInput #accessLevel placeholder="Material" [(ngModel)]="data.materialSelected">
+                                                    <mat-option *ngFor="let material of data.filterMaterials" [value]="material">
+                                                        {{material.stockCode + ': ' + material.stockDescription}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                            <mat-form-field fxFlex="90" *ngIf="data.useNonMaterialField">                                           
+                                                    <input matInput #nonMaterialDescription placeholder="Non Material" [(ngModel)]="data.nonMaterialDescription" /> 
+                                            </mat-form-field>
+                                        </div>
+                                    <div fxLayout="row" style="width:100%">
+                                            <mat-form-field fxFlex *ngIf="!data.useNonMaterialField">
+                                                <input matInput #description placeholder="Quantity" type="number" [(ngModel)]="data.itemQuantity">
+                                            </mat-form-field>
+                                            <mat-form-field fxFlex *ngIf="data.useNonMaterialField">
+                                                    <input matInput #description placeholder="Quantity" type="text" [(ngModel)]="data.itemQuantity">
+                                                </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" style="width:100%" fxLayoutAlign="end center">
+                                                <button matTooltip="Add Material" mat-icon-button [disabled]="disableAddItem()" class="mat-icon-button" (click)="addMaterialItem()"
+                                aria-label="Add Material">
+                            <mat-icon class="s-24">add</mat-icon>
+                        </button>
+                        <button matTooltip="Delete Material" mat-icon-button class="mat-icon-button" [disabled]="!disableDeleteItem()" (click)="deleteMaterialItem()"
+                                aria-label="Delete Material">
+                            <mat-icon class="s-24">delete</mat-icon>
+                        </button>
+                                            </div>
+                                    <div fxLayout="row" style="width:100%">
+                                        <mat-table #table [dataSource]="itemsDataSource" fxFlex>
+                                            <!-- Position Column -->
+                                            <ng-container matColumnDef="materialId">
+                                                <mat-header-cell *matHeaderCellDef style="flex: 0 0 50px !important; white-space: unset !important;"></mat-header-cell>
+                                                <mat-cell *matCellDef="let element" style="flex: 0 0 50px !important; white-space: unset !important; text-align: center;">
+                                                    <input type="checkbox" [(ngModel)]="element.isSelected" />
+                                                </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="stockCode">
+                                                    <mat-header-cell *matHeaderCellDef> {{'ORDERS.DETAILS.TEXT.STOCKCODE' | translate}} </mat-header-cell>
+                                                    <mat-cell *matCellDef="let element"> {{element.stockCode}} </mat-cell>
+                                                </ng-container>
+                                            <ng-container matColumnDef="stockDescription">
+                                                <mat-header-cell *matHeaderCellDef> {{'ORDERS.DETAILS.TEXT.STOCKDESCRIPTION' | translate}} </mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.stockDescription}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="stockCost">
+                                                <mat-header-cell *matHeaderCellDef> {{'ORDERS.DETAILS.TEXT.STOCKCOST' | translate}} </mat-header-cell>
+                                                <mat-cell *matCellDef="let element" style="text-align: right;"> R {{element.stockCost}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="quantity">
+                                                <mat-header-cell *matHeaderCellDef> {{'ORDERS.DETAILS.TEXT.QUANTITY' | translate}} </mat-header-cell>
+                                                <mat-cell *matCellDef="let element" style="text-align: right;"> {{element.quantity}} </mat-cell>
+                                            </ng-container>
+                                            <mat-header-row *matHeaderRowDef="itemsDisplayedColumns"></mat-header-row>
+                                            <mat-row *matRowDef="let row; columns: itemsDisplayedColumns;"></mat-row>
+                                        </mat-table>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+            <!-- / CONTENT -->
+    
+        </div>
+        <!-- / CENTER -->
+    </div>
+    <div *ngIf="data.confirmForm" style="display: none;" id="invoice" class="modern page-layout blank" fxLayout="row" fusePerfectScrollbar>
+
+        <div class="invoice-container">
+            <mat-progress-bar *ngIf="data.loader"></mat-progress-bar>
+            <!-- INVOICE -->
+            <div class="card m-0 p-24" id="formImage" style="position: relative;">
+    
+                <div class="header" fxLayout="row" fxLayoutAlign="space-between start">
+    
+                    <div class="ids" fxLayout="column">
+    
+                        <div fxLayout="row" class="seller" fxLayoutAlign="start center">
+    
+                            <div class="logo">
+                                <img id="logoImg" src="assets/images/Plumbery/logo.png" width="350" height="183">
+                            </div>
+                        </div>
+                    </div>
+                    <table class="summary mt-16">
+                        <tr class="code">
+                            <td class="label">ORDER</td>
+                            <td class="value">{{data.order.orderId}}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">SITE</td>
+                            <td class="value">{{data.order.site}}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">ORDER DATE</td>
+                            <td class="value">{{data.order.dateCreated}}</td>
+                        </tr>
+                    </table>
+                </div>
+    
+                <div class="invoice-content">
+                    <table class="simple invoice-table">
+                        <tr>
+                            <td style="width: 20%; text-align: right;">
+                                <label><b>Plumber</b></label>
+                            </td>
+                             <td style="width: 100%;">
+                                <span>{{data.order.plumber}}</span>
+                            </td>
+                        </tr>
+                    </table>
+                    <table class="simple invoice-table mt-12">
+                        <thead>
+                            <tr>
+                                <th>CODE</th>
+                                <th>DESCRIPTION</th>
+                                <th>QUANTITY</th>
+                                <th>COST</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let material of data.materials">
+                                <td>
+                                    {{material.stockCode}}
+                                </td>
+                                <td>
+                                    {{material.stockDescription}}
+                                </td>
+                                <td class="text-right">
+                                    {{material.quantity}}
+                                </td>
+                                <td class="text-right">
+                                    R{{material.stockCost}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+    
+                <div class="footer mt-24">
+                    <div fxLayout="row" fxLayoutAlign="start start">
+                        <div class="logo">
+                            <img width="30" height="30" src="assets/images/logos/xataris.png">
+                        </div>
+                        <div class="note" fxLayout="row">                        
+                            <span>Signed: ____________________________________</span>
+                            <span class="mx-12">Name:</span>
+                            <span>{{data.order.plumber}}</span>
+                        </div>
+                    </div>
+                </div>
+    
+            </div>
+            <!-- / INVOICE -->
+    
+        </div>
+    
+    </div>

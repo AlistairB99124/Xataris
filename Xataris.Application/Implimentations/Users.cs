@@ -1,0 +1,595 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Xataris.Application.Interfaces;
+using Xataris.DBService;
+using Xataris.Infrastructure.ViewModels;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Xataris.Infrastructure.ApplicationVariables;
+using Xataris.Domain.Pocos;
+using Microsoft.EntityFrameworkCore.Internal;
+using Xataris.Domain.Interfaces;
+using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using System.Web;
+
+namespace Xataris.Application.Implimentations
+{
+    public class Users : IUsers
+    {
+        private XatarisContext _context;
+        private IUserDomain _userDomain;
+        private readonly IEmailSender emailSender;
+        public Users(XatarisContext context, IUserDomain userDomain, IEmailSender emailSender)
+        {
+            _context = context;
+            _userDomain = userDomain;
+            this.emailSender = emailSender;
+        }
+
+        public async Task<SimpleResult> GetUserByEmail(UserEmailInput input)
+        {
+            try
+            {
+                var result = await _context.Users.FindAsync(input.Email);
+                return new SimpleResult
+                {
+                    IsSuccess = result != null
+                };
+            }
+            catch (Exception ex)
+            {
+                return new SimpleResult
+                {
+                    IsSuccess = false,
+                    ErrorMessage = ex.Message
+                };
+            }
+        }
+
+        public async Task<UserViewModel> GetUserByGUID(UserIdInput input)
+        {
+            try
+            {
+                var result = await _context.Users.FindAsync(input.GUID);
+                return GenerateUser(result);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<UsersManagementCounts> GetUserManagementCounts()
+        {
+            try
+            {
+                var countLockedOut = await _context.Users.Where(x => x.LockoutEnd < DateTime.UtcNow).CountAsync();
+                var countNeverLoggedIn = await _context.Users.Where(x => x.LastLoggedIn < new DateTime(1970, 1, 1)).CountAsync();
+                var countLoggedInLastMonth = await _context.Users.Where(x => x.LastLoggedIn > DateTime.Now.AddMonths(-1)).CountAsync();
+                var loggedIn = await _context.Users.Where(x => x.LastLoggedIn > DateTime.Now.AddHours(-1)).CountAsync();
+                return new UsersManagementCounts
+                {
+                    LockedOutCount = countLockedOut,
+                    LoggedInCount = loggedIn,
+                    LoggedLastMonthCount = countLoggedInLastMonth,
+                    NeverLoggedCount = countNeverLoggedIn
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<List<UserViewModel>> GetUsersWithFilter(FilterUsersInput input)
+        {
+            try
+            {
+                List<UserViewModel> result = new List<UserViewModel>();
+                switch (input.Filter)
+                {
+                    case UserFilter.LockedOut:
+                        var usersLockedOut = await _context.Users.Where(x => x.AccessFailedCount > 5).ToListAsync();
+                        result = GenerateUsers(usersLockedOut);
+                        break;
+                    case UserFilter.LoggedIn:
+                        var usersLoggedin = await _context.Users.Where(x => x.DateRegistered == (DateTime.Today)).ToListAsync();
+                        result = GenerateUsers(usersLoggedin);
+                        break;
+                    case UserFilter.LoggedInLastMonth:
+                        var usersLoggedLastMonth = await _context.Users.Where(x => x.DateRegistered < (DateTime.Today.AddMonths(-1))).ToListAsync();
+                        result = GenerateUsers(usersLoggedLastMonth);
+                        break;
+                    case UserFilter.NeverLoggedIn:
+                        var usersNever = await _context.Users.Where(x => x.DateRegistered == null).ToListAsync();
+                        result = GenerateUsers(usersNever);
+                        break;
+                    default:
+                        result = null;
+                        break;
+                }
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private List<UserViewModel> GenerateUsers(List<UserPoco> users)
+        {
+            return users.Select(s => new UserViewModel
+            {
+                DateRegistered = s.DateRegistered,
+                Email = s.Email,
+                EmailConfirmed = s.EmailConfirmed,
+                FirstName = s.FirstName,
+                Id = s.Id,
+                LastName = s.LastName,
+                PasswordHash = s.PasswordHash,
+                PhoneNumber = s.PhoneNumber,
+                UserName = s.UserName
+            }).ToList();
+        }
+
+        private UserViewModel GenerateUser(UserPoco user)
+        {
+            return new UserViewModel
+            {
+                DateRegistered = user.DateRegistered,
+                Email = user.Email,
+                EmailConfirmed = user.EmailConfirmed,
+                FirstName = user.FirstName,
+                Id = user.Id,
+                LastName = user.LastName,
+                PasswordHash = user.PasswordHash,
+                PhoneNumber = user.PhoneNumber,
+                UserName = user.UserName
+            };
+        }
+
+        public async Task<GroupViewModel[]> GetGroups()
+        {
+            try
+            {
+                var result = await _context.UserGroups.Where(x => x.Deleted == false).ToArrayAsync();
+
+                return result.Select(x => new GroupViewModel
+                {
+                    Id = x.Id,
+                    AccessLevel = x.AccessLevel.ToString(),
+                    Description = x.Description,
+                    Modules = x.Modules,
+                    Title = x.Title,
+                    Deleted = x.Deleted
+                }).ToArray();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<DropdownModel[]> GetAvailableModules()
+        {
+            try
+            {
+                var result = await _context.Modules.ToArrayAsync();
+                return result.Select(x => new DropdownModel
+                {
+                    Text = x.Name,
+                    Value = x.Id,
+                    Selected = false
+                }).ToArray();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<GroupViewModel> GetGroup(long id)
+        {
+            try
+            {
+                var result = await _context.UserGroups.FindAsync(id);
+                return new GroupViewModel
+                {
+                    AccessLevel = result.AccessLevel.ToString(),
+                    Description = result.Description,
+                    Id = result.Id,
+                    Modules = JsonConvert.SerializeObject(result.Modules),
+                    Title = result.Title
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<SimpleResult> SaveGroup(SaveGroupInput input)
+        {
+            try
+            {
+                if (input.Id != null)
+                {
+                    var existingGroup = await _context.UserGroups.FindAsync(input.Id);
+                    await _userDomain.UpdateGroup(existingGroup);
+                    return new SimpleResult
+                    {
+                        IsSuccess = true
+                    };
+                }
+                else
+                {
+                    var modules = new List<ModulePoco>();
+                    foreach (var x in input.Modules)
+                    {
+                        var mod = await _context.Modules.FindAsync(x.Value);
+                        modules.Add(mod);
+                    }
+                    var group = new UserGroupPoco
+                    {
+                        AccessLevel = (AccessLevel)input.Access.Value,
+                        Title = input.Title,
+                        Description = input.Description,
+                        Modules = JsonConvert.SerializeObject(modules, new JsonSerializerSettings
+                        {
+                            ContractResolver = new CamelCasePropertyNamesContractResolver()
+                        })
+                    };
+                    await _userDomain.AddGroup(group);
+                    return new SimpleResult
+                    {
+                        IsSuccess = true
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new SimpleResult
+                {
+                    IsSuccess = false,
+                    ErrorMessage = JsonConvert.SerializeObject(ex)
+                };
+            }
+        }
+
+        public async Task<SimpleResult> DeleteGroups(GroupInput input)
+        {
+            try
+            {
+                await _userDomain.DeleteGroup(input.GroupsIds);
+                return new SimpleResult
+                {
+                    IsSuccess = true
+                };
+            }
+            catch (Exception ex)
+            {
+                return new SimpleResult
+                {
+                    IsSuccess = false,
+                    ErrorMessage = JsonConvert.SerializeObject(ex)
+                };
+            }
+        }
+
+        public async Task<SimpleResult> SaveUser(UserViewModel input, UserManager<UserPoco> userManager)
+        {
+            try
+            {
+                SimpleResult result;
+                if (input.Id != null)
+                {
+                    var poco = await _context.Users.FindAsync(input.Id);
+                    poco.Email = input.Email;
+                    poco.NormalizedEmail = input.Email.ToUpper();
+                    poco.NormalizedUserName = input.Email.ToUpper();
+                    poco.UserName = input.Email;
+                    poco.FirstName = input.FirstName;
+                    poco.GroupId = input.GroupId;
+                    poco.LastName = input.LastName;
+                    poco.PtmEnabled = input.PtmEnabled;
+                    poco.EmploymentStartDate = input.EmploymentStartDate;
+                    poco.EmploymentEndDate = input.EmploymentEndDate;
+                    var identityResult = await userManager.UpdateAsync(poco);
+                    result = new SimpleResult
+                    {
+                        IsSuccess = identityResult.Succeeded
+                    };
+                }
+                else
+                {
+                    if (input.Password == string.Empty || input.Password == null)
+                    {
+                        input.Password = "thi5isabullshitpassword";
+                    }
+                    var poco = new UserPoco
+                    {
+                        Email = input.Email,
+                        LastName = input.LastName,
+                        FirstName = input.FirstName,
+                        UserName = input.Email,
+                        DateRegistered = DateTime.UtcNow,
+                        GroupId = input.GroupId,
+                        PtmEnabled = input.PtmEnabled,
+                        EmploymentStartDate = input.EmploymentStartDate,
+                        EmploymentEndDate = input.EmploymentEndDate
+                    };
+                    result = await _userDomain.SaveUser(poco, userManager, input.Password);
+                    var body = "<p>Welcome to Xataris " + poco.FirstName + " " + poco.LastName + ". Please follow the following link to set your password.</p><a href='" + "https://www.xataris.co.uk/#/account/login/token" + "'>Set Password</a>";
+                    await emailSender.SendEmailAsync(input.Email, "Welcome to Xataris", body, true);
+                }
+                return new SimpleResult
+                {
+                    IsSuccess = result.IsSuccess,
+                    ErrorMessage = result.ErrorMessage
+                };
+            }
+            catch (Exception ex)
+            {
+                return new SimpleResult
+                {
+                    IsSuccess = false,
+                    ErrorMessage = JsonConvert.SerializeObject(ex)
+                };
+            }
+        }
+
+        public async Task<UserPoco[]> GetFilteredUsers(UserFilterInput input)
+        {
+            try
+            {
+                var result = new List<UserPoco>();
+                var beginningOfTime = new DateTime();
+                switch (input.Filter)
+                {
+                    case UserFilter.LockedOut:
+                        result = await _context.Users.Where(x => x.LockoutEnd > DateTimeOffset.UtcNow).ToListAsync();
+                        break;
+                    case UserFilter.NeverLoggedIn:
+                        result = await _context.Users.Where(x => x.LastLoggedIn == beginningOfTime).ToListAsync();
+                        break;
+                    case UserFilter.LoggedInLastMonth:
+                        result = await _context.Users.Where(x => x.LastLoggedIn == beginningOfTime).ToListAsync();
+                        break;
+                    case UserFilter.LoggedIn:
+                        result = await _context.Users.Where(x => x.LastLoggedIn < (DateTime.Today.AddMonths(-1))).ToListAsync();
+                        break;
+                    default:
+                        result = null;
+                        break;
+                }
+                return result.ToArray();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<ModulePoco[]> GetModules(long groupId)
+        {
+            try
+            {
+                var group = await _context.UserGroups.FindAsync(groupId);
+
+                return JsonConvert.DeserializeObject<ModulePoco[]>(group.Modules);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<UserGroupPoco> GetTheGroup(long id)
+        {
+            try
+            {
+                return await _context.UserGroups.FindAsync(id);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<AccessResult> GetUserPermissions(UsersIdInput input)
+        {
+            try
+            {
+                var user = await _context.Users.FindAsync(input.UserId);
+                if (user != null)
+                {
+                    var group = await _context.UserGroups.FindAsync(user.GroupId);
+                    if (group != null)
+                    {
+                        var modules = JsonConvert.DeserializeObject<ModulePoco[]>(group.Modules);
+                        if (modules != null)
+                        {
+                            return new AccessResult
+                            {
+                                Modules = modules.Select(x => new ModuleViewModel
+                                {
+                                    Id = x.Id,
+                                    Name = x.Name
+                                }).ToArray(),
+                                Permission = (int)group.AccessLevel
+                            };
+                        }
+                        return new AccessResult();
+                    }
+                    return new AccessResult();
+                }
+                return new AccessResult();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<SimpleResult> ValidateById(UserIdInput input, UserManager<UserPoco> userManager)
+        {
+            try
+            {
+                var user = await userManager.FindByIdAsync(input.GUID);
+                if (user == null)
+                {
+                    return new SimpleResult
+                    {
+                        IsSuccess = false,
+                        ErrorMessage = "User Does Not Exist"
+                    };
+                }
+                else
+                {
+                    return new SimpleResult
+                    {
+                        IsSuccess = true
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new SimpleResult
+                {
+                    IsSuccess = false,
+                    ErrorMessage = JsonConvert.SerializeObject(ex)
+                };
+            }
+        }
+
+        public async Task<DropdownModel[]> GetWarehouses()
+        {
+            try
+            {
+                var result = await _context.Warehouses.ToListAsync();
+                return result.Select(x => new DropdownModel
+                {
+                    Value = x.Id,
+                    Text = x.Name,
+                    Selected = false
+                }).ToArray();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<UserGridDetail[]> GetUserByStatus(FilterUsersInput input)
+        {
+            try
+            {
+                List<UserPoco> result = new List<UserPoco>();
+                switch (input.Filter)
+                {
+                    case UserFilter.LockedOut:
+                        result = await _context.Users.Where(x => x.LockoutEnd < DateTime.UtcNow).ToListAsync();
+                        break;
+                    case UserFilter.LoggedIn:
+                        result = await _context.Users.Where(x => x.LastLoggedIn > DateTime.Now.AddHours(-1)).ToListAsync();
+                        break;
+                    case UserFilter.LoggedInLastMonth:
+                        result = await _context.Users.Where(x => x.LastLoggedIn > DateTime.Now.AddMonths(-1)).ToListAsync();
+                        break;
+                    case UserFilter.NeverLoggedIn:
+                        result = await _context.Users.Where(x => x.LastLoggedIn < new DateTime(1970, 1, 1)).ToListAsync();
+                        break;
+                }
+                return result.Select(x => new UserGridDetail
+                {
+                    DateRegistered = x.DateRegistered.ToLongDateString(),
+                    Email = x.Email,
+                    FirstName = x.FirstName,
+                    Group = _context.UserGroups.Where(s => s.Id == x.GroupId).FirstOrDefault().Title,
+                    Id = x.Id,
+                    LastName = x.LastName
+                }).ToArray();
+            }
+            catch
+            {
+                return new List<UserGridDetail>().ToArray();
+            }
+        }
+
+        public async Task<UserPoco> GetUser(UserEmailInput input)
+        {
+            try
+            {
+                return await _context.Users.Where(x => x.Email == input.Email).FirstOrDefaultAsync();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task UpdateUser(string userId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            user.LastLoggedIn = DateTime.Now;
+            _context.Entry(user).State = EntityState.Modified;
+            var apiRequests = await _context.LookupValues.Where(x => x.LookupValuesId == (long)LookupValueEnum.ApiRequests).LastOrDefaultAsync();
+            if(apiRequests == null)
+            {
+                await _context.LookupValues.AddAsync(new LookupValue
+                {
+                    LookupValuesId = (long)LookupValueEnum.ApiRequests,
+                    DataType = DataType.Integer,
+                    DataValue = "1",
+                    Updated = DateTime.Now
+                });
+            } else
+            {
+                if(apiRequests.Updated.Date == DateTime.Today)
+                {
+                    var lastApi = Convert.ToInt32(apiRequests.DataValue);
+                    lastApi = lastApi + 1;
+                    var newLookup = new LookupValue
+                    {
+                        DataType = DataType.Integer,
+                        DataValue = lastApi.ToString(),
+                        LookupValuesId = (long)LookupValueEnum.ApiRequests,
+                        Updated = DateTime.Now
+                    };
+                    await _context.LookupValues.AddAsync(newLookup);
+                } else
+                {
+                    await _context.LookupValues.AddAsync(new LookupValue
+                    {
+                        LookupValuesId = (long)LookupValueEnum.ApiRequests,
+                        DataType = DataType.Integer,
+                        DataValue = "1",
+                        Updated = DateTime.Now
+                    });
+                }
+            }
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<SimpleResult> DeleteUser(UserEmailInput input, UserManager<UserPoco> userManager)
+        {
+            try
+            {
+                var user = await _context.Users.Where(x => x.Email == input.Email).FirstOrDefaultAsync();
+                return await _userDomain.DeleteUser(user, userManager);
+            }
+            catch
+            {
+                return new SimpleResult
+                {
+                    IsSuccess = false
+                };
+            }
+        }
+    }
+}

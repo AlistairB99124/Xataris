@@ -1,0 +1,45 @@
+C:\Users\Alistair\Documents\Visual Studio 2017\Projects\Xataris\Xataris.DBService\bin\Debug\netcoreapp2.0\Xataris.DBService.deps.json
+C:\Users\Alistair\Documents\Visual Studio 2017\Projects\Xataris\Xataris.DBService\bin\Debug\netcoreapp2.0\Xataris.DBService.dll
+C:\Users\Alistair\Documents\Visual Studio 2017\Projects\Xataris\Xataris.DBService\bin\Debug\netcoreapp2.0\Xataris.DBService.pdb
+C:\Users\Alistair\Documents\Visual Studio 2017\Projects\Xataris\Xataris.DBService\bin\Debug\netcoreapp2.0\Xataris.Domain.Pocos.dll
+C:\Users\Alistair\Documents\Visual Studio 2017\Projects\Xataris\Xataris.DBService\bin\Debug\netcoreapp2.0\Xataris.Infrastructure.ApplicationVariables.dll
+C:\Users\Alistair\Documents\Visual Studio 2017\Projects\Xataris\Xataris.DBService\bin\Debug\netcoreapp2.0\Xataris.Domain.Pocos.pdb
+C:\Users\Alistair\Documents\Visual Studio 2017\Projects\Xataris\Xataris.DBService\bin\Debug\netcoreapp2.0\Xataris.Infrastructure.ApplicationVariables.pdb
+C:\Users\Alistair\Documents\Visual Studio 2017\Projects\Xataris\Xataris.DBService\obj\Debug\netcoreapp2.0\Xataris.DBService.csprojResolveAssemblyReference.cache
+C:\Users\Alistair\Documents\Visual Studio 2017\Projects\Xataris\Xataris.DBService\obj\Debug\netcoreapp2.0\Xataris.DBService.csproj.CoreCompileInputs.cache
+C:\Users\Alistair\Documents\Visual Studio 2017\Projects\Xataris\Xataris.DBService\obj\Debug\netcoreapp2.0\Xataris.DBService.AssemblyInfoInputs.cache
+C:\Users\Alistair\Documents\Visual Studio 2017\Projects\Xataris\Xataris.DBService\obj\Debug\netcoreapp2.0\Xataris.DBService.AssemblyInfo.cs
+C:\Users\Alistair\Documents\Visual Studio 2017\Projects\Xataris\Xataris.DBService\obj\Debug\netcoreapp2.0\Xataris.DBService.dll
+C:\Users\Alistair\Documents\Visual Studio 2017\Projects\Xataris\Xataris.DBService\obj\Debug\netcoreapp2.0\Xataris.DBService.pdb
+P:\Xataris\Xataris.DBService\bin\Debug\netcoreapp2.0\Xataris.DBService.deps.json
+P:\Xataris\Xataris.DBService\bin\Debug\netcoreapp2.0\Xataris.DBService.runtimeconfig.json
+P:\Xataris\Xataris.DBService\bin\Debug\netcoreapp2.0\Xataris.DBService.runtimeconfig.dev.json
+P:\Xataris\Xataris.DBService\bin\Debug\netcoreapp2.0\Xataris.DBService.dll
+P:\Xataris\Xataris.DBService\bin\Debug\netcoreapp2.0\Xataris.DBService.pdb
+P:\Xataris\Xataris.DBService\bin\Debug\netcoreapp2.0\Xataris.Domain.Pocos.dll
+P:\Xataris\Xataris.DBService\bin\Debug\netcoreapp2.0\Xataris.Infrastructure.ApplicationVariables.dll
+P:\Xataris\Xataris.DBService\bin\Debug\netcoreapp2.0\Xataris.Domain.Pocos.pdb
+P:\Xataris\Xataris.DBService\bin\Debug\netcoreapp2.0\Xataris.Infrastructure.ApplicationVariables.pdb
+P:\Xataris\Xataris.DBService\obj\Debug\netcoreapp2.0\Xataris.DBService.csprojAssemblyReference.cache
+P:\Xataris\Xataris.DBService\obj\Debug\netcoreapp2.0\Xataris.DBService.csproj.CoreCompileInputs.cache
+P:\Xataris\Xataris.DBService\obj\Debug\netcoreapp2.0\Xataris.DBService.AssemblyInfoInputs.cache
+P:\Xataris\Xataris.DBService\obj\Debug\netcoreapp2.0\Xataris.DBService.AssemblyInfo.cs
+P:\Xataris\Xataris.DBService\obj\Debug\netcoreapp2.0\Xataris.DBService.csproj.CopyComplete
+P:\Xataris\Xataris.DBService\obj\Debug\netcoreapp2.0\Xataris.DBService.dll
+P:\Xataris\Xataris.DBService\obj\Debug\netcoreapp2.0\Xataris.DBService.pdb
+C:\Users\Alistair\source\repos\Xataris\Xataris.DBService\bin\Debug\netcoreapp2.0\Xataris.DBService.deps.json
+C:\Users\Alistair\source\repos\Xataris\Xataris.DBService\bin\Debug\netcoreapp2.0\Xataris.DBService.runtimeconfig.json
+C:\Users\Alistair\source\repos\Xataris\Xataris.DBService\bin\Debug\netcoreapp2.0\Xataris.DBService.runtimeconfig.dev.json
+C:\Users\Alistair\source\repos\Xataris\Xataris.DBService\bin\Debug\netcoreapp2.0\Xataris.DBService.dll
+C:\Users\Alistair\source\repos\Xataris\Xataris.DBService\bin\Debug\netcoreapp2.0\Xataris.DBService.pdb
+C:\Users\Alistair\source\repos\Xataris\Xataris.DBService\bin\Debug\netcoreapp2.0\Xataris.Domain.Pocos.dll
+C:\Users\Alistair\source\repos\Xataris\Xataris.DBService\bin\Debug\netcoreapp2.0\Xataris.Infrastructure.ApplicationVariables.dll
+C:\Users\Alistair\source\repos\Xataris\Xataris.DBService\bin\Debug\netcoreapp2.0\Xataris.Domain.Pocos.pdb
+C:\Users\Alistair\source\repos\Xataris\Xataris.DBService\bin\Debug\netcoreapp2.0\Xataris.Infrastructure.ApplicationVariables.pdb
+C:\Users\Alistair\source\repos\Xataris\Xataris.DBService\obj\Debug\netcoreapp2.0\Xataris.DBService.csprojAssemblyReference.cache
+C:\Users\Alistair\source\repos\Xataris\Xataris.DBService\obj\Debug\netcoreapp2.0\Xataris.DBService.csproj.CoreCompileInputs.cache
+C:\Users\Alistair\source\repos\Xataris\Xataris.DBService\obj\Debug\netcoreapp2.0\Xataris.DBService.AssemblyInfoInputs.cache
+C:\Users\Alistair\source\repos\Xataris\Xataris.DBService\obj\Debug\netcoreapp2.0\Xataris.DBService.AssemblyInfo.cs
+C:\Users\Alistair\source\repos\Xataris\Xataris.DBService\obj\Debug\netcoreapp2.0\Xataris.DBService.csproj.CopyComplete
+C:\Users\Alistair\source\repos\Xataris\Xataris.DBService\obj\Debug\netcoreapp2.0\Xataris.DBService.dll
+C:\Users\Alistair\source\repos\Xataris\Xataris.DBService\obj\Debug\netcoreapp2.0\Xataris.DBService.pdb

@@ -1,0 +1,9 @@
+C:\Users\Alistair\source\repos\Xataris\DotNetCore.API.Common1\DotNetCore.API.Common1.API.DataContracts\bin\Debug\netcoreapp2.1\DotNetCore.API.Common1.API.DataContracts.deps.json
+C:\Users\Alistair\source\repos\Xataris\DotNetCore.API.Common1\DotNetCore.API.Common1.API.DataContracts\bin\Debug\netcoreapp2.1\DotNetCore.API.Common1.API.DataContracts.dll
+C:\Users\Alistair\source\repos\Xataris\DotNetCore.API.Common1\DotNetCore.API.Common1.API.DataContracts\bin\Debug\netcoreapp2.1\DotNetCore.API.Common1.API.DataContracts.pdb
+C:\Users\Alistair\source\repos\Xataris\DotNetCore.API.Common1\DotNetCore.API.Common1.API.DataContracts\obj\Debug\netcoreapp2.1\DotNetCore.API.Common1.API.DataContracts.csprojAssemblyReference.cache
+C:\Users\Alistair\source\repos\Xataris\DotNetCore.API.Common1\DotNetCore.API.Common1.API.DataContracts\obj\Debug\netcoreapp2.1\DotNetCore.API.Common1.API.DataContracts.csproj.CoreCompileInputs.cache
+C:\Users\Alistair\source\repos\Xataris\DotNetCore.API.Common1\DotNetCore.API.Common1.API.DataContracts\obj\Debug\netcoreapp2.1\DotNetCore.API.Common1.API.DataContracts.AssemblyInfoInputs.cache
+C:\Users\Alistair\source\repos\Xataris\DotNetCore.API.Common1\DotNetCore.API.Common1.API.DataContracts\obj\Debug\netcoreapp2.1\DotNetCore.API.Common1.API.DataContracts.AssemblyInfo.cs
+C:\Users\Alistair\source\repos\Xataris\DotNetCore.API.Common1\DotNetCore.API.Common1.API.DataContracts\obj\Debug\netcoreapp2.1\DotNetCore.API.Common1.API.DataContracts.dll
+C:\Users\Alistair\source\repos\Xataris\DotNetCore.API.Common1\DotNetCore.API.Common1.API.DataContracts\obj\Debug\netcoreapp2.1\DotNetCore.API.Common1.API.DataContracts.pdb

@@ -1,0 +1,220 @@
+<div id="forms" class="page-layout simple fullwidth" fxLayout="column" fusePerfectScrollbar>
+        <div class="header xataris-accent-bg p-24 h-160" fxLayout="row" fxFlex fxLayoutAlign="start center">
+            <div fxLayout="column" fxLayoutAlign="center start" fxFlex>
+                <div fxLayout="row">
+                    <div class="black-fg" fxLayout="row" fxLayoutAlign="start center">
+                        <mat-icon class="secondary-text s-16">home</mat-icon>
+                        <mat-icon class="secondary-text s-16">chevron_right</mat-icon>
+                        <span class="secondary-text">User Management</span>
+                    </div>
+                </div>
+                <div fxLayout="row" style="width: 100%">
+                    <div fxFlex class="h1 mt-16">User Management</div>
+                    <button matTooltip="Add New User" *ngIf="!isEditUser" mat-icon-button class="fuse-search-bar-collapser mat-icon-button" (click)="addNewUser()" aria-label="Add New User">
+                        <mat-icon class="s-24">add</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <mat-progress-bar *ngIf="data.loader" mode="indeterminate"></mat-progress-bar>
+        <div class="content p-16">
+            <div class="widget-group p-12" fxLayout="row" fxLayoutWrap *fuseIfOnDom [@animateStagger]="{value:'50'}">
+    
+                <fuse-widget [@animate]="{value:'*',params:{y:'100%'}}" class="widget" fxLayout="column" fxFlex="100" fxFlex.gt-xs="50" fxFlex.gt-md="25">
+    
+                    <div class="fuse-widget-front mat-white-bg mat-elevation-z2">
+                        <div class="pl-16 pr-8 py-16 h-52" fxLayout="row" fxLayoutAlign="space-between center">
+                            <div class="h3">Locked Out</div>
+                        </div>
+                        <mat-divider></mat-divider>
+                        <div class="pt-8 pb-8" fxLayout="column" fxLayoutAlign="center center">
+                            <div class="red-fg font-size-72 line-height-72">
+                                <button (click)="onTileClick(0)" class="font-size-72 red-fg mat-icon-button">{{data.tileCounts.lockedOutCount}}</button>
+                            </div>
+                        </div>
+                    </div>
+                </fuse-widget>
+                <fuse-widget [@animate]="{value:'*',params:{y:'100%'}}" class="widget" fxLayout="column" fxFlex="100" fxFlex.gt-xs="50" fxFlex.gt-md="25">
+    
+                    <div class="fuse-widget-front mat-white-bg mat-elevation-z2">
+                        <div class="pl-16 pr-8 py-16 h-52" fxLayout="row" fxLayoutAlign="space-between center">
+                            <div class="h3">Never Logged In</div>
+                        </div>
+                        <mat-divider></mat-divider>
+                        <div class="pt-8 pb-8" fxLayout="column" fxLayoutAlign="center center">
+                            <div class="red-fg font-size-72 line-height-72">
+                                <button mat-icon-button (click)="onTileClick(1)" class="font-size-72 amber-fg mat-icon-button">{{data.tileCounts.neverLoggedCount}}</button>
+                            </div>
+                        </div>
+                    </div>
+                </fuse-widget>
+                <fuse-widget [@animate]="{value:'*',params:{y:'100%'}}" class="widget" fxLayout="column" fxFlex="100" fxFlex.gt-xs="50" fxFlex.gt-md="25">
+    
+                    <div class="fuse-widget-front mat-white-bg mat-elevation-z2">
+                        <div class="pl-16 pr-8 py-16 h-52" fxLayout="row" fxLayoutAlign="space-between center">
+                            <div class="h3">Logged in the Last Month</div>
+                        </div>
+                        <mat-divider></mat-divider>
+                        <div class="pt-8 pb-8" fxLayout="column" fxLayoutAlign="center center">
+                            <div class="red-fg font-size-72 line-height-72">
+                                <button mat-icon-button (click)="onTileClick(2)" class="font-size-72 mat-icon-button">{{data.tileCounts.loggedLastMonthCount}}</button>
+                            </div>
+                        </div>
+                    </div>
+                </fuse-widget>
+                <fuse-widget [@animate]="{value:'*',params:{y:'100%'}}" class="widget" fxLayout="column" fxFlex="100" fxFlex.gt-xs="50" fxFlex.gt-md="25">
+    
+                    <div class="fuse-widget-front mat-white-bg mat-elevation-z2">
+                        <div class="pl-16 pr-8 py-16 h-52" fxLayout="row" fxLayoutAlign="space-between center">
+                            <div class="h3">Logged In Users</div>
+                        </div>
+                        <mat-divider></mat-divider>
+                        <div class="pt-8 pb-8" fxLayout="column" fxLayoutAlign="center center">
+                            <div class="red-fg font-size-72 line-height-72">
+                                <button mat-icon-button (click)="onTileClick(3)" class="font-size-72 green-fg mat-icon-button">{{data.tileCounts.loggedInCount}}</button>
+                            </div>
+                        </div>
+                    </div>
+                </fuse-widget>
+                <fuse-widget [@animate]="{value:'*',params:{y:'100%'}}" class="widget" fxLayout="row" fxFlex="100">
+                    <div class="fuse-widget-front mat-white-bg mat-elevation-z2" *ngIf="data.showUsersList">
+                        <mat-toolbar class="mat-white-bg mat-elevation-z4">
+                            <mat-toolbar-row fxFlex>
+                                <span fxFlex>Users</span>
+                                <button *ngIf="!data.isUsersGridCollapsed" [disabled]="!isEditButtonDisabled()" mat-icon-button class="fuse-search-bar-collapser mat-icon-button" (click)="deleteUser()"
+                                        aria-label="Collapse Search Bar">
+                                    <mat-icon class="s-24">delete</mat-icon>
+                                </button>
+                                <button *ngIf="!data.isUsersGridCollapsed" [disabled]="!isEditButtonDisabled()" mat-icon-button class="fuse-search-bar-collapser mat-icon-button" (click)="editUser()"
+                                        aria-label="Collapse Search Bar">
+                                    <mat-icon class="s-24">mode_edit</mat-icon>
+                                </button>
+                                <button mat-icon-button class="fuse-search-bar-collapser mat-icon-button" (click)="data.isUsersGridCollapsed = !data.isUsersGridCollapsed"
+                                        aria-label="Collapse Search Bar">
+                                    <mat-icon *ngIf="data.isUsersGridCollapsed === true" class="s-24">keyboard_arrow_left</mat-icon>
+                                    <mat-icon *ngIf="data.isUsersGridCollapsed !== true" class="s-24">keyboard_arrow_down</mat-icon>
+                                </button>
+                            </mat-toolbar-row>
+                        </mat-toolbar>
+                        <mat-divider></mat-divider>
+                        <mat-card *ngIf="!data.isUsersGridCollapsed">
+                            <mat-card-content>
+                                <div>
+                                    <mat-table #table [dataSource]="datasource">
+                                        <ng-container matColumnDef="id">
+                                            <mat-header-cell *matHeaderCellDef style="flex: 0 0 50px !important; white-space: unset !important;"></mat-header-cell>
+                                            <mat-cell *matCellDef="let element" style="flex: 0 0 50px !important; white-space: unset !important; text-align: center;">
+                                                <input type="checkbox" [(ngModel)]="element.isSelected" />
+                                            </mat-cell>
+                                        </ng-container>
+                                        <ng-container matColumnDef="firstName">
+                                            <mat-header-cell *matHeaderCellDef> First Name </mat-header-cell>
+                                            <mat-cell *matCellDef="let element"> {{element.firstName}} </mat-cell>
+                                        </ng-container>
+                                        <ng-container matColumnDef="lastName">
+                                            <mat-header-cell *matHeaderCellDef> Last Name </mat-header-cell>
+                                            <mat-cell *matCellDef="let element"> {{element.lastName}} </mat-cell>
+                                        </ng-container>
+                                        <ng-container matColumnDef="email">
+                                            <mat-header-cell *matHeaderCellDef> Email </mat-header-cell>
+                                            <mat-cell *matCellDef="let element"> {{element.email}} </mat-cell>
+                                        </ng-container>
+                                        <ng-container matColumnDef="dateRegistered">
+                                            <mat-header-cell *matHeaderCellDef> Date Registered </mat-header-cell>
+                                            <mat-cell *matCellDef="let element"> {{element.dateRegistered}} </mat-cell>
+                                        </ng-container>
+                                        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                                        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                                    </mat-table>
+                                </div>
+                            </mat-card-content>
+                        </mat-card>
+                    </div>
+                </fuse-widget>
+            </div>
+        </div>
+        <div class="my-8 mx-40" *ngIf="isEditUser">
+            <mat-toolbar class="mat-white-bg mat-elevation-z4">
+                <mat-toolbar-row fxLayoutAlign="end center">
+                    <button *ngIf="!data.isUserDetailsGridCollapsed" mat-icon-button matTooltip="Save User" class="fuse-search-bar-collapser mat-icon-button" (click)="saveUser()"
+                            aria-label="Save User">
+                        <mat-icon class="s-24">save</mat-icon>
+                    </button>
+                    <button *ngIf="!data.isUserDetailsGridCollapsed" mat-icon-button matTooltip="Close" class="fuse-search-bar-collapser mat-icon-button" (click)="isEditUser = false"
+                                        aria-label="Close">
+                                    <mat-icon class="s-24">clear</mat-icon>
+                    </button>
+                    <button mat-icon-button class="fuse-search-bar-collapser mat-icon-button" (click)="data.isUserDetailsGridCollapsed = !data.isUserDetailsGridCollapsed"
+                                        aria-label="Collapse Search Bar">
+                                    <mat-icon *ngIf="data.isUserDetailsGridCollapsed === true" class="s-24">keyboard_arrow_left</mat-icon>
+                                    <mat-icon *ngIf="data.isUserDetailsGridCollapsed !== true" class="s-24">keyboard_arrow_down</mat-icon>
+                                </button>
+                </mat-toolbar-row>
+            </mat-toolbar>
+            <mat-divider></mat-divider>
+            <mat-card class="py-0">
+                <mat-card-content class="py-16" *ngIf="!data.isUserDetailsGridCollapsed">
+                    <div class="p-0" fxLayout="column" fxLayoutAlign="start"
+                         fxFlex name="editForm">
+                        <div fxLayout="row">
+                            <div fxLayout="column" fxFlex="50" class="pr-12">
+                                <div fxLayout="row" style="width:100%">
+                                    <mat-form-field fxFlex>
+                                        <input matInput #title placeholder="First Name" [(ngModel)]="data.selectedUser.firstName">
+                                    </mat-form-field>
+                                </div>
+                                <div fxLayout="row" style="width:100%">
+                                    <mat-form-field fxFlex>
+                                        <input matInput #description placeholder="Last Name" [(ngModel)]="data.selectedUser.lastName">
+                                    </mat-form-field>
+                                </div>
+                                <div fxLayout="row" style="width:100%">
+                                    <mat-form-field fxFlex>
+                                        <input matInput #description placeholder="Email" [(ngModel)]="data.selectedUser.email">
+                                    </mat-form-field>
+                                </div>
+                                <div fxLayout="row" *ngIf="this.data.selectedUser.id === undefined" style="width:100%">
+                                    <mat-form-field fxFlex>
+                                        <input  matInput #description placeholder="Password (optional)" ngPattern="/^.+@.+\..+$/" [(ngModel)]="data.selectedUser.password">
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div fxLayout="column" fxFlex="50" class="pl-12">
+                                <div fxLayout="row" style="width:100%">
+                                    <mat-form-field fxFlex>
+                                        <mat-select fxFlex matInput #modules placeholder="Group" [(ngModel)]="data.selectedUser.group">
+                                            <mat-option *ngFor="let group of data.availableGroups" [value]="group">
+                                                {{group.text}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div fxLayout="row" style="width:100%" class="my-12">
+                                    <mat-checkbox matInput #ptmEnabled [(ngModel)]="data.selectedUser.ptmEnabled">
+                                        PTM Enabled
+                                    </mat-checkbox>
+                                </div>
+                                <div fxLayout="row" style="width:100%" class="my-12">
+                                    <div fxLayout="column" flex>
+                                        <mat-form-field>
+                                            <input matInput [matDatepicker]="start" [(ngModel)]="data.selectedUser.employmentStartDate" placeholder="Employment Start Date">
+                                            <mat-datepicker-toggle matSuffix [for]="start"></mat-datepicker-toggle>
+                                            <mat-datepicker #start></mat-datepicker>
+                                        </mat-form-field>
+                                    </div>
+                                    <div fxLayout="column" flex class="pl-16">
+                                        <mat-form-field>
+                                            <input matInput [matDatepicker]="end" [(ngModel)]="data.selectedUser.employmentEndDate" placeholder="Employment End Date">
+                                            <mat-datepicker-toggle matSuffix [for]="end"></mat-datepicker-toggle>
+                                            <mat-datepicker #end></mat-datepicker>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+    

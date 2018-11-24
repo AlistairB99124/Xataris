@@ -1,0 +1,31 @@
+<div fxLayout="column" fxFlex>
+    <mat-table fxFlex #table [dataSource]="dataSource" class="mat-elevation-z8">
+        <ng-container *ngFor="let column of gridOptions.columnDefs" matColumnDef="{{column.field}}">            
+            <div *ngIf="column.columnType === 4">
+                <mat-header-cell *matHeaderCellDef class="checkbox">{{column.title}}</mat-header-cell>
+                <mat-cell *matCellDef="let element" class="checkbox">
+                    <mat-checkbox *ngIf="column.renderType === undefined" [(ngModel)]="element.selected"></mat-checkbox>
+                    <button *ngIf="column.renderType === 1" mat-button mat-icon-button (click)="column.onClick(element)"><mat-icon>{{column.iconName}}</mat-icon></button>
+                </mat-cell>
+            </div>
+            <div *ngIf="column.columnType === 5">
+                <mat-header-cell *matHeaderCellDef class="icon"></mat-header-cell>
+                <mat-cell *matCellDef="let element" class="icon">
+                    <button mat-button mat-icon-button (click)="column.onClick(element)"><mat-icon style="color: #039be5;">{{column.iconName}}</mat-icon></button>
+                </mat-cell>
+            </div>
+            <div *ngIf="column.columnType !== 4">
+                <mat-header-cell *matHeaderCellDef class="text-left">{{column.title}}</mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <div fxLayout="row" fxLayoutAlign="{{column.class === 'text-centre' ? 'center center' : column.class === 'text-right' ? 'end center' : 'start center'}}">
+                        <span *ngIf="column.renderType === undefined">{{renderCell(element, column)}}</span>
+                        <a *ngIf="column.renderType === 0" style="cursor: pointer" (click)="column.onClick(element)">{{renderCell(element, column)}}</a>
+                    </div>
+                </mat-cell>
+            </div>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="shownColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: shownColumns;"></mat-row>
+    </mat-table>
+    <mat-paginator [pageSizeOptions]="[10, 20]" showFirstLastButtons></mat-paginator>
+</div>

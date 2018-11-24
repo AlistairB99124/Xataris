@@ -1,0 +1,69 @@
+import { Directive, Input, HostBinding, ViewContainerRef, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import {SimpleResult, UserLevel, ApiResult, XatarisPermissions, XatarisModules, LoginResult } from '../../models/sharedModels';
+import * as _ from 'lodash';
+
+@Directive({
+    selector: '[fuseAccessLevel]'
+})
+export class FuseAccessLevelDirective implements OnInit
+{
+    constructor(
+        private viewContainerRef: ViewContainerRef
+    ) {
+
+    }
+
+    accessLevel = false;
+    @Input() set fuseAccessLevel(value) {
+        if (value !== '') {
+            const details = <LoginResult>JSON.parse(localStorage.getItem('details'));
+            const accessLevel = value.split('::');
+            let module = 0;
+            let permission = 0;
+            const accessString = accessLevel[1].toLowerCase();
+            const moduleString = accessLevel[0].toLowerCase();
+            switch (accessString) {
+                case 'read':
+                    permission = XatarisPermissions.Read;
+                break;
+                case 'write':
+                    permission = XatarisPermissions.Write;
+                break;
+                case 'design':
+                    permission = XatarisPermissions.Design;
+                    break;
+                case 'admin':
+                    permission = XatarisPermissions.Admin;
+                    break;
+                default:
+                    permission = XatarisPermissions.Read;
+                    break;
+            }
+            switch (moduleString) {
+                case 'users':
+                    module = XatarisModules.Users;
+                break;
+                case 'ptm':
+                    module = XatarisModules.PTM;
+                break;
+                case 'sites':
+                    module = XatarisModules.Sites;
+                break;
+            }
+            _.forEach(details.modules, (x) => {
+                if (x.id === module) {
+                    if (permission <= details.group.accessLevel) {
+                        this.accessLevel = true;
+                    }
+                }
+            });
+        }
+    }
+
+    ngOnInit() {
+        if (!this.accessLevel) {
+            this.viewContainerRef.clear();
+        }
+    }
+}

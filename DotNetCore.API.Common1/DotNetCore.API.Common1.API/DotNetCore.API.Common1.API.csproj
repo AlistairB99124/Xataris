@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="7.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="5.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.ApiExplorer" Version="2.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="2.2.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="3.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DotNetCore.API.Common1.API.Common\DotNetCore.API.Common1.API.Common.csproj" />
+    <ProjectReference Include="..\DotNetCore.API.Common1.API.DataContracts\DotNetCore.API.Common1.API.DataContracts.csproj" />
+    <ProjectReference Include="..\DotNetCore.API.Common1.Services\DotNetCore.API.Common1.Services.csproj" />
+    <ProjectReference Include="..\DotNetCore.API.Common1.IoC.Configuration\DotNetCore.API.Common1.IoC.Configuration.csproj" />
+  </ItemGroup>
+
+</Project>

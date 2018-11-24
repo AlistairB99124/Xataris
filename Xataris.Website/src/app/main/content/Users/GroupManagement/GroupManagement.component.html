@@ -1,0 +1,137 @@
+<div id="forms" class="page-layout simple fullwidth" fxLayout="column" fusePerfectScrollbar>
+        <!-- HEADER -->
+        <div class="header xataris-accent-bg p-24 h-160" fxLayout="row" fxLayoutAlign="start center">
+            <div fxLayout="column" fxLayoutAlign="center start">
+                <div class="black-fg" fxLayout="row" fxLayoutAlign="start center">
+                    <mat-icon class="secondary-text s-16">home</mat-icon>
+                    <mat-icon class="secondary-text s-16">chevron_right</mat-icon>
+                    <span class="secondary-text">Group Management</span>
+                </div>
+                <div class="h1 mt-16">Group Management</div>
+            </div>
+        </div>
+        <!-- / HEADER -->
+        <!-- CONTENT -->
+        <div class="content p-16">
+            <div class="fuse-widget-front mat-white-bg mat-elevation-z2">
+                <mat-toolbar class="mat-white-bg mat-elevation-z4">
+                    <mat-toolbar-row fxFlex>
+                        <span fxFlex>Groups</span>
+                        <button *ngIf="data.isGroupListCollapsed !== true" matTooltip="Add a New Group" mat-icon-button class="mat-icon-button" (click)="addNewGroup()"
+                                aria-label="Delete Group(s)">
+                            <mat-icon class="s-24">add</mat-icon>
+                        </button>
+                        <button *ngIf="data.isGroupListCollapsed !== true" matTooltip="Delete Group" [disabled]="!enableDelete()" mat-icon-button class="mat-icon-button" (click)="deleteGroup()"
+                                aria-label="Delete Group(s)">
+                            <mat-icon class="s-24">delete</mat-icon>
+                        </button>
+                        <button *ngIf="data.isGroupListCollapsed !== true" matTooltip="Edit Group" [disabled]="!enableEdit()" mat-icon-button class="mat-icon-button" (click)="editGroup()"
+                                aria-label="Edit Group">
+                            <mat-icon class="s-24">mode_edit</mat-icon>
+                        </button>
+                        <button mat-icon-button class="fuse-search-bar-collapser mat-icon-button" matTooltip="Collapse" (click)="data.isGroupListCollapsed = !data.isGroupListCollapsed"
+                                aria-label="Collapse Search Bar">
+                            <mat-icon *ngIf="data.isGroupListCollapsed === true" class="s-24">keyboard_arrow_left</mat-icon>
+                            <mat-icon *ngIf="data.isGroupListCollapsed !== true" class="s-24">keyboard_arrow_down</mat-icon>
+                        </button>
+                    </mat-toolbar-row>
+                </mat-toolbar>
+                <mat-divider></mat-divider>
+                <mat-card *ngIf="!data.isGroupListCollapsed">
+                    <mat-card-content>
+                        <div>
+                            <mat-table #table [dataSource]="datasource">
+                                <!-- Position Column -->
+                                <ng-container matColumnDef="id">
+                                    <mat-header-cell *matHeaderCellDef style="flex: 0 0 50px !important; white-space: unset !important;"></mat-header-cell>
+                                    <mat-cell *matCellDef="let element" style="flex: 0 0 50px !important; white-space: unset !important; text-align: center;">
+                                        <input type="checkbox" [(ngModel)]="element.isSelected" />
+                                    </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="title">
+                                    <mat-header-cell *matHeaderCellDef> Title </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"> {{element.title}} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="description">
+                                    <mat-header-cell *matHeaderCellDef> Description </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"> {{element.description}} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="modules">
+                                    <mat-header-cell *matHeaderCellDef> Modules </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"> {{element.modules}} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="accessLevel">
+                                    <mat-header-cell *matHeaderCellDef> Access </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"> {{element.accessLevel}} </mat-cell>
+                                </ng-container>
+                                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                            </mat-table>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+                <mat-toolbar class="mat-white-bg mat-elevation-z4" style="margin-top: 20px;" *ngIf="data.showDetailsPanel">
+                    <mat-toolbar-row fxFlex>
+                        <span fxFlex>Group: {{data.groupDetail.title}}</span>
+                        <button matTooltip="Save" mat-icon-button class="mat-icon-button" (click)="saveGroup()"
+                                aria-label="Save">
+                            <mat-icon class="s-24">save</mat-icon>
+                        </button>
+                        <button matTooltip="Cancel" mat-icon-button class="mat-icon-button" (click)="data.showDetailsPanel = false; data.isGroupListCollapsed = false"
+                                aria-label="Cancel">
+                            <mat-icon class="s-24">clear</mat-icon>
+                        </button>
+                        <button mat-icon-button matTooltip="Collapse" class="fuse-search-bar-collapser mat-icon-button" (click)="data.isGroupDetailCollapsed = !data.isGroupDetailCollapsed"
+                                aria-label="Collapse Search Bar">
+                            <mat-icon *ngIf="data.isGroupDetailCollapsed === true" class="s-24">keyboard_arrow_left</mat-icon>
+                            <mat-icon *ngIf="data.isGroupDetailCollapsed !== true" class="s-24">keyboard_arrow_down</mat-icon>
+                        </button>
+                    </mat-toolbar-row>
+                </mat-toolbar>
+                <mat-divider></mat-divider>
+                <mat-card *ngIf="!data.isGroupDetailCollapsed && data.showDetailsPanel">
+                    <mat-card-content>
+                        <div class="p-0" fxLayout="column" fxLayoutAlign="start"
+                              fxFlex name="editForm">
+                            <div fxLayout="row">
+                                <div fxLayout="column" fxFlex fxLayoutAlign="start center">                                   
+                                    <div fxLayout="row" style="width:100%">
+                                        <mat-form-field fxFlex>
+                                            <input matInput #title placeholder="Title" [(ngModel)]="data.groupDetail.title">
+                                        </mat-form-field>
+                                    </div>
+                                    <div fxLayout="row" style="width:100%">
+                                        <mat-form-field fxFlex>
+                                            <input matInput #description placeholder="Description" [(ngModel)]="data.groupDetail.description">
+                                        </mat-form-field>
+                                    </div>
+                                    <div fxLayout="row" style="width:100%">
+                                        <mat-form-field fxFlex>
+                                            <mat-select fxFlex matInput #modules placeholder="Modules" [(ngModel)]="data.groupDetail.modules" multiple>
+                                                <mat-option *ngFor="let module of data.availableModules" [value]="module">
+                                                    {{module.text}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <div fxLayout="row" style="width:100%">
+                                        <mat-form-field fxFlex>
+                                            <mat-select fxFlex matInput #accessLevel placeholder="Access" [(ngModel)]="data.groupDetail.accessLevel">
+                                                <mat-option *ngFor="let access of data.availableAccess" [value]="access">
+                                                    {{access.text}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+            <!-- / CONTENT -->
+    
+        </div>
+        <!-- / CENTER -->
+    </div>
+    

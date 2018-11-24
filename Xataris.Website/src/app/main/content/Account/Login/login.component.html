@@ -1,0 +1,127 @@
+<div id="login" fxLayout="row" fxLayoutAlign="start">
+
+    <div id="login-intro" fxFlex fxHide fxShow.gt-xs>
+
+        <div class="logo" *fuseIfOnDom [@animate]="{value:'*',params:{scale:'0.2'}}">
+            <img src="assets/images/logos/xataris.png">
+        </div>
+
+        <div class="title" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'50ms',y:'25px'}}">
+            {{'ACCOUNT.LOGIN.WELCOME' | translate}}
+        </div>
+
+        <div class="description" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',y:'25px'}}">
+            {{'ACCOUNT.LOGIN.COMPANYDESCRIPTION' | translate}}
+        </div>
+
+    </div>
+
+    <div id="login-form-wrapper" fusePerfectScrollbar *fuseIfOnDom
+         [@animate]="{value:'*',params:{delay:'300ms',x:'100%'}}">
+
+        <div id="login-form" *ngIf="!forgotPassword && !isResetForm">
+
+            <div class="logo" fxHide.gt-xs>
+                <div class="logo" *fuseIfOnDom [@animate]="{value:'*',params:{scale:'0.2'}}">
+                    <img src="assets/images/logos/xataris.png">
+                </div>
+            </div>
+            <h1 style="color: rgb(163, 73, 164)">XATARIS</h1>
+            
+            <div class="title">{{'ACCOUNT.LOGIN.LOGINACCOUNT' | translate}} </div>
+
+            <form name="loginForm" [formGroup]="loginForm" novalidate>
+
+                <mat-form-field>
+                    <input matInput placeholder="Email" formControlName="email">
+                    <mat-error *ngIf="loginFormErrors.email.required">
+                        {{'ACCOUNT.LOGIN.EMAILREQUIRED' | translate}}   
+                    </mat-error>
+                    <mat-error *ngIf="!loginFormErrors.email.required && loginFormErrors.email.email">
+                        {{'ACCOUNT.LOGIN.VALIDEMAILADDRESS' | translate}} 
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <input matInput type="password" (keyup.enter)="login()" placeholder="Password" formControlName="password">
+                    <mat-error *ngIf="loginFormErrors.password.required">
+                        {{'ACCOUNT.LOGIN.PASSWORDREQUIRED' | translate}}   
+                    </mat-error>
+                </mat-form-field>                
+            </form>
+            <div class="remember-forgot-password" fxLayout="row" fxLayout.xs="column"
+                 fxLayoutAlign="space-between center">
+                <mat-checkbox class="remember-me" [(ngModel)]="rememberMe" attr.aria-label="{{'ACCOUNT.LOGIN.REMEMBERME' | translate}}">
+                    {{'ACCOUNT.LOGIN.REMEMBERME' | translate}}
+                </mat-checkbox>
+
+                <button mat-button class="forgot-password" (click)="toggleForgotPassword()">
+                    Forgot Password?
+                </button>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="center center">
+                <button mat-raised-button color="accent" class="submit-button" attr.aria-label="{{'ACCOUNT.LOGIN.LOGIN' | translate}}" [disabled]="loginForm.invalid" (click)="login()">
+                        {{'ACCOUNT.LOGIN.LOGIN' | translate}}
+                </button>
+            </div>
+        </div>
+        <div id="login-form"  *ngIf="forgotPassword && !isResetForm">
+
+            <div class="logo" fxHide.gt-xs>
+                <div class="logo" *fuseIfOnDom [@animate]="{value:'*',params:{scale:'0.2'}}">
+                    <img src="assets/images/logos/xataris.png">
+                </div>
+            </div>
+            <h1 style="color: rgb(163, 73, 164)">XATARIS</h1>
+
+            <div class="title">{{'ACCOUNT.LOGIN.FORGOTPASSWORD' | translate}}</div>
+
+            <form name="resetForm" [formGroup]="resetForm" novalidate>
+
+                <mat-form-field>
+                    <input matInput placeholder="{{'ACCOUNT.LOGIN.EMAIL' | translate}}" formControlName="email">
+                    <mat-error *ngIf="loginFormErrors.email.required">
+                        {{'ACCOUNT.LOGIN.EMAILREQUIRED' | translate}}   
+                    </mat-error>
+                    <mat-error *ngIf="!loginFormErrors.email.required && loginFormErrors.email.email">
+                        {{'ACCOUNT.LOGIN.VALIDEMAILADDRESS' | translate}} 
+                    </mat-error>
+                </mat-form-field>               
+                <button mat-raised-button class="submit-button" color="accent" (click)="resetPassword()" attr.aria-label="{{'ACCOUNT.LOGIN.RESET' | translate}}" [disabled]="resetForm.invalid">
+                            {{'ACCOUNT.LOGIN.RESET' | translate}}
+                </button>
+            </form>
+            <div class="login" fxLayout="row" fxLayoutAlign="center center">
+                <button mat-button class="link" (click)="toggleForgotPassword()">{{'ACCOUNT.LOGIN.BACKTOLOGIN' | translate}}</button>
+            </div>
+        </div>
+        <div id="login-form"  *ngIf="isResetForm">
+
+            <div class="logo" fxHide.gt-xs>
+                <div class="logo" *fuseIfOnDom [@animate]="{value:'*',params:{scale:'0.2'}}">
+                    <img src="assets/images/logos/xataris.png">
+                </div>
+            </div>
+            <h1 style="color: rgb(163, 73, 164)">XATARIS</h1>
+
+            <div class="title">{{'ACCOUNT.LOGIN.RESETPASSWORD' | translate}}</div>
+            <form name="resetConfirmForm"  [formGroup]="resetConfirmForm" novalidate>
+    
+                <mat-form-field>
+                    <input matInput placeholder="{{'ACCOUNT.LOGIN.EMAIL' | translate}}" formControlName="email">
+                </mat-form-field>
+    
+                <mat-form-field>
+                    <input matInput type="password" placeholder="{{'ACCOUNT.LOGIN.PASSWORD' | translate}}" formControlName="password">
+                </mat-form-field> 
+                <mat-form-field>
+                    <input matInput type="password" placeholder="{{'ACCOUNT.LOGIN.CONFIRMPASSWORD' | translate}}" formControlName="confirmPassword">
+                </mat-form-field>    
+                <button mat-raised-button color="accent" class="submit-button" attr.aria-label="{{'ACCOUNT.LOGIN.RESETPASSWORD' | translate}}"
+                        [disabled]="resetConfirmForm.invalid" (click)="resetPasswordConfirm()">
+                        {{'ACCOUNT.LOGIN.RESETPASSWORD' | translate}}
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
