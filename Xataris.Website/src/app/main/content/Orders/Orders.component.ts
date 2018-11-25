@@ -365,6 +365,7 @@ export interface OrdersViewModel {
     order: o.OrderPoco;
     confirmForm: boolean;
     materials: Array<any>;
+    ordersGrid: any;
 }
 
 export interface OrderMaterial {
