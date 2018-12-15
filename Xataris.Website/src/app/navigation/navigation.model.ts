@@ -61,7 +61,7 @@ export class FuseNavigationModel implements FuseNavigationModelInterface
                                 'url'  : '/orders/management'
                             }
                         ]
-                    },                  
+                    },
                     {
                         'id'   : 4,
                         'title': 'Sites',
@@ -129,7 +129,7 @@ export class FuseNavigationModel implements FuseNavigationModelInterface
                             }
                         ]
                     },
-                    {
+                    /*{
                         'id'   : 6,
                         'title': 'Scrabble',
                         'translate': 'NAV.SCRABBLE.TITLE',
@@ -148,8 +148,8 @@ export class FuseNavigationModel implements FuseNavigationModelInterface
                         'url'  : 'elf',
                         'show': true,
                         'permission': 0
-                    }
-                ]                
+                    }*/
+                ]
             }
         ];
     }

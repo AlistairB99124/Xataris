@@ -48,7 +48,6 @@ import {MatSortModule} from '@angular/material/sort';
 import {MatPaginatorModule} from '@angular/material/paginator';
 
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { GroupedObservable } from 'rxjs/operator/groupBy';
 
 import { HttpModule } from '@angular/http';
 
@@ -71,7 +70,7 @@ const appRoutes: Routes = [
         RouterModule.forRoot(appRoutes, { useHash: true }),
         SharedModule,
         TranslateModule.forRoot(),
-        FuseMainModule,        
+        FuseMainModule,
         NgxMatSelectSearchModule,
         MatCheckboxModule,
         MatButtonModule,
@@ -111,7 +110,6 @@ const appRoutes: Routes = [
         FuseSplashScreenService,
         FuseConfigService,
         FuseNavigationService,
-        
         {
             provide: HTTP_INTERCEPTORS,
             useClass: HttpInterceptorService,

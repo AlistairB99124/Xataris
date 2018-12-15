@@ -1,33 +1,46 @@
 import { DropdownModel } from '../../../../core/models/sharedModels';
+import { FormGroup } from '@angular/forms';
+import { FuseConfirmDialogComponent } from '../../../../core/components/confirm-dialog/confirm-dialog.component';
+import {
+  MatDialogRef
+} from '@angular/material';
+import { GridOptions } from '../../../../core/models/sharedModels';
 
 export interface TimesheetViewModel {
-    title: string;
-    sites: Array<SiteViewModel>;
-    operators: Array<DropdownModel<number>>;
-    todaysDate: string;
-    quoteEnabled: boolean;
-    hoursAvailable: Array<DropdownModel<number>>;
-    minsAvailable: Array<DropdownModel<number>>;
-    statusAvailable: Array<DropdownModel<number>>;
-    materialsAvailable: Array<DropdownModel<number>>;
-    nonStockItem: boolean;
-    filterMaterials: Array<DropdownModel<number>>;
-    confirmForm: boolean;
-    date: string;
-    technician: string;
-    pdfForm: any;
-    siteName: string;
-    loader: boolean;
-    timesheetNo: string;
-    statusLabel: string;
+  title: string;
+  sites: Array<SiteViewModel>;
+  operators: Array<DropdownModel<number>>;
+  todaysDate: string;
+  quoteEnabled: boolean;
+  hoursAvailable: Array<DropdownModel<number>>;
+  minsAvailable: Array<DropdownModel<number>>;
+  statusAvailable: Array<DropdownModel<number>>;
+  materialsAvailable: Array<DropdownModel<number>>;
+  nonStockItem: boolean;
+  filterMaterials: Array<DropdownModel<number>>;
+  confirmForm: boolean;
+  date: string;
+  technician: string;
+  pdfForm: any;
+  siteName: string;
+  loader: boolean;
+  timesheetNo: string;
+  statusLabel: string;
+  form: FormGroup;
+  materialForm: FormGroup;
+  formErrors: any;
+  materials: Array<any>;
+  searchInput: string;
+  dialogRef: MatDialogRef<FuseConfirmDialogComponent>;
+  gridOptions: GridOptions;
 }
 
-export interface SiteViewModel{
+export interface SiteViewModel {
     id: number;
     name: string;
 }
 
-export interface Material{
+export interface Material {
     materialId: number;
     code: string;
     description: string;
@@ -35,20 +48,20 @@ export interface Material{
     quantity: number;
 }
 
-export enum CompletionStatus{
+export enum CompletionStatus {
     Chasing = 0,
     FirstFix = 1,
     SecondFix = 2,
     FinalFix = 3
 }
-export interface Column{
+export interface Column {
     order: number;
     columnType: ColumnType;
     columnName: string;
     width: number;
 }
 
-export enum ColumnType{
+export enum ColumnType {
     General = 1,
     Number = 2,
     Currency = 3,
@@ -62,15 +75,20 @@ export enum ColumnType{
     Text = 11
 }
 
-export interface Site{
+export interface Site {
     id: number;
     name: string;
     location: Location;
     abbr: string;
 }
 
-export interface Location{
+export interface Location {
     latitude: number;
     longitude: number;
     address: string;
+}
+
+export interface TimeOptions {
+    hours: Array<DropdownModel<number>>;
+    minutes: Array<DropdownModel<number>>;
 }

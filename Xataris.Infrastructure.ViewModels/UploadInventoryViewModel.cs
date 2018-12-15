@@ -8,12 +8,12 @@ namespace Xataris.Infrastructure.ViewModels
         public InventoryViewModel[] Inventory { get; set; }
     }
 
-    public class InventoryViewModel : UserIdInput
+    public class InventoryViewModel
     {
         public string StockCode { get; set; }
         public string StockDescription { get; set; }
-        public string Level { get; set; }
-        public string UnitCostPrice { get; set; }
+        public decimal Quantity { get; set; }
+        public decimal Cost { get; set; }
     }
 
     public class Inventory : UserIdInput

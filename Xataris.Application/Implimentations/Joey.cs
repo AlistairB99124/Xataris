@@ -42,6 +42,7 @@ namespace Xataris.Application.Implimentations
             }
             catch (Exception ex)
             {
+                Console.Write(ex);
                 return new DataTabResult();
             }
         }
@@ -81,6 +82,7 @@ namespace Xataris.Application.Implimentations
             }
             catch(Exception ex)
             {
+                Console.Write(ex);
                 return new SimpleResult();
             }
         }

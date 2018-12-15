@@ -9,6 +9,7 @@ import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
 import { DropdownModel, SimpleResult, ApiResult } from '../../core/models/sharedModels';
 import { Location } from '@angular/common';
+import { ApiService } from '../services/api.service';
 import * as _ from 'lodash';
 
 @Component({
@@ -32,22 +33,27 @@ export class FuseContentComponent implements OnInit, OnDestroy
         private router: Router,
         private activatedRoute: ActivatedRoute,
         private fuseConfig: FuseConfigService,
-        private http: HttpClient,
+        private apiService: ApiService,
         public snackBar: MatSnackBar,
         private location: Location
     )
     {
         const userId = localStorage.getItem('userId');
-        this.http.post<ApiResult<SimpleResult>>('https://api.xataris.co.uk/api/User/ValidateById', { gUID: userId}).subscribe(res => {
-            if (!res.data.isSuccess) {
+        this.apiService
+          .post('User/ValidateById', { gUID: userId })
+          .then(
+            res => {
+              if ((res && !res.isSuccess) || res === undefined) {
                 this.router.navigate(['account/login']);
+              }
+            },
+            reason => {
+              this.router.navigate(['account/login']);
+              this.snackBar.open('Failed to connect to the API', '', {
+                duration: 4000
+              });
             }
-        }, (reason) => {
-            this.router.navigate(['account/login']);
-            this.snackBar.open('Failed to connect to the API', '', {
-                duration: 2000,
-            });
-        });
+          );
         this.router.events
             .filter((event) => event instanceof NavigationEnd)
             .map(() => this.activatedRoute)

@@ -19,21 +19,20 @@ import { locale as afrikaans } from './i18n/af';
 import * as _ from 'lodash';
 
 @Component({
-    selector   : 'fuse-elf',
+    selector: 'fuse-elf',
     templateUrl: './elf.component.html',
-    styleUrls  : ['./elf.component.scss']
+    styleUrls: ['./elf.component.scss']
 })
-export class ElfComponent
-{
+export class ElfComponent {
     data: m.ElfViewModel;
 
     constructor(
-        private ElfApiService: ElfApiService,
+        private elfApiService: ElfApiService,
         private translationLoader: FuseTranslationLoaderService,
         private translateService: TranslateService,
         private formBuilder: FormBuilder,
         public snackBar: MatSnackBar
-    ){
+    ) {
         this.translationLoader.loadTranslations(english, french);
         this.setupVariables();
         this.activateDataTab();
@@ -49,42 +48,42 @@ export class ElfComponent
         this.data.dataOptions = [
             <models.DropdownModel<m.DataType>>{
                 value: m.DataType.Customers,
-                text: "Customers",
+                text: 'Customers',
                 selected: false
             },
             <models.DropdownModel<m.DataType>>{
                 value: m.DataType.PredefinedItems,
-                text: "Predefined Items",
+                text: 'Predefined Items',
                 selected: false
             },
             <models.DropdownModel<m.DataType>>{
                 value: m.DataType.Products,
-                text: "Products",
+                text: 'Products',
                 selected: false
             },
             <models.DropdownModel<m.DataType>>{
                 value: m.DataType.Items,
-                text: "Items",
+                text: 'Items',
                 selected: false
             },
             <models.DropdownModel<m.DataType>>{
                 value: m.DataType.ItemTypes,
-                text: "Item Types",
+                text: 'Item Types',
                 selected: false
             },
             <models.DropdownModel<m.DataType>>{
                 value: m.DataType.ItemTypeGroups,
-                text: "Item Type Groups",
+                text: 'Item Type Groups',
                 selected: false
             },
             <models.DropdownModel<m.DataType>>{
                 value: m.DataType.Suppliers,
-                text: "Suppliers",
+                text: 'Suppliers',
                 selected: false
             },
             <models.DropdownModel<m.DataType>>{
                 value: m.DataType.Quotes,
-                text: "Quotes",
+                text: 'Quotes',
                 selected: false
             }
         ];
@@ -113,7 +112,7 @@ export class ElfComponent
             productsGridColumns: ['name', 'description']
         };
         this.data.customerFormErrors = {
-            name   : {},
+            name: {},
             company: {},
             address: {}
         };
@@ -276,7 +275,7 @@ export class ElfComponent
             ],
             rowData: [],
             onReady: this.loadPredefinedProducts
-        }
+        };
 
         this.data.grids.customerQuoteItemsGrid = <models.GridOptions>{
             columnDefs: [
@@ -309,7 +308,7 @@ export class ElfComponent
             api: {},
             onReady: this.loadQuoteItems,
             rowData: []
-        }
+        };
     }
 
     showQuoteItems = (params) => {
@@ -317,10 +316,10 @@ export class ElfComponent
         this.data.isQuoteItemsGridCollapsed = false;
         this.data.isCustomersQuotesDetailsCollapsed = true;
         this.data.selectedQuoteItem = params;
-    };
+    }
 
     loadQuoteItems = (params) => {
-        const data = _.map(this.data.selectedQuoteItem["quoteItems"], x => {
+        const data = _.map(this.data.selectedQuoteItem['quoteItems'], x => {
             return {
                 name: x.item.name,
                 type: x.item.itemType.name,
@@ -331,7 +330,7 @@ export class ElfComponent
             };
         });
         this.data.grids.customerQuoteItemsGrid.api.setRowData(data);
-    };
+    }
 
     loadCustomers = () => {
         this.data.grids.customersGrid.api.setRowData(this.data.grids.customersGrid.rowData);
@@ -348,7 +347,7 @@ export class ElfComponent
                 supplier: x.item.supplier.name,
                 quantity: x.quantity
             };
-        });        
+        });
         this.data.grids.predefinedProductsGrid.api.setRowData(input);
     }
 
@@ -358,7 +357,7 @@ export class ElfComponent
         this.data.selectedPredefinedProducts = params;
     }
 
-    public showProductsGrid = (params) => {        
+    public showProductsGrid = (params) => {
         this.data.showProductsGrid = true;
         this.data.isCustomersQuotesDetailsCollapsed = true;
         const products = _.map(params.quoteProducts, (x: m.QuoteProduct) => x.product);
@@ -373,19 +372,20 @@ export class ElfComponent
         this.data.listTitle = params['name'];
         this.data.showCustomersDetailsGrid = true;
         this.data.isSummaryCollapsed = true;
-        this.data.currentCustomerQuotes = _.cloneDeep(params.quotes);        
+        this.data.currentCustomerQuotes = _.cloneDeep(params.quotes);
     }
-    
+
     public loadQuoteDetails = () => {
         this.data.grids.customerQuoteDetailsGrid.api.setRowData(this.data.currentCustomerQuotes);
     }
 
     public activateDataTab = () => {
-        this.ElfApiService.GetDataTabResults().then((result) => {
+        this.elfApiService.GetDataTabResults().then((result) => {
             this.data.grids.predefinedItemsGrid.data = _.map(result.predefinedItems, (x) => <any>{
-                    item: _.find(result.items, (o: m.Item) => o.itemsId === x.itemsId).name,
-                    product: _.find(result.products, (o) => o.productsId === x.productsId).name,
-                    quantity: x.quantity });
+                item: _.find(result.items, (o: m.Item) => o.itemsId === x.itemsId).name,
+                product: _.find(result.products, (o) => o.productsId === x.productsId).name,
+                quantity: x.quantity
+            });
             this.data.grids.itemInventoriesGrid.data = result.itemInventories;
             this.data.grids.itemsGrid.data = _.map(result.items, (x) => {
                 return {
@@ -423,69 +423,66 @@ export class ElfComponent
     }
 
     onCustomerFormValuesChanged = () => {
-        for (const field in this.data.customerFormErrors)
-        {
-            if ( !this.data.customerFormErrors.hasOwnProperty(field) )
-            {
+        for (const field in this.data.customerFormErrors) {
+            if (!this.data.customerFormErrors.hasOwnProperty(field)) {
                 continue;
             }
             this.data.customerFormErrors[field] = {};
             const control = this.data.customerForm.get(field);
-            if ( control && control.dirty && !control.valid )
-            {
+            if (control && control.dirty && !control.valid) {
                 this.data.customerFormErrors[field] = control.errors;
             }
         }
-    };
+    }
 
     addDetail = () => {
         const selectedItem = this.data.selectedDataOptions;
-        switch(selectedItem.value){
+        switch (selectedItem.value) {
             case m.DataType.Customers:
                 this.data.showDetailsPanel = true;
-            break;
+                break;
         }
-    };
+    }
 
     openDetails = () => {
         const selectedItem = this.data.selectedDataOptions;
         this.data.isSummaryCollapsed = true;
-        switch(selectedItem.value){
+        switch (selectedItem.value) {
             case m.DataType.Customers:
                 this.data.selectedCustomer = _.first(this.data.grids.customersGrid.api.getSelectedRows());
                 this.data.selectedCustomer.selected = false;
                 this.data.showDetailsPanel = true;
                 this.data.customersId = this.data.selectedCustomer.customersId;
-                this.data.customerForm.controls["name"].setValue(this.data.selectedCustomer.name);
-                this.data.customerForm.controls["company"].setValue(this.data.selectedCustomer.company);
-                this.data.customerForm.controls["address"].setValue(this.data.selectedCustomer.address);
-            break;
+                this.data.customerForm.controls['name'].setValue(this.data.selectedCustomer.name);
+                this.data.customerForm.controls['company'].setValue(this.data.selectedCustomer.company);
+                this.data.customerForm.controls['address'].setValue(this.data.selectedCustomer.address);
+                break;
             case m.DataType.Items:
 
-            break;
+                break;
             case m.DataType.ItemTypeGroups:
 
-            break;
+                break;
             case m.DataType.ItemTypes:
 
-            break;
+                break;
             case m.DataType.PredefinedItems:
 
-            break;
+                break;
             case m.DataType.Products:
 
-            break;
+                break;
             case m.DataType.Quotes:
 
-            break;
+                break;
             case m.DataType.Suppliers:
 
-            break;
+                break;
         }
     }
 
     closeDetails = () => {
-        this.data.showDetailsPanel = false; 
+        this.data.showDetailsPanel = false;
         this.data.isSummaryCollapsed = false;
         this.data.customerForm.reset();
     }
@@ -493,7 +490,7 @@ export class ElfComponent
     submitCustomer = async () => {
         const input = this.data.customerForm.value;
         input.customersId = this.data.selectedCustomer.customersId;
-        const result = await this.ElfApiService.saveCustomer(input);
+        const result = await this.elfApiService.saveCustomer(input);
         if (result.isSuccess) {
             this.data.showDetailsPanel = false;
             this.data.isSummaryCollapsed = false;
@@ -504,10 +501,10 @@ export class ElfComponent
         }
     }
 
-    public isEditDisabled () {
+    public isEditDisabled() {
         if (this.data.grids.customersGrid.api) {
             const rowsSelected = _.filter(this.data.grids.customersGrid.api.getSelectedRows());
-            if(rowsSelected.length === 0){
+            if (rowsSelected.length === 0) {
                 return true;
             } else {
                 return false;

@@ -1,19 +1,20 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { AbstractControl, FormGroup, Validators } from '@angular/forms';
 import { FuseTranslationLoaderService } from '../../../../../core/services/translation-loader.service';
 import { HttpClient } from '@angular/common/http';
 import { fuseAnimations } from '../../../../../core/animations';
 import { MatSnackBar } from '@angular/material';
-import { locale as english } from './i18n/en';
-import { locale as afrikaans } from './i18n/af';
+import { locale as en } from './i18n/en';
+import { locale as af } from './i18n/af';
 import * as s from '../../../../../core/models/sharedModels';
-import { UsersApiService } from './usersSummary.service';
-import { Observable } from 'rxjs/Observable';
-import { MatTableDataSource, MatDialogRef, MatDialog } from '@angular/material';
-import * as shape from 'd3-shape';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Router, ActivatedRoute } from '@angular/router';
-import { UserFilter, UserFilterInput } from './usersSummary.service';
+import { ApiService } from '../../../../services/api.service';
+import { MatDialogRef, MatDialog } from '@angular/material';
+import { Router } from '@angular/router';
+import {
+    UserFilter,
+    UserFilterInput,
+    UsersManagementViewModel,
+    TileCount
+} from './usersSummary.models';
 import * as _ from 'lodash';
 import { FuseConfirmDialogComponent } from '../../../../../core/components/confirm-dialog/confirm-dialog.component';
 
@@ -29,28 +30,52 @@ export class UsersSummaryComponent implements OnInit {
     isEditUser;
     dateNow = Date.now();
     loader: boolean;
-    datasource;
-    displayedColumns;
     dialogRef: MatDialogRef<FuseConfirmDialogComponent>;
 
     constructor(
         private translationLoader: FuseTranslationLoaderService,
-        private http: HttpClient,
-        private usersApiService: UsersApiService,
-        private router: Router,
+        private apiService: ApiService,
         public snackBar: MatSnackBar,
         public dialog: MatDialog) {
-        this.data = {} as UsersManagementViewModel;
-        this.setupVariables();
     }
 
     ngOnInit = async () => {
-        
+        this.data = {} as UsersManagementViewModel;
+        await this.setupVariables();
     }
 
     setupVariables = async () => {
-        this.datasource = new MatTableDataSource();
-        this.displayedColumns = ['id', 'firstName', 'lastName', 'dateRegistered', 'email'];
+        this.data.usersGrid = <s.GridOptions>{
+            columnDefs: [
+                <s.ColumnDef>{
+                    field: 'id',
+                    title: '',
+                    columnType: s.ColumnType.checkbox
+                },
+                <s.ColumnDef>{
+                    field: 'firstName',
+                    title: 'First Name',
+                    columnType: s.ColumnType.text
+                },
+                <s.ColumnDef>{
+                    field: 'lastName',
+                    title: 'Last Name',
+                    columnType: s.ColumnType.text
+                },
+                <s.ColumnDef>{
+                    field: 'dateRegistered',
+                    title: 'dateRegistered',
+                    columnType: s.ColumnType.date,
+                    currencySymbol: 'R'
+                },
+                <s.ColumnDef>{
+                    field: 'email',
+                    title: 'Email',
+                    columnType: s.ColumnType.text
+                },
+            ],
+            rowData: []
+        };
         this.data.selectedUsers = [];
         this.data.showUsersList = false;
         this.data.isUserDetailsGridCollapsed = true;
@@ -62,10 +87,10 @@ export class UsersSummaryComponent implements OnInit {
         };
         await this.getTileCounts();
         this.isEditUser = false;
-        this.translationLoader.loadTranslations(english, afrikaans);
+        this.translationLoader.loadTranslations(en, af);
         this.data.selectedUser = {} as s.UserDetails;
         this.loader = true;
-        const result = await this.usersApiService.getGroups();
+        const result = await this.apiService.post('User/GetGroups');
         const groups = _.map(result.data, (x) => {
             return <s.DropdownModel<number>>{
                 text: x.title,
@@ -75,9 +100,9 @@ export class UsersSummaryComponent implements OnInit {
         });
         this.data.availableGroups = groups;
         this.loader = false;
-        const res = await this.usersApiService.getWarehouses();
-            this.data.availableWarehouses = res['data'];
-            this.data.warehouseSelected = {} as s.DropdownModel<number>;
+        const res = await this.apiService.post('User/GetWarehouses');
+        this.data.availableWarehouses = res.data;
+        this.data.warehouseSelected = {} as s.DropdownModel<number>;
     }
 
     onTileClick = async (userFilter: UserFilter) => {
@@ -85,45 +110,37 @@ export class UsersSummaryComponent implements OnInit {
             filter: userFilter
         };
         this.data.selectedFilter = userFilter;
-        const res = await this.usersApiService.getUserByStatus(input);
-            if (res['data']) {
-                this.data.showUsersList = true;
-                this.data.usersGridData = res['data'];
-                this.data.isUsersGridCollapsed = false;
-                this.datasource.data = _.map(this.data.usersGridData, (x) => {
-                    return {
-                        isSelected: false,
-                        firstName: x.firstName,
-                        lastName: x.lastName,
-                        dateRegistered: new Date(x.dateRegistered).toDateString(),
-                        email: x.email
-                    }
-                });
-            } else {
-                this.data.usersGridData = [];
-                this.datasource.data = this.data.usersGridData;
-            }  
+        const res = await this.apiService.post('User/GetUserByStatus', input);
+        if (res) {
+            this.data.showUsersList = true;
+            this.data.usersGridData = res;
+            this.data.isUsersGridCollapsed = false;
+            this.data.usersGrid.api.setRowData(this.data.usersGridData);
+        } else {
+            this.data.usersGridData = [];
+            this.data.usersGrid.api.setRowData(this.data.usersGridData);
+        }
     }
 
 
-    async addNewUser(){
+    async addNewUser() {
         this.isEditUser = true;
         this.data.isUsersGridCollapsed = true;
         this.data.isUserDetailsGridCollapsed = false;
     }
 
-    async isEditButtonDisabled(){
-        return _.filter(this.datasource.data, (x) => x.isSelected === true).length === 1;
+    async isEditButtonDisabled() {
+        return this.data.usersGrid.api.getSelectedRows().length === 1;
     }
 
-    async saveUser(){
+    async saveUser() {
         this.loader = true;
         const start = this.data.selectedUser.employmentStartDate;
         const end = this.data.selectedUser.employmentEndDate;
-        const startDate = new Date(Date.UTC(start.getFullYear(), start.getMonth(), start.getDate(), 0, 0 , 0));
+        const startDate = new Date(Date.UTC(start.getFullYear(), start.getMonth(), start.getDate(), 0, 0, 0));
         let endDate = new Date();
         if (this.data.selectedUser.employmentEndDate) {
-            endDate = new Date(Date.UTC(end.getFullYear(), end.getMonth(), end.getDate(), 0, 0 , 0));
+            endDate = new Date(Date.UTC(end.getFullYear(), end.getMonth(), end.getDate(), 0, 0, 0));
         }
         const input = {
             id: this.data.selectedUser.id,
@@ -136,104 +153,77 @@ export class UsersSummaryComponent implements OnInit {
             employmentStartDate: startDate,
             employmentEndDate: endDate
         };
-        const res = await this.usersApiService.saveUser(input);
-            if (res.data.isSuccess) {
-                if (this.data.selectedUser.id) {
-                    this.snackBar.open('User Updated Successfully', '', {
-                        duration: 2000,
-                      });
-
-                } else {
-                    this.snackBar.open('User Added Successfully', '', {
-                        duration: 2000,
-                      });
-                }
-                this.data.selectedUser = {} as s.UserDetails;
-                this.isEditUser = false;
-                this.data.isUsersGridCollapsed = false;
-                this.loader = false;
-                await this.getTileCounts();
-            } else {
-                this.snackBar.open('There was a problem adding the user', '', {
+        const res = await this.apiService.post('User/SaveUser', input);
+        if (res.data.isSuccess) {
+            if (this.data.selectedUser.id) {
+                this.snackBar.open('User Updated Successfully', '', {
                     duration: 2000,
-                  });
+                });
+
+            } else {
+                this.snackBar.open('User Added Successfully', '', {
+                    duration: 2000,
+                });
             }
+            this.data.selectedUser = {} as s.UserDetails;
+            this.isEditUser = false;
+            this.data.isUsersGridCollapsed = false;
+            this.loader = false;
+            await this.getTileCounts();
+        } else {
+            this.snackBar.open('There was a problem adding the user', '', {
+                duration: 2000,
+            });
+        }
     }
 
     async deleteUser() {
         this.dialogRef = this.dialog.open(FuseConfirmDialogComponent, {
-          disableClose: false
+            disableClose: false
         });
         this.dialogRef.componentInstance.confirmMessage = 'Warning! You will be deleting all Warehouses, Inventory and Timesheets associated with this User';
-    
-        const result = await this.dialogRef.afterClosed().toPromise();
-          if (result) {
-            const input = {
-                email: _.find(this.datasource.data, x => x.isSelected === true).email
-            };
-            const res = await this.usersApiService.deleteUser(input);
-                if (res.data.isSuccess) {
-                    await this.getTileCounts();
-                    await this.onTileClick(this.data.selectedFilter);
-                    this.snackBar.open('User Deleted Successfully', '', {
-                        duration: 2000
-                      });
-                } else {
-                    this.snackBar.open('User Was Not Deleted', '', {
-                        duration: 2000
-                      });
-                }
-          }
-          this.dialogRef = null;
-      }
 
-    async editUser(){
+        const result = await this.dialogRef.afterClosed().toPromise();
+        if (result) {
+            const input = {
+                email: (<any>_.first(this.data.usersGrid.api.getSelectedRows())).email
+            };
+            const res = await this.apiService.post('User/DeleteUser', input);
+            if (res.data.isSuccess) {
+                await this.getTileCounts();
+                await this.onTileClick(this.data.selectedFilter);
+                this.snackBar.open('User Deleted Successfully', '', {
+                    duration: 2000
+                });
+            } else {
+                this.snackBar.open('User Was Not Deleted', '', {
+                    duration: 2000
+                });
+            }
+        }
+        this.dialogRef = null;
+    }
+
+    async editUser() {
         this.isEditUser = true;
         this.data.isUsersGridCollapsed = true;
         this.data.isUserDetailsGridCollapsed = false;
         this.loader = true;
         const input = {
-            email: _.find(this.datasource.data, (x) => x.isSelected === true).email
+            email: (<any>_.first(this.data.usersGrid.api.getSelectedRows())).email
         };
-        const res = await this.usersApiService.getUser(input);
-            this.data.selectedUser = res['data'];
-            this.data.selectedUser.group = _.find(this.data.availableGroups, (x) => x.value === this.data.selectedUser.groupId);
-        
+        const res = await this.apiService.post('User/GetUser', input);
+        this.data.selectedUser = res;
+        this.data.selectedUser.group = _.find(this.data.availableGroups, (x) => x.value === this.data.selectedUser.groupId);
+
     }
 
-    async getTileCounts(){
+    async getTileCounts() {
         this.loader = true;
-        const res = await this.usersApiService.getUserManagementCounts();
-            if (res.data) {
-                this.data.tileCounts = res.data;
-            }
-            this.loader = false;
+        const res = await this.apiService.post('User/GetUserManagementCounts');
+        if (res) {
+            this.data.tileCounts = res;
+        }
+        this.loader = false;
     }
-}
-export interface UsersManagementViewModel {
-    tileCounts: TileCount;
-    usersGridData: GridData;
-    selectedUsers: Array<s.UserDetails>;
-    isUsersGridCollapsed: boolean;
-    datasource: any;
-    displayedColumns: Array<string>;
-    selectedUser: s.UserDetails;
-    availableGroups: Array<s.DropdownModel<number>>;
-    selectedGroup: s.DropdownModel<number>;
-    showUsersList: boolean;
-    isUserDetailsGridCollapsed: boolean;
-    selectedFilter: UserFilter;
-}
-export interface GridData{
-    columns: Array<any>;
-    rows: Array<s.UserDetails>;
-}
-export interface TileCount{
-    lockedOutCount: number;
-    neverLoggedCount: number;
-    loggedLastMonthCount: number;
-    loggedInCount: number;
-}
-export interface FilterUserInput{
-    userFilter: UserFilter;
 }

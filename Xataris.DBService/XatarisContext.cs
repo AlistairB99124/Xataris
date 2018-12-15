@@ -68,6 +68,6 @@ namespace Xataris.DBService
         public DbSet<ItemTypeGroup> ItemTypeGroups { get; set; }
         public DbSet<PredefinedItem> PredefinedItems { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
-        public DbSet<Product> Products { get; set; }
+        public DbSet<Product> Products { get; set; }        
     }
 }

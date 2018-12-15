@@ -16,12 +16,14 @@ namespace Xataris.Application.Implimentations
     public class Material : IMaterial
     {
         private readonly IMaterialDomain _material;
+        private readonly IProcedureService _procService;
         private readonly XatarisContext _context;
 
-        public Material(IMaterialDomain material, XatarisContext context)
+        public Material(IMaterialDomain material, XatarisContext context, IProcedureService procService)
         {
             _material = material;
             _context = context;
+            _procService = procService;
         }
 
         public async Task<InventoryPoco[]> GetInventory()
@@ -36,45 +38,15 @@ namespace Xataris.Application.Implimentations
             }
         }
 
-        public async Task<InventoryViewModel[]> GetInventoryByWarehouse(WarehouseIdInput input)
+        public async Task<List<InventoryViewModel>> GetInventoryByWarehouse(WarehouseIdInput input)
         {
             try
             {
-                var InvResult = await _context.Inventories.Where(x => x.WarehouseId == input.WarehousesId).ToListAsync();
-                if (InvResult.Count == 0)
-                {
-                    return new List<InventoryViewModel>{
-                        new InventoryViewModel
-                    {
-                        Level = "No Data",
-                        StockCode = "No Data",
-                        StockDescription = "No Data",
-                        UnitCostPrice = "No Data"
-                    }
-                    }.ToArray();
-                }
-                else
-                {
-                    return InvResult.Select(x => new InventoryViewModel
-                    {
-                        Level = x.Quantity.ToString(),
-                        StockCode = _context.Materials.Where(o => o.Id == x.MaterialId).FirstOrDefault().StockCode.ToString(),
-                        StockDescription = _context.Materials.Where(o => o.Id == x.MaterialId).FirstOrDefault().StockDescription,
-                        UnitCostPrice = _context.Materials.Where(o => o.Id == x.MaterialId).FirstOrDefault().Cost.ToString()
-                    }).ToArray();
-                }
+                return await _procService.CallProcedureAsync<InventoryViewModel>("dbo.ReadInventoryFromWarehouse", new { input.WarehousesId });
             }
             catch
             {
-                return new List<InventoryViewModel>{
-                    new InventoryViewModel
-                {
-                    Level = "Error",
-                    StockCode = "Error",
-                    StockDescription = "Error",
-                    UnitCostPrice = "Error"
-                }
-                }.ToArray();
+                return new List<InventoryViewModel>();
             }
         }
 
@@ -157,7 +129,7 @@ namespace Xataris.Application.Implimentations
                     {
                         var material = new MaterialPoco
                         {
-                            Cost = Convert.ToDecimal(inv.UnitCostPrice, CultureInfo.InvariantCulture),
+                            Cost = Convert.ToDecimal(inv.Cost, CultureInfo.InvariantCulture),
                             StockCode = inv.StockCode,
                             StockDescription = inv.StockDescription
                         };
@@ -170,7 +142,7 @@ namespace Xataris.Application.Implimentations
                             Deleted = false,
                             MaterialId = material.Id,
                             ModifiedBy = "",
-                            Quantity = Convert.ToDecimal(inv.Level, CultureInfo.InvariantCulture),
+                            Quantity = Convert.ToDecimal(inv.Quantity, CultureInfo.InvariantCulture),
                             WarehouseId = input.WarehousesId
                         };
                         newInventory.Add(inventory);
@@ -184,7 +156,7 @@ namespace Xataris.Application.Implimentations
                             Deleted = false,
                             MaterialId = mat.Id,
                             ModifiedBy = "",
-                            Quantity = Convert.ToDecimal(inv.Level, CultureInfo.InvariantCulture),
+                            Quantity = Convert.ToDecimal(inv.Quantity, CultureInfo.InvariantCulture),
                             WarehouseId = input.WarehousesId
                         };
                         newInventory.Add(inventory);

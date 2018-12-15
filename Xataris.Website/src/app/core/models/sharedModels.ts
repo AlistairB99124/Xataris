@@ -4,11 +4,11 @@ export interface DropdownModel<T>{
     selected: boolean;
 }
 export interface Credentials{
-    email: string;                    
+    email: string;
     username: string;
     password: string;
     confirmPassword: string;
-    rememberMe: boolean;    
+    rememberMe: boolean;
 }
 export interface SimpleResult{
     isSuccess: boolean;
@@ -192,7 +192,8 @@ export enum ColumnType{
     numeric,
     percentage,
     checkbox,
-    icon
+    icon,
+    date
 }
 
 export enum RenderType{
@@ -203,7 +204,7 @@ export enum RenderType{
 export interface ColumnDef{
     title: string;
     field: string;
-    columnType: ColumnType,
+    columnType: ColumnType;
     currencySymbol?: string;
     hide?: boolean;
     class?: string;

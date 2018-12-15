@@ -1,6 +1,6 @@
 export const locale = {
     lang: 'en',
-    data: {        
+    data: {
         'MYTIMESHEET': {
             'TITLE': 'My Timesheet',
             'PTM': 'Personal Timesheet Management',
@@ -29,7 +29,8 @@ export const locale = {
             'QUANTITY': 'Quantity',
             'ADDMATERIAL': 'Add Material',
             'DELETEMATERIAL': 'Delete Material',
-            'CODE': 'Code'
+            'CODE': 'Code',
+            'BOMNO': 'BOM No'
         }
     }
 };

@@ -20,17 +20,17 @@ namespace Xataris.API.Controllers
             this.dashboard = dashboard;
             this.users = users;
         }
-        [HttpPost("GetInventoryByWarehouse")]
-        public async Task<JsonResult> GetInventoryByWarehouse([FromBody] UserIdInput input)
-        {
-            var result = await dashboard.GetInventoryByWarehouse();
-            return await GenerateResult(result, users, input.GUID);
-        }
-        [HttpPost("GetInventoryByWarehouseId")]
-        public async Task<JsonResult> GetInventoryByWarehouseId([FromBody] WarehouseInput input)
-        {
-            var result = await dashboard.GetInventoryByWarehouseId(input);
-            return await GenerateResult(result, users, input.GUID);
-        }
+        //[HttpPost("GetInventoryByWarehouse")]
+        //public async Task<JsonResult> GetInventoryByWarehouse([FromBody] UserIdInput input)
+        //{
+        //    var result = await dashboard.GetInventoryByWarehouse();
+        //    return await GenerateResult(result, users, input.GUID);
+        //}
+        //[HttpPost("GetInventoryByWarehouseId")]
+        //public async Task<JsonResult> GetInventoryByWarehouseId([FromBody] WarehouseInput input)
+        //{
+        //    var result = await dashboard.GetInventoryByWarehouseId(input);
+        //    return await GenerateResult(result, users, input.GUID);
+        //}
     }
 }

@@ -77,7 +77,7 @@
                     </div>
                 </fuse-widget>
                 <fuse-widget [@animate]="{value:'*',params:{y:'100%'}}" class="widget" fxLayout="row" fxFlex="100">
-                    <div class="fuse-widget-front mat-white-bg mat-elevation-z2" *ngIf="data.showUsersList">
+                    <div class="fuse-widget-front mat-white-bg mat-elevation-z2" [ngStyle]="{'display': data.showUsersList ? 'block' : 'none'}">
                         <mat-toolbar class="mat-white-bg mat-elevation-z4">
                             <mat-toolbar-row fxFlex>
                                 <span fxFlex>Users</span>
@@ -97,36 +97,9 @@
                             </mat-toolbar-row>
                         </mat-toolbar>
                         <mat-divider></mat-divider>
-                        <mat-card *ngIf="!data.isUsersGridCollapsed">
-                            <mat-card-content>
-                                <div>
-                                    <mat-table #table [dataSource]="datasource">
-                                        <ng-container matColumnDef="id">
-                                            <mat-header-cell *matHeaderCellDef style="flex: 0 0 50px !important; white-space: unset !important;"></mat-header-cell>
-                                            <mat-cell *matCellDef="let element" style="flex: 0 0 50px !important; white-space: unset !important; text-align: center;">
-                                                <input type="checkbox" [(ngModel)]="element.isSelected" />
-                                            </mat-cell>
-                                        </ng-container>
-                                        <ng-container matColumnDef="firstName">
-                                            <mat-header-cell *matHeaderCellDef> First Name </mat-header-cell>
-                                            <mat-cell *matCellDef="let element"> {{element.firstName}} </mat-cell>
-                                        </ng-container>
-                                        <ng-container matColumnDef="lastName">
-                                            <mat-header-cell *matHeaderCellDef> Last Name </mat-header-cell>
-                                            <mat-cell *matCellDef="let element"> {{element.lastName}} </mat-cell>
-                                        </ng-container>
-                                        <ng-container matColumnDef="email">
-                                            <mat-header-cell *matHeaderCellDef> Email </mat-header-cell>
-                                            <mat-cell *matCellDef="let element"> {{element.email}} </mat-cell>
-                                        </ng-container>
-                                        <ng-container matColumnDef="dateRegistered">
-                                            <mat-header-cell *matHeaderCellDef> Date Registered </mat-header-cell>
-                                            <mat-cell *matCellDef="let element"> {{element.dateRegistered}} </mat-cell>
-                                        </ng-container>
-                                        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                                        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-                                    </mat-table>
-                                </div>
+                        <mat-card class="p-0" [ngStyle]="{'display': data.isUsersGridCollapsed ? 'none' : 'block'}">
+                            <mat-card-content class="p-0">
+                                <fuse-grid [gridOptions]="data.usersGrid" style="width: 100%"></fuse-grid>
                             </mat-card-content>
                         </mat-card>
                     </div>

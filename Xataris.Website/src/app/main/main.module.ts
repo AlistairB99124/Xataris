@@ -18,7 +18,6 @@ import { FuseSearchBarModule } from '../core/components/search-bar/search-bar.mo
 import { ScrabbleModule  } from '../main/content/Scrabble/scrabble.module';
 import { ElfModule  } from '../main/content/Elf/elf.module';
 
-import { ComingSoonModule } from '../main/content/ComingSoon/coming-soon.module';
 import { SiteManagementModule } from '../main/content/Sites/Management/siteManagement.module';
 import { TimesheetModule } from '../main/content/PTM/MyTimesheet/mytimesheet.module';
 import { LoginModule } from '../main/content/Account/Login/login.module';
@@ -31,15 +30,6 @@ import { SiteDetailsModule } from '../main/content/Sites/Details/sitesDetails.mo
 import { FileDropModule } from 'ngx-file-drop';
 import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
 
-import { GroupManagementApiService } from '../main/content/Users/GroupManagement/GroupManagement.service';
-import { UsersApiService } from '../main/content/Users/UserManagement/Summary/usersSummary.service';
-import { AccountApiService } from '../main/content/Account/accountApi.service';
-import { ToolbarApiService } from '../main/toolbar/toolbar.services.component';
-import { MyTimesheetApiService } from '../main/content/PTM/MyTimesheet/mytimesheet.service';
-import { PTMManagementApiService } from '../main/content/PTM/Management/ptmmanagement.service';
-import { InventoryApiService } from '../main/content/Inventory/Management/inventory.service';
-import { SiteApiService } from '../main/content/Sites/Details/sitesDetails.service';
-import { OrdersApiService } from '../main/content/Orders/Orders.service';
 import { ScrabbleApiService } from '../main/content/Scrabble/scrabble.service';
 import { ElfApiService } from '../main/content/Elf/elf.service';
 
@@ -66,7 +56,6 @@ import { ElfApiService } from '../main/content/Elf/elf.service';
         UsersSummaryModule,
         InventoryModule,
         FileDropModule,
-        ComingSoonModule,
         SiteManagementModule,
         SiteDetailsModule,
         GroupManagementModule,
@@ -79,15 +68,6 @@ import { ElfApiService } from '../main/content/Elf/elf.service';
         FuseMainComponent
     ],
     providers: [
-        AccountApiService,
-        ToolbarApiService,
-        UsersApiService,
-        InventoryApiService,
-        MyTimesheetApiService,
-        SiteApiService,
-        GroupManagementApiService,
-        OrdersApiService,
-        PTMManagementApiService,
         ScrabbleApiService,
         ElfApiService,
     ]

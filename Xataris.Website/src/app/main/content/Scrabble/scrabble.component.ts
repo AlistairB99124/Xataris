@@ -93,8 +93,8 @@ export class ScrabbleComponent implements OnInit
         const result = await this.scrabbleApiService.getGames();
         this.data.games = result.data;
         _.forEach(this.data.games, x => {
-            x.playerOne = JSON.parse(x.playerOne);
-            x.playerTwo = JSON.parse(x.playerTwo);
+            x.playerOne = JSON.parse(<any>x.playerOne);
+            x.playerTwo = JSON.parse(<any>x.playerTwo);
         });
     }
 

@@ -20,7 +20,7 @@ export interface ElfViewModel{
     currentCustomerQuotes: Array<Quote>;
     listTitle: string;
     showProductsGrid: boolean;
-    selectedQuoteProducts: Array<QuoteProduct>;
+    selectedQuoteProducts: Array<any>;
     isCustomersQuotesDetailsCollapsed: boolean;
     showPredefinedItemsGrid: boolean;
     isPredefinedItemsGridCollapsed: boolean;
@@ -146,7 +146,7 @@ export interface Quote{
 }
 
 export interface Supplier extends Name{
-    suppliersId: string;
+    suppliersId: number;
     webAddress: string;
     telephone: string;
 }

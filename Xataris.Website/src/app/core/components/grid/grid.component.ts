@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { GridOptions } from '../../models/sharedModels';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import * as m from '../../models/sharedModels';
@@ -10,9 +10,8 @@ import * as _ from 'lodash';
     styleUrls: ['./grid.component.scss']
 })
 
-export class GridComponent implements OnInit {
+export class GridComponent implements OnInit, AfterViewInit {
 
-    
     dataSource = new MatTableDataSource();
     shownColumns = new Array<string>();
     @Input('gridOptions') gridOptions: GridOptions;
@@ -54,15 +53,14 @@ export class GridComponent implements OnInit {
         this.gridOptions.api.getSelectedRows = () => _.filter(this.gridOptions.rowData, x => x.selected === true);
 
         this.gridOptions.getRowData = () => this.dataSource.data;
-        
         this.gridOptions.api.setRowData = (data: Array<any>) => {
             this.gridOptions.rowData = data;
             this.dataSource.data = data;
-        }
+        };
     }
 
     public ngAfterViewInit () {
-        if (this.gridOptions.onReady) { 
+        if (this.gridOptions.onReady) {
             this.gridOptions.onReady(this.dataSource);
         }
     }
@@ -77,12 +75,12 @@ export class GridComponent implements OnInit {
                     return (params[column.field] * 100).toFixed(2) + ' %';
                 case m.ColumnType.currency:
                     if (params[column.field]) {
-                        params[column.field] = params[column.field].replace(',', '');
-                        params[column.field] = params[column.field].replace('.', ',');
+                        params[column.field] = params[column.field].toString().replace(',', '');
+                        params[column.field] = params[column.field].toString().replace('.', ',');
                     }
                     value = parseFloat(params[column.field]);
                     if (_.isNumber(value)) {
-                        return column.currencySymbol ? column.currencySymbol + ' ' + value.toFixed(2) : params["metric"] + ' ' + value.toFixed(2);
+                        return column.currencySymbol ? column.currencySymbol + ' ' + value.toFixed(2) : params['metric'] + ' ' + value.toFixed(2);
                     } else {
                         return params[column.field];
                     }
@@ -98,6 +96,8 @@ export class GridComponent implements OnInit {
                     }
                 case m.ColumnType.text:
                     return params[column.field];
+                case m.ColumnType.date:
+                    return new Date(params[column.field]).toDateString();
                 default:
                     return params[column.field];
             }

@@ -2,7 +2,6 @@ import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from '../../../../core/modules/shared.module';
 import { InventoryComponent } from './inventory.component';
-import { InventoryApiService } from './inventory.service';
 import { GridComponent } from '../../../../core/components/grid/grid.component';
 
 
@@ -24,9 +23,7 @@ const routes = [
     exports     : [
         InventoryComponent
     ],
-    providers: [
-        InventoryApiService
-    ],
+    providers: [],
     schemas: [NO_ERRORS_SCHEMA]
 })
 

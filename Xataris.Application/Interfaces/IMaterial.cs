@@ -15,6 +15,6 @@ namespace Xataris.Application.Interfaces
         Task<MaterialViewModel[]> GetMaterials();
         Task<InventoryPoco[]> GetInventory();
         Task<IDropdownModel<string>[]> GetUsers();
-        Task<InventoryViewModel[]> GetInventoryByWarehouse(WarehouseIdInput input);
+        Task<List<InventoryViewModel>> GetInventoryByWarehouse(WarehouseIdInput input);
     }
 }

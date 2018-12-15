@@ -29,7 +29,7 @@ export class AppComponent
         this.translate.setDefaultLang('en');
 
         // Use a language
-        this.translate.use('en');        
+        this.translate.use('en');
 
         // Set the navigation model
         this.fuseNavigationService.setNavigationModel(new FuseNavigationModel());

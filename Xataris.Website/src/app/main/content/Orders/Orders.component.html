@@ -18,7 +18,7 @@
                 <mat-toolbar class="mat-white-bg mat-elevation-z4">
                     <mat-toolbar-row fxFlex>
                         <span fxFlex>{{'ORDERS.DETAILS.TEXT.LISTTITLE' | translate}}</span>
-                        <button matTooltip="Download Order" [disabled]="!enableEdit()" mat-icon-button class="mat-icon-button" (click)="downloadPdf()"
+                        <button *ngIf="data.isOrderListCollapsed !== true" matTooltip="Download Order" [disabled]="!enableEdit()" mat-icon-button class="mat-icon-button" (click)="downloadPdf()"
                             aria-label="Add Order">
                         <mat-icon class="s-24">cloud_upload</mat-icon>
                     </button>
@@ -42,21 +42,19 @@
                     </mat-toolbar-row>
                 </mat-toolbar>
                 <mat-divider></mat-divider>
-                <mat-card *ngIf="!data.isOrderListCollapsed">
-                    <mat-card-content>
-                        <div>
-                            <fuse-grid [gridOptions]="data.ordersGrid" style="width: 100%"></fuse-grid>                           
-                        </div>
+                <mat-card class="p-0" *ngIf="!data.isOrderListCollapsed">
+                    <mat-card-content class="p-0">
+                        <fuse-grid [gridOptions]="data.ordersGrid" style="width: 100%"></fuse-grid>                           
                     </mat-card-content>
                 </mat-card>
                 <mat-toolbar class="mat-white-bg mat-elevation-z4" style="margin-top: 20px;" *ngIf="data.showDetailsPanel">
                     <mat-toolbar-row fxFlex>
                         <span fxFlex>{{'ORDERS.DETAILS.TEXT.DETAILSTITLE' | translate}}: {{data.ordersDetail.id}}</span>
-                        <button matTooltip="Save" mat-icon-button class="mat-icon-button" [disabled]="disableSave()" (click)="add()"
+                        <button *ngIf="!data.isOrderDetailCollapsed" matTooltip="Save" mat-icon-button class="mat-icon-button" [disabled]="disableSave()" (click)="add()"
                                 aria-label="Save">
                             <mat-icon class="s-24">save</mat-icon>
                         </button>
-                        <button matTooltip="Cancel" mat-icon-button class="mat-icon-button" (click)="data.showDetailsPanel = false; data.isGroupListCollapsed = false; data.isOrderListCollapsed = !data.isOrderListCollapsed;"
+                        <button *ngIf="!data.isOrderDetailCollapsed" matTooltip="Cancel" mat-icon-button class="mat-icon-button" (click)="data.showDetailsPanel = false; data.isGroupListCollapsed = false; data.isOrderListCollapsed = !data.isOrderListCollapsed;"
                                 aria-label="Cancel">
                             <mat-icon class="s-24">clear</mat-icon>
                         </button>
@@ -131,33 +129,7 @@
                         </button>
                                             </div>
                                     <div fxLayout="row" style="width:100%">
-                                        <mat-table #table [dataSource]="itemsDataSource" fxFlex>
-                                            <!-- Position Column -->
-                                            <ng-container matColumnDef="materialId">
-                                                <mat-header-cell *matHeaderCellDef style="flex: 0 0 50px !important; white-space: unset !important;"></mat-header-cell>
-                                                <mat-cell *matCellDef="let element" style="flex: 0 0 50px !important; white-space: unset !important; text-align: center;">
-                                                    <input type="checkbox" [(ngModel)]="element.isSelected" />
-                                                </mat-cell>
-                                            </ng-container>
-                                            <ng-container matColumnDef="stockCode">
-                                                    <mat-header-cell *matHeaderCellDef> {{'ORDERS.DETAILS.TEXT.STOCKCODE' | translate}} </mat-header-cell>
-                                                    <mat-cell *matCellDef="let element"> {{element.stockCode}} </mat-cell>
-                                                </ng-container>
-                                            <ng-container matColumnDef="stockDescription">
-                                                <mat-header-cell *matHeaderCellDef> {{'ORDERS.DETAILS.TEXT.STOCKDESCRIPTION' | translate}} </mat-header-cell>
-                                                <mat-cell *matCellDef="let element"> {{element.stockDescription}} </mat-cell>
-                                            </ng-container>
-                                            <ng-container matColumnDef="stockCost">
-                                                <mat-header-cell *matHeaderCellDef> {{'ORDERS.DETAILS.TEXT.STOCKCOST' | translate}} </mat-header-cell>
-                                                <mat-cell *matCellDef="let element" style="text-align: right;"> R {{element.stockCost}} </mat-cell>
-                                            </ng-container>
-                                            <ng-container matColumnDef="quantity">
-                                                <mat-header-cell *matHeaderCellDef> {{'ORDERS.DETAILS.TEXT.QUANTITY' | translate}} </mat-header-cell>
-                                                <mat-cell *matCellDef="let element" style="text-align: right;"> {{element.quantity}} </mat-cell>
-                                            </ng-container>
-                                            <mat-header-row *matHeaderRowDef="itemsDisplayedColumns"></mat-header-row>
-                                            <mat-row *matRowDef="let row; columns: itemsDisplayedColumns;"></mat-row>
-                                        </mat-table>
+                                        <fuse-grid [gridOptions]="data.orderItemGrid" style="width: 100%"></fuse-grid>
                                     </div>
 
                                 </div>

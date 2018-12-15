@@ -8,7 +8,7 @@ namespace Xataris.Application.Interfaces
 {
     public interface IDashboard
     {
-        Task<StackedGraphResult> GetInventoryByWarehouse();
-        Task<InventoryViewModel[]> GetInventoryByWarehouseId(WarehouseInput input);
+        //Task<StackedGraphResult> GetInventoryByWarehouse();
+        //Task<InventoryViewModel[]> GetInventoryByWarehouseId(WarehouseInput input);
     }
 }

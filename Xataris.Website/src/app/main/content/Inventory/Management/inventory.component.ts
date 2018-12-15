@@ -1,8 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { fuseAnimations } from '../../../../core/animations';
-import { UploadFile } from 'ngx-file-drop';
-import { DropdownModel, MaterialPoco, InventoryPoco } from '../../../../core/Models/sharedModels';
-import { MatTableDataSource, MatPaginator } from '@angular/material';
 import { FuseTranslationLoaderService } from '../../../../core/services/translation-loader.service';
 import { locale as english } from './i18n/en';
 import { locale as afrikaans } from './i18n/af';
@@ -10,7 +7,6 @@ import * as XLSX from 'xlsx';
 import * as _ from 'lodash';
 import * as Models from './inventory.models';
 import * as m from '../../../../core/models/sharedModels';
-import { LowerCasePipe } from '@angular/common';
 import { ApiService } from '../../../services/api.service';
 
 @Component({
@@ -22,15 +18,14 @@ import { ApiService } from '../../../services/api.service';
 })
 export class InventoryComponent implements OnInit {
     data: Models.MaterialManagementViewModel;
-    selected: any;
-    pathArr: string[];
-    showSidenav = false;
     startUpload = false;
-    @ViewChild(MatPaginator) paginator: MatPaginator;
 
     constructor(
         private apiService: ApiService,
         private translationLoader: FuseTranslationLoaderService) {
+    }
+
+    public ngOnInit(){
         this.data = {} as Models.MaterialManagementViewModel;
         this.translationLoader.loadTranslations(english, afrikaans);
         this.data.files = [] as Array<Models.FileDetail>;
@@ -64,23 +59,19 @@ export class InventoryComponent implements OnInit {
                     columnType: m.ColumnType.text
                 },
                 <m.ColumnDef>{
-                    field: 'level',
+                    field: 'quantity',
                     title: 'Level',
                     columnType: m.ColumnType.numeric
                 },
                 <m.ColumnDef>{
-                    field: 'unitCostPrice',
+                    field: 'cost',
                     title: 'Unit Cost',
                     columnType: m.ColumnType.currency,
                     currencySymbol: 'R'
                 }
             ],
             rowData: []
-        }
-    }
-
-    ngOnInit(){
-        
+        };
     }
 
     reloadMaterialsGrid(){
@@ -88,7 +79,7 @@ export class InventoryComponent implements OnInit {
         const input = {
             warehousesId: this.data.selectedWarehouse.id
         };
-        this.apiService.post('Material/GetInventoryByWarehouse', input).then(res => {            
+        this.apiService.post('Material/GetInventoryByWarehouse', input).then(res => {
             this.data.inventoryGrid.api.setRowData(res);
             this.startUpload = false;
             this.data.disableFilepicker = false;
@@ -98,8 +89,8 @@ export class InventoryComponent implements OnInit {
     deleteWarehouse(){
         this.apiService.post('Warehouse/DeleteWarehouse', { warehouseId: this.data.selectedWarehouse.id }).then(res => {
             if (res.isSuccess) {
-                this.apiService.post('Warehouse/GetWarehouses', {}).then(res => {
-                    this.data.inventoryGrid.api.setRowData(res);
+                this.apiService.post('Warehouse/GetWarehouses', {}).then(result => {
+                    this.data.inventoryGrid.api.setRowData(result);
                 });
             }
         });
@@ -139,23 +130,23 @@ export class InventoryComponent implements OnInit {
                 return new Date(1901, 1, 1, 0, minute, seconds);
             } else {
                 return new Date(1901, 1, 1, hour, minute, seconds);
-            }            
+            }
         } else {
-            return new Date(1901, 1, 1, 12, minute, seconds);            
+            return new Date(1901, 1, 1, 12, minute, seconds);
         }
     }
 
     handleFileInput(evt){
         this.startUpload = true;
         const target: DataTransfer = <DataTransfer>(evt.target);
-        if (target.files.length !== 1) { 
-            throw new Error('Cannot use multiple files'); 
+        if (target.files.length !== 1) {
+            throw new Error('Cannot use multiple files');
         }
         const reader: FileReader = new FileReader();
         reader.onload = (e: any) => {
           const ws: XLSX.WorkSheet = XLSX.read(e.target.result, {type: 'binary'}).Sheets[XLSX.read(e.target.result, {type: 'binary'}).SheetNames[0]];
-          let rows = new Array<any>();
-          let sheet = _.first(Array<any>(XLSX.utils.sheet_to_json(ws, {header: 1})));
+          const rows = new Array<any>();
+          const sheet = _.first(Array<any>(XLSX.utils.sheet_to_json(ws, {header: 1})));
           _.forEach(sheet, (x) => {
               if (x[0]) {
                   rows.push({
@@ -192,10 +183,10 @@ export class InventoryComponent implements OnInit {
             this.data.enableAddWarehouse = false;
             this.data.warehouseName = '';
             this.data.disableFilepicker = false;
-            this.apiService.post('Warehouse/GetWarehouses', {}).then(res => {
-                this.data.availableWarehouses = res;
-                this.data.selectedWarehouse = _.find(res, (x) => x.name === input.name);
+            this.apiService.post('Warehouse/GetWarehouses', {}).then(result => {
+                this.data.availableWarehouses = result;
+                this.data.selectedWarehouse = _.find(result, (x) => x.name === input.name);
             });
-        });      
+        });
     }
 }

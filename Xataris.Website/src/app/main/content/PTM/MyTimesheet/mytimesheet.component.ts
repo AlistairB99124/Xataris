@@ -1,19 +1,16 @@
-import { Component, OnInit, Inject, ElementRef, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { FuseTranslationLoaderService } from '../../../../core/services/translation-loader.service';
-import { HttpClient } from '@angular/common/http';
 import { fuseAnimations } from '../../../../core/animations';
-import * as sharedModels from '../../../../core/models/sharedModels';
 import { locale as english } from './i18n/en';
 import { locale as afrikaans } from './i18n/af';
-import { DropdownModel } from '../../../../core/models/sharedModels';
-import { MyTimesheetApiService } from './mytimesheet.service';
-import { MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
-import { TranslateService } from '@ngx-translate/core';
+import { DropdownModel, GridOptions, ColumnDef } from '../../../../core/models/sharedModels';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { FuseConfirmDialogComponent } from '../../../../core/components/confirm-dialog/confirm-dialog.component';
-import * as domtoimage from 'dom-to-image';
 import * as _ from 'lodash';
 import * as Models from './mytimesheet.models';
+import { ColumnType } from '../../../../core/models/sharedModels';
+import { ApiService } from '../../../services/api.service';
 
 @Component({
     selector: 'fuse-mytimesheet',
@@ -21,108 +18,74 @@ import * as Models from './mytimesheet.models';
     styleUrls: ['./mytimesheet.component.scss'],
     animations: fuseAnimations
 })
-export class MyTimesheetComponent implements OnInit {
-    data;
-    form: FormGroup;
-    materialForm: FormGroup;
-    formErrors: any;
-    dataSource = new MatTableDataSource();
-    displayedColumns = ['id', 'bomNo', 'stockCode', 'stockDescription', 'quantity'];
-    materials: Array<any>;
-    dialogRef: MatDialogRef<FuseConfirmDialogComponent>;
-    invoice: any;
-    searchInput: string;
+export class MyTimesheetComponent implements OnInit, OnDestroy {
+    data: Models.TimesheetViewModel;
     @ViewChild('content') content: ElementRef;
 
     constructor(
         private translationLoader: FuseTranslationLoaderService,
         private formBuilder: FormBuilder,
-        private http: HttpClient,
-        private timesheetApiService: MyTimesheetApiService,
+        private apiService: ApiService,
         public dialog: MatDialog,
-        private translateService: TranslateService,
-        public snackBar: MatSnackBar) {
-            
+        public snackBar: MatSnackBar) { }
+
+    public ngOnInit = async () => {
         this.data = {} as Models.TimesheetViewModel;
+
+        this.data.gridOptions = <GridOptions>{
+            columnDefs: [
+                <ColumnDef>{
+                    title: '',
+                    field: 'id',
+                    columnType: ColumnType.checkbox
+                },
+                <ColumnDef>{
+                    title: await this.translationLoader.getTranslation('MYTIMESHEET.BOMNO'),
+                    field: 'bomNo',
+                    columnType: ColumnType.text
+                },
+                <ColumnDef>{
+                    title: await this.translationLoader.getTranslation('MYTIMESHEET.CODE'),
+                    field: 'stockCode',
+                    columnType: ColumnType.text
+                },
+                <ColumnDef>{
+                    title: await this.translationLoader.getTranslation('MYTIMESHEET.DESCRIPTION'),
+                    field: 'stockDescription',
+                    columnType: ColumnType.text
+                },
+                <ColumnDef>{
+                    title: await this.translationLoader.getTranslation('MYTIMESHEET.QUANTITY'),
+                    field: 'quantity',
+                    columnType: ColumnType.numeric
+                },
+            ],
+            rowData: [],
+            api: {}
+        };
+
         this.data.loader = false;
         const dateNow = new Date();
-        this.data.technician = {};
+        this.data.technician = '';
         this.data.date = dateNow.toLocaleDateString();
         this.data.confirmForm = false;
-        this.searchInput = '';
+        this.data.searchInput = '';
         this.translationLoader.loadTranslations(english, afrikaans);
         this.data.quoteEnabled = false;
-        this.timesheetApiService.getUsers().subscribe(res => {
-            this.data.operators = res.data;            
-        });
-        this.timesheetApiService.getSites().subscribe(res => {
-            this.data.sites = res.data;
-        });
+        this.data.operators = await this.apiService
+            .post('Timesheet/GetUsers');
+        this.data.sites = await this.apiService
+            .post('Site/GetSiteNames');
         const today = new Date();
         this.data.todaysDate = today.toString();
         this.data.hoursAvailable = this.timeOptions().hours;
         this.data.minsAvailable = this.timeOptions().minutes;
         this.data.statusAvailable = this.getStatuses();
-        let description, quantity, code;
-        this.translateService.get('MYTIMESHEET.DESCRIPTION').subscribe(res => { description = res; });
-        this.translateService.get('MYTIMESHEET.QUANTITY').subscribe(res => { quantity = res; });
-        this.translateService.get('MYTIMESHEET.CODE').subscribe(res => { code = res; }); 
-        this.data.materialColumns = [
-            <Models.Column>{
-                order: 0,
-                columnName: 'bomNo',
-                columnType: Models.ColumnType.Text,
-                displayName: 'BOM No',
-                width: null
-            },
-            <Models.Column>{
-                order: 1,
-                columnName: 'stockCode',
-                columnType: Models.ColumnType.Text,
-                displayName: code,
-                width: null
-            },
-            <Models.Column>{
-                order: 2,
-                columnName: 'stockDescription',
-                columnType: Models.ColumnType.Text,
-                displayName: description,
-                width: null
-            },
-            <Models.Column>{
-                order: 3,
-                columnName: 'quantity',
-                columnType: Models.ColumnType.Number,
-                displayName: quantity,
-                width: null
-            }
-        ];
-        this.materials = [];
-    }    
-
-    reloadMaterials(){
-        const input = {
-            primaryTechnicianId: this.form.controls.primaryTechnician.value
-        };
-        this.timesheetApiService.getMaterials(input).subscribe(res => {
-            if (res.data) {
-                    this.data.materialsAvailable = res.data;
-                    this.data.filterMaterials = this.data.materialsAvailable;
-                    this.data.loader = false;                           
-            } else {
-                this.data.materialsAvailable = [];
-                this.data.filterMaterials = this.data.materialsAvailable;
-            }
-        });
-    }
-
-    ngOnInit()
-    {
-        this.form = this.formBuilder.group({
-            specificLocation : [''],
-            detailedPoint  : [''],
-            description   : [''],
-            quoteNumber  : [''],
+        this.data.form = this.formBuilder.group({
+            specificLocation: [''],
+            detailedPoint: [''],
+            description: [''],
+            quoteNumber: [''],
             siNumber: [''],
             secondaryMins: [0],
             secondaryHours: [0],
@@ -133,126 +96,147 @@ export class MyTimesheetComponent implements OnInit {
             status: [0]
         });
 
-        this.materialForm = this.formBuilder.group({
+        this.data.materialForm = this.formBuilder.group({
             nonMaterial: [''],
             material: [''],
             quantity: [''],
             bomNo: ['']
         });
 
-        this.form.valueChanges.subscribe(() => {
+        this.data.form.valueChanges.subscribe(() => {
             this.onFormValuesChanged();
         });
     }
 
-    onFormValuesChanged()
-    {
-        for (const field in this.formErrors )
-        {
-            if ( !this.formErrors.hasOwnProperty(field) )
-            {
+    private onFormValuesChanged = () => {
+        for (const field in this.data.formErrors) {
+            if (!this.data.formErrors.hasOwnProperty(field)) {
                 continue;
             }
-            this.formErrors[field] = {};
-            const control = this.form.get(field);
-            if ( control && control.dirty && !control.valid )
-            {
-                this.formErrors[field] = control.errors;
+            this.data.formErrors[field] = {};
+            const control = this.data.form.get(field);
+            if (control && control.dirty && !control.valid) {
+                this.data.formErrors[field] = control.errors;
             }
         }
     }
 
-    updateSite(){
-        const site = _.find(this.data.sites, x => x.id === this.form.controls.site.value);
+    public updateSite = () => {
+        const site = _.find(this.data.sites, x => x.id === this.data.form.controls.site.value);
         this.data.siteName = site.name;
     }
 
-    openConfirmationMaterialDialog(data) {
-        this.dialogRef = this.dialog.open(FuseConfirmDialogComponent, {
-          disableClose: false
+    public openConfirmationMaterialDialog = (data) => {
+        this.data.dialogRef = this.dialog.open(FuseConfirmDialogComponent, {
+            disableClose: false
         });
-        this.dialogRef.componentInstance.confirmMessage = 'You have exceeded the available inventory. If you proceed, please submit an Order Form';
-    
-        this.dialogRef.afterClosed().subscribe(result => {
-          if (result) {
-            this.materials.push(data);
-            this.dataSource.data = this.materials ;
-            this.materialForm.reset();
-          }
-          this.dialogRef = null;
-        });
-      }
+        this.data.dialogRef.componentInstance.confirmMessage = 'You have exceeded the available inventory. If you proceed, please submit an Order Form';
 
-    
-    saveTimesheet(){
-        const input = _.cloneDeep(this.form.value);
+        this.data.dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.data.materials.push(data);
+                this.data.gridOptions.api.setRowData(this.data.materials);
+                this.data.materialForm.reset();
+            }
+            this.data.dialogRef = null;
+        });
+    }
+
+    public reloadMaterials = async () => {
+        const input = {
+            primaryTechnicianId: this.data.form.controls.primaryTechnician.value
+        };
+        const res = await this.apiService
+            .post('Timesheet/GetMaterials', input);
+        if (res) {
+            this.data.materialsAvailable = res;
+            this.data.filterMaterials = this.data.materialsAvailable;
+            this.data.loader = false;
+        } else {
+            this.data.materialsAvailable = [];
+            this.data.filterMaterials = this.data.materialsAvailable;
+        }
+    }
+
+
+    public saveTimesheet = async () => {
+        const input = _.cloneDeep(this.data.form.value);
         input['originalQuote'] = this.data.quoteEnabled;
-        input['materials'] = this.dataSource.data;
-        this.data.statusLabel = _.find(this.data.statusAvailable, x => x.value === this.form.controls.status.value).text;
-        this.data.technician = _.find(this.data.operators, x => x.value === this.form.controls.primaryTechnician.value).text;
-        this.timesheetApiService.addTimesheet(input).subscribe(res => {
-            if (res.data.isSuccess){
-                const matInput = {
-                    code: res.data.timesheetCode,
-                    materials: this.dataSource.data
-                };
-                this.timesheetApiService.saveMaterialItems(matInput).subscribe(result => {
-                    if (result.data.isSuccess) {
-                        this.data.timesheetNo = res.data.timesheetCode;
-                        this.data.filterMaterials = [];
-                        this.data.materialsAvailable = [];
-                        this.data.confirmForm = false;
-                        this.form.reset();
-                        this.materialForm.reset();
-                        this.dataSource.data = [];
-                        this.materials = [];
-                        this.snackBar.open('Save Successful', '', { duration: 2000 });
-                    } else {
-                        this.snackBar.open('Save Unsuccessful', '', { duration: 2000 });
-                    }
+        input['materials'] = this.data.gridOptions.getRowData();
+        this.data.statusLabel = _.find(this.data.statusAvailable, x => x.value === this.data.form.controls.status.value).text;
+        this.data.technician = _.find(this.data.operators, x => x.value === this.data.form.controls.primaryTechnician.value).text;
+        const isTimesheetAdded = await this.apiService
+            .post('Timesheet/AddTimesheet', input);
+
+        if (isTimesheetAdded.isSuccess) {
+            const matInput = {
+                code: isTimesheetAdded.timesheetCode,
+                materials: this.data.gridOptions.getRowData()
+            };
+            const areMatereialsAdded = await this.apiService
+                .post('Timesheet/SaveMaterialItems', matInput);
+
+            if (areMatereialsAdded.isSuccess) {
+                this.data.timesheetNo = isTimesheetAdded.timesheetCode;
+                this.data.filterMaterials = [];
+                this.data.materialsAvailable = [];
+                this.data.confirmForm = false;
+                this.data.form.reset();
+                this.data.materialForm.reset();
+                this.data.gridOptions.api.setRowData([]);
+                this.data.materials = [];
+                this.snackBar.open('Save Successful', '', {
+                    duration: 2000
                 });
             } else {
-                this.snackBar.open('Save Unsuccessful', '', { duration: 2000 });
+                this.snackBar.open('Save Unsuccessful', '', {
+                    duration: 2000
+                });
             }
-        });
-    }
-
-    deleteMaterial = (id) => {
-        const row = _.find(this.dataSource.data, { id: id });
-        _.remove(this.materials, row);
-        this.dataSource.data = this.materials;
-    }
-
-    addMaterial(){
-        if (this.data.nonStockItem) {
-            const row = {
-                bomNo: this.materialForm.controls.bomNo.value,
-                quantity: this.materialForm.controls.quantity.value,
-                stockCode: '',
-                stockDescription: this.materialForm.controls.nonMaterial.value 
-            };
-            this.materials.push(row);
-            this.dataSource.data = this.materials;
-            this.materialForm.reset();
         } else {
-            const input = {
-                id: this.materialForm.controls.material.value,
-                bomNo: this.materialForm.controls.bomNo.value,
-                quantity: this.materialForm.controls.quantity.value                
-            };
-            this.timesheetApiService.getMaterial(input).subscribe(res => {
-                if (res.data.exceeded) {
-                    this.openConfirmationMaterialDialog(res.data);
-                } else {
-                    this.materials.push(res.data);
-                    this.dataSource.data = this.materials ;
-                    this.materialForm.reset();
-                }
+            this.snackBar.open('Save Unsuccessful', '', {
+                duration: 2000
             });
         }
     }
 
-    private getStatuses(){
+    public deleteMaterial = (id) => {
+        const row = _.find(this.data.gridOptions.getRowData(), x => x.id === id);
+        _.remove(this.data.materials, row);
+        this.data.gridOptions.api.setRowData(this.data.materials);
+    }
+
+    public addMaterial = async () => {
+        if (this.data.nonStockItem) {
+            const row = {
+                bomNo: this.data.materialForm.controls.bomNo.value,
+                quantity: this.data.materialForm.controls.quantity.value,
+                stockCode: '',
+                stockDescription: this.data.materialForm.controls.nonMaterial.value
+            };
+            this.data.materials.push(row);
+            this.data.gridOptions.api.setRowData(this.data.materials);
+            this.data.materialForm.reset();
+        } else {
+            const input = {
+                id: this.data.materialForm.controls.material.value,
+                bomNo: this.data.materialForm.controls.bomNo.value,
+                quantity: this.data.materialForm.controls.quantity.value
+            };
+            const result = await this.apiService
+                .post('Timesheet/GetMaterial', input);
+
+            if (result.exceeded) {
+                this.openConfirmationMaterialDialog(result);
+            } else {
+                this.data.materials.push(result);
+                this.data.gridOptions.api.setRowData(this.data.materials);
+                this.data.materialForm.reset();
+            }
+        }
+    }
+
+    private getStatuses = () => {
         return [
             <DropdownModel<number>>{
                 text: 'Chasing',
@@ -274,120 +258,42 @@ export class MyTimesheetComponent implements OnInit {
                 value: 3,
                 selected: false
             }
-        ];      
+        ];
     }
 
-    private timeOptions(){
-        return {
-            hours: [
-                {
-                    text: '00',
-                    value: 0,
-                    selected: false
-                },
-                {
-                    text: '01',
-                    value: 1,
-                    selected: false
-                },
-                {
-                    text: '02',
-                    value: 2,
-                    selected: false
-                },
-                {
-                    text: '03',
-                    value: 3,
-                    selected: false
-                },
-                {
-                    text: '04',
-                    value: 4,
-                    selected: false
-                },
-                {
-                    text: '05',
-                    value: 5,
-                    selected: false
-                },
-                {
-                    text: '06',
-                    value: 6,
-                    selected: false
-                },
-                {
-                    text: '07',
-                    value: 7,
-                    selected: false
-                },
-                {
-                    text: '08',
-                    value: 8,
-                    selected: false
-                },
-                {
-                    text: '09',
-                    value: 9,
-                    selected: false
-                },
-                {
-                    text: '10',
-                    value: 10,
-                    selected: false
-                },
-                {
-                    text: '11',
-                    value: 11,
-                    selected: false
-                },
-                {
-                    text: '12',
-                    value: 12,
-                    selected: false
-                }
-            ],
-            minutes: [
-                {
-                    text: '00',
-                    value: 0,
-                    selected: false
-                },
-                {
-                    text: '10',
-                    value: 10,
-                    selected: false
-                },
-                {
-                    text: '20',
-                    value: 20,
-                    selected: false
-                },
-                {
-                    text: '30',
-                    value: 30,
-                    selected: false
-                },
-                {
-                    text: '40',
-                    value: 40,
-                    selected: false
-                },
-                {
-                    text: '50',
-                    value: 50,
-                    selected: false
-                }
-            ]
+    private timeOptions = (): Models.TimeOptions => {
+        const options = <Models.TimeOptions>{
+            hours: [],
+            minutes: []
         };
+        for (let hour = 0; hour < 13; hour++) {
+            options.hours.push(<DropdownModel<number>>{
+              text: hour < 10 ? '0' + hour : hour.toString(),
+              value: hour,
+              selected: false
+            });
+        }
+        for (let min = 0; min < 61; min += 10) {
+            options.minutes.push(<DropdownModel<number>>{
+                text: min === 0 ? '00' : min.toString(),
+                value: min,
+                selected: false
+            });
+        }
+        return options;
     }
 
-    searchMaterials(){
-            const results = [];
-            _.forEach(this.data.materialsAvailable, (x: DropdownModel<number>) => {
-                if (x.text.toLowerCase().includes(this.searchInput.toLowerCase())) {
-                    results.push(x);
-                }
-            });
-            this.data.filterMaterials = results;
+    public searchMaterials = () => {
+        const results = [];
+        _.forEach(this.data.materialsAvailable, (x: DropdownModel<number>) => {
+            if (x.text.toLowerCase().includes(this.data.searchInput.toLowerCase())) {
+                results.push(x);
+            }
+        });
+        this.data.filterMaterials = results;
+    }
+
+    public ngOnDestroy = async () => {
+        this.data = null;
     }
 }
