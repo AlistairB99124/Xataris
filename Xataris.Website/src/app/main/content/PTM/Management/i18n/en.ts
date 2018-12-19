@@ -1,6 +1,6 @@
 export const locale = {
     lang: 'en',
-    data: {        
+    data: {
         'PTMMANAGEMENT': {
             'TITLE': 'PTM Management',
             'TIMESHEETS': 'Timesheets',

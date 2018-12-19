@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -12,17 +13,16 @@ namespace Xataris.API.Controllers
 {
     [Produces("application/json")]
     [Route("api/Account")]
+    [Authorize]
     public class AccountController : BaseController
     {
         readonly UserManager<UserPoco> _userManager;
         readonly SignInManager<UserPoco> _signInManager;
-        private readonly IUsers _users;
 
-        public AccountController(UserManager<UserPoco> userManager, SignInManager<UserPoco> signInManager, IUsers user)
+        public AccountController(UserManager<UserPoco> userManager, SignInManager<UserPoco> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _users = user;
         }
 
         [HttpPost("ResetPassword")]

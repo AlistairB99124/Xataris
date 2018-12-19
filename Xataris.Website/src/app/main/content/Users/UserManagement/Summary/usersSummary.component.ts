@@ -37,6 +37,7 @@ export class UsersSummaryComponent implements OnInit {
         private apiService: ApiService,
         public snackBar: MatSnackBar,
         public dialog: MatDialog) {
+            this.ngOnInit();
     }
 
     ngOnInit = async () => {

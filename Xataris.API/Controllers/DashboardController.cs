@@ -11,14 +11,13 @@ namespace Xataris.API.Controllers
 {
     [Produces("application/json")]
     [Route("api/Dashboard")]
+    [Authorize]
     public class DashboardController : BaseController
     {
         private readonly IDashboard dashboard;
-        private readonly IUsers users;
-        public DashboardController(IDashboard dashboard, IUsers users)
+        public DashboardController(IDashboard dashboard)
         {
             this.dashboard = dashboard;
-            this.users = users;
         }
         //[HttpPost("GetInventoryByWarehouse")]
         //public async Task<JsonResult> GetInventoryByWarehouse([FromBody] UserIdInput input)

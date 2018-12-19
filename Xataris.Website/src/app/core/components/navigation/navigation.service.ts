@@ -1,8 +1,8 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { FuseNavigationModelInterface } from './navigation.model';
-import { HttpClient } from '@angular/common/http';
-import { XatarisPermissions, XatarisModules, ApiResult } from '../../models/sharedModels';
+import { XatarisPermissions, XatarisModules } from '../../models/sharedModels';
+import { ApiService } from '../../../main/services/api.service';
 
 @Injectable()
 export class FuseNavigationService
@@ -13,7 +13,7 @@ export class FuseNavigationService
     navigationModel: FuseNavigationModelInterface;
     flatNavigation: any[] = [];
 
-    constructor(private http: HttpClient)
+    constructor(private apiService: ApiService)
     {
     }
 
@@ -198,9 +198,8 @@ export class FuseNavigationService
         return this.flatNavigation;
     }
 
-    getUserPermissions(input){
-        input['gUID'] = localStorage.getItem('userId');
-        return this.http.post<ApiResult<AccessResult>>('https://api.xataris.co.uk/api/User/GetUserPermissions', input);
+    getUserPermissions = async (input) => {
+        return this.apiService.post('User/GetUserPermissions', input);
     }
 }
 export interface AccessResult{

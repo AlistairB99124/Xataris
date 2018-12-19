@@ -1,4 +1,4 @@
-<div id="forms" *ngIf="!data.confirmForm" class="page-layout simple fullwidth" #content fxLayout="column"
+<div id="forms" class="page-layout simple fullwidth" #content fxLayout="column"
     fusePerfectScrollbar>
     <!-- HEADER -->
     <div class="header xataris-accent-bg p-24 h-160" fxLayout="row" fxLayoutAlign="start center">
@@ -28,7 +28,7 @@
                 <mat-horizontal-stepper [linear]="true" #stepper="matHorizontalStepper">
                     <mat-step [stepControl]="form">
                         <ng-template matStepLabel>{{'MYTIMESHEET.DETAILS' | translate}}</ng-template>
-                        <form class="p-0" fxLayout="column" fxLayoutAlign="start" fxFlex name="form" [formGroup]="form">
+                        <form class="p-0" fxLayout="column" fxLayoutAlign="start" fxFlex name="form" [formGroup]="data.form">
                             <div fxLayout="row">
                                 <div fxLayout="column" fxFlex fxLayoutAlign="start center">
                                     <div fxLayout="row" style="width:100%">
@@ -163,7 +163,7 @@
                     </mat-step>
                     <mat-step [stepControl]="materialForm">
                         <form class="p-0" fxLayout="column" fxLayoutAlign="start" fxFlex name="materialForm"
-                            [formGroup]="materialForm">
+                            [formGroup]="data.materialForm">
                             <ng-template matStepLabel>{{'MYTIMESHEET.MATERIALS' | translate}}</ng-template>
                             <div fxLayout="row">
                                 <div fxLayout="column" fxFlex>
@@ -183,7 +183,7 @@
                                         <div fxLayout="column" fxFlex *ngIf="!data.nonStockItem">
                                             <mat-form-field fxFlex>
                                                 <input matInput placeholder="{{'MYTIMESHEET.SEARCHMAT' | translate}}"
-                                                    [(ngModel)]="searchInput" [ngModelOptions]="{standalone: true}"
+                                                    [(ngModel)]="data.searchInput" [ngModelOptions]="{standalone: true}"
                                                     (change)="searchMaterials()" />
                                             </mat-form-field>
                                             <mat-form-field fxFlex>
@@ -218,7 +218,7 @@
                                         </button>
                                     </div>
                                     <div fxLayout="row" style="width:100%" class="mb-20">
-                                        <fuse-grid [gridOptions]="data.gridOptions"></fuse-grid>
+                                        <fuse-grid [gridOptions]="data.gridOptions" style="width: 100%"></fuse-grid>
                                     </div>
                                 </div>
                             </div>

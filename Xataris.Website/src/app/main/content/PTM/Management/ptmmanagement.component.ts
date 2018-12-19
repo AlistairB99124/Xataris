@@ -1,15 +1,16 @@
 import { Component, OnInit, Inject, ElementRef, ViewChild } from '@angular/core';
 import { FuseTranslationLoaderService } from '../../../../core/services/translation-loader.service';
-import { HttpClient } from '@angular/common/http';
 import { Angular5Csv } from 'angular5-csv/Angular5-csv';
 import { fuseAnimations } from '../../../../core/animations';
-import * as sharedModels from '../../../../core/models/sharedModels';
 import { locale as english } from './i18n/en';
 import { locale as afrikaans } from './i18n/af';
-import { DropdownModel } from '../../../../core/models/sharedModels';
+import {
+  GridOptions,
+  ColumnDef,
+  ColumnType
+} from '../../../../core/models/sharedModels';
 import { ApiService } from '../../../services/api.service';
-import { MatTableDataSource, MatSnackBar, MatPaginator } from '@angular/material';
-import { FuseConfirmDialogComponent } from '../../../../core/components/confirm-dialog/confirm-dialog.component';
+import { MatSnackBar } from '@angular/material';
 import * as domtoimage from 'dom-to-image';
 import * as _ from 'lodash';
 import * as jsPDF from 'jspdf';
@@ -21,32 +22,171 @@ import { PTMManagementViewModel, Timesheet } from './ptmmanagement.models';
     styleUrls: ['./ptmmanagement.component.scss'],
     animations: fuseAnimations
 })
-export class PTMManagementComponent implements OnInit {
+export class PTMManagementComponent {
 
     data: PTMManagementViewModel;
-    dataSource = new MatTableDataSource();
-    @ViewChild(MatPaginator) paginator: MatPaginator;
 
-    displayedColumns = [
-        'timesheetId',
-        'code',
-        'dateCreated',
-        'status',
-        'operatorTime',
-        'assistantTime',
-        'plumber',
-        'site'
-    ];
     constructor(
         private translationLoader: FuseTranslationLoaderService,
         private apiService: ApiService,
         public snackBar: MatSnackBar) {
+        Promise.all([this.setupVariables()]);
+    }
+
+    private setupVariables = async () => {
         this.data = {} as PTMManagementViewModel;
+        this.data.showMore = false;
         this.data.showToggleOff = true;
         this.data.showToggleOn = false;
         this.data.loader = false;
         this.data.confirmForm = false;
         this.translationLoader.loadTranslations(english, afrikaans);
+        this.data.loader = true;
+
+        this.data.timesheetsGrid = <GridOptions>{
+            columnDefs: await this.setAllColumns(),
+            rowData: [],
+            api: {} as any,
+            onReady: this.loadPage
+        };
+    }
+
+    private setAllColumns = async (): Promise<Array<ColumnDef>> => {
+        return [
+            <ColumnDef>{
+                title: '',
+                field: 'timesheetId',
+                columnType: ColumnType.checkbox
+            },
+            <ColumnDef>{
+                title: await this.translationLoader.getTranslation('PTMMANAGEMENT.CODE'),
+                field: 'code',
+                columnType: ColumnType.text
+            },
+            <ColumnDef>{
+                title: await this.translationLoader.getTranslation('PTMMANAGEMENT.DATE'),
+                field: 'dateCreated',
+                columnType: ColumnType.date
+            },
+            <ColumnDef>{
+                title: await this.translationLoader.getTranslation('PTMMANAGEMENT.SPECIFICLOCATION'),
+                field: 'specificLocation',
+                columnType: ColumnType.text
+            },
+            <ColumnDef>{
+                title: await this.translationLoader.getTranslation('PTMMANAGEMENT.DETAILEDPOINT'),
+                field: 'detailedPoint',
+                columnType: ColumnType.text
+            },
+            <ColumnDef>{
+                title: await this.translationLoader.getTranslation('PTMMANAGEMENT.SHEETSTATUS'),
+                field: 'status',
+                columnType: ColumnType.text
+            },
+            <ColumnDef>{
+                title: await this.translationLoader.getTranslation('PTMMANAGEMENT.DESCRIPTION'),
+                field: 'description',
+                columnType: ColumnType.text
+            },
+            <ColumnDef>{
+                title: await this.translationLoader.getTranslation('PTMMANAGEMENT.PLUMBERTIME'),
+                field: 'operatorTime',
+                columnType: ColumnType.text
+            },
+            <ColumnDef>{
+                title: await this.translationLoader.getTranslation('PTMMANAGEMENT.ASSISTANTTIME'),
+                field: 'assistantTime',
+                columnType: ColumnType.text
+            },
+            <ColumnDef>{
+                title: await this.translationLoader.getTranslation('PTMMANAGEMENT.ORIGINALQUOTE'),
+                field: 'originalQuote',
+                columnType: ColumnType.text
+            },
+            <ColumnDef>{
+                title: await this.translationLoader.getTranslation('PTMMANAGEMENT.QUOTENO'),
+                field: 'quoteNo',
+                columnType: ColumnType.text
+            },
+            <ColumnDef>{
+                title: await this.translationLoader.getTranslation('PTMMANAGEMENT.SINO'),
+                field: 'siNumber',
+                columnType: ColumnType.text
+            },
+            <ColumnDef>{
+                title: await this.translationLoader.getTranslation('PTMMANAGEMENT.PLUMBER'),
+                field: 'plumber',
+                columnType: ColumnType.text
+            },
+            <ColumnDef>{
+                title: await this.translationLoader.getTranslation('PTMMANAGEMENT.SITE'),
+                field: 'site',
+                columnType: ColumnType.text
+            }
+        ];
+    }
+
+    private setLimitedColumns = async (): Promise<Array<ColumnDef>> => {
+        return [
+            <ColumnDef>{
+                title: '',
+                field: 'timesheetId',
+                columnType: ColumnType.checkbox
+            },
+            <ColumnDef>{
+                title: await this.translationLoader.getTranslation('PTMMANAGEMENT.CODE'),
+                field: 'code',
+                columnType: ColumnType.text
+            },
+            <ColumnDef>{
+                title: await this.translationLoader.getTranslation('PTMMANAGEMENT.DATE'),
+                field: 'dateCreated',
+                columnType: ColumnType.date
+            },
+            <ColumnDef>{
+                title: await this.translationLoader.getTranslation('PTMMANAGEMENT.SHEETSTATUS'),
+                field: 'status',
+                columnType: ColumnType.text
+            },
+            <ColumnDef>{
+                title: await this.translationLoader.getTranslation('PTMMANAGEMENT.PLUMBERTIME'),
+                field: 'operatorTime',
+                columnType: ColumnType.text
+            },
+            <ColumnDef>{
+                title: await this.translationLoader.getTranslation('PTMMANAGEMENT.ASSISTANTTIME'),
+                field: 'assistantTime',
+                columnType: ColumnType.text
+            },
+            <ColumnDef>{
+                title: await this.translationLoader.getTranslation('PTMMANAGEMENT.ORIGINALQUOTE'),
+                field: 'originalQuote',
+                columnType: ColumnType.text
+            },
+            <ColumnDef>{
+                title: await this.translationLoader.getTranslation('PTMMANAGEMENT.PLUMBER'),
+                field: 'plumber',
+                columnType: ColumnType.text
+            },
+            <ColumnDef>{
+                title: await this.translationLoader.getTranslation('PTMMANAGEMENT.SITE'),
+                field: 'site',
+                columnType: ColumnType.text
+            }
+        ];
+    }
+
+    private loadPage = async (): Promise<any> => {
+        const columns = await this.setLimitedColumns();
+        this.data.timesheetsGrid.api.setColumnDefs(columns);
+        return this.apiService
+        .post('Timesheet/GetTimesheets')
+        .then(timesheets => {
+            this.data.allTimesheets = timesheets;
+            this.data.timesheetsGrid.api.setRowData(this.data.allTimesheets);
+            this.data.materials = [];
+            this.data.loader = false;
+        });
     }
 
     downloadGrid() {
@@ -70,19 +210,14 @@ export class PTMManagementComponent implements OnInit {
                 'Quote No.',
                 'SI No',
                 'Plumber',
-                'Site',
-                'Selected'
+                'Site'
             ]
         };
-        new Angular5Csv(this.dataSource.data, 'Timesheets', options);
+        new Angular5Csv(this.data.timesheetsGrid.getRowData(), 'Timesheets', options);
     }
 
     public downloadPdf = async () => {
-        for (let i = 0; i < this.dataSource.data.length; i++) {
-            if (this.dataSource.data[i]['isSelected'] === true) {
-                this.data.selectedTimesheet = <Timesheet>this.dataSource.data[i];
-            }
-        }
+        this.data.selectedTimesheet = this.data.timesheetsGrid.api.getSelectedRows()[0];
         this.data.confirmForm = true;
         this.data.loader = true;
         const data = await this.apiService
@@ -135,67 +270,32 @@ export class PTMManagementComponent implements OnInit {
 
     public deleteTimesheet = async () => {
         const input = {
-            timesheetId: _.find(this.dataSource.data, x => x['isSelected'] === true)
+            timesheetId: this.data.timesheetsGrid.api.getSelectedRows()
         };
         const result = await this.apiService
             .post('Timesheet/DeleteTimesheet', input);
         if (result.errorMessage) {
             const timesheets = await this.apiService.post('Timesheet/GetTimesheets');
             this.data.allTimesheets = timesheets;
-            this.dataSource.data = this.data.allTimesheets;
+            this.data.timesheetsGrid.api.setRowData(this.data.allTimesheets);
         }
     }
 
-    enableDelete = () => _.filter(this.dataSource.data, x => x['isSelected'] === true).length === 1;
-
-    showDetails(show: boolean) {
-        if (show) {
-            this.data.showToggleOff = false;
-            this.data.showToggleOn = true;
-            this.displayedColumns = [
-                'timesheetId',
-                'code',
-                'dateCreated',
-                'specificLocation',
-                'detailedPoint',
-                'status',
-                'description',
-                'operatorTime',
-                'assistantTime',
-                'originalQuote',
-                'quoteNo',
-                'siNumber',
-                'plumber',
-                'site'
-            ];
+    enableDelete = () => {
+        if (this.data.timesheetsGrid.api.getSelectedRows) {
+            return this.data.timesheetsGrid.api.getSelectedRows().length === 1;
         } else {
-            this.data.showToggleOff = true;
-            this.data.showToggleOn = false;
-            this.displayedColumns = [
-                'timesheetId',
-                'code',
-                'dateCreated',
-                'status',
-                'operatorTime',
-                'assistantTime',
-                'plumber',
-                'site'
-            ];
+            return false;
         }
     }
 
-    public ngOnInit = async () => {
-        this.data.loader = true;
-        const timesheets = await this.apiService.post('Timesheet/GetTimesheets');
-        _.forEach(timesheets, x => {
-            const d = new Date(x.dateCreated);
-            x.dateCreated = d.toDateString();
-        });
-        this.data.allTimesheets = timesheets;
-        this.dataSource.data = this.data.allTimesheets;
-        this.dataSource.paginator = this.paginator;
-        this.data.materials = [];
-        this.data.loader = false;
+    checkStatus = async (): Promise<void> => {
+        if (this.data.showMore) {
+            const columns = await this.setAllColumns();
+            this.data.timesheetsGrid.api.setColumnDefs(columns);
+        } else {
+            const columns = await this.setLimitedColumns();
+            this.data.timesheetsGrid.api.setColumnDefs(columns);
+        }
     }
-
 }

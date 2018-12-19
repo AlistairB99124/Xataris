@@ -59,8 +59,7 @@ export class FuseNavVerticalCollapseComponent implements OnInit
             );
     }
 
-    ngOnInit()
-    {
+    public ngOnInit = async () => {
         if ( this.isUrlInChildren(this.item, this.router.url) )
         {
             this.expand();
@@ -70,16 +69,15 @@ export class FuseNavVerticalCollapseComponent implements OnInit
             this.collapse();
         }
         const user = localStorage.getItem('userId');
-        this.navigationService.getUserPermissions({userId: user}).subscribe(res => {                                
-            const moduleFound = _.find(res.data.modules, (x) => x.id === this.item.id);
-            if (moduleFound) {
-                if (res.data.permission >= this.item.permission) {
-                    this.item.show = true;
-                }
-            } else {
-                this.item.show = false;
+        const res = await this.navigationService.getUserPermissions({ userId: user });
+        const moduleFound = _.find(res.data.modules, (x) => x.id === this.item.id);
+        if (moduleFound) {
+            if (res.data.permission >= this.item.permission) {
+                this.item.show = true;
             }
-        });
+        } else {
+            this.item.show = false;
+        }
     }
 
     toggleOpen(ev)
@@ -135,7 +133,7 @@ export class FuseNavVerticalCollapseComponent implements OnInit
             }
         }
     }
-    
+
     isUrlInChildren(parent, url)
     {
         if ( !parent.children )

@@ -16,6 +16,9 @@ using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Web;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Xataris.Application.Implimentations
 {
@@ -24,11 +27,13 @@ namespace Xataris.Application.Implimentations
         private XatarisContext _context;
         private IUserDomain _userDomain;
         private readonly IEmailSender emailSender;
-        public Users(XatarisContext context, IUserDomain userDomain, IEmailSender emailSender)
+        private readonly IUserSettings _userSettings;
+        public Users(XatarisContext context, IUserDomain userDomain, IEmailSender emailSender, IUserSettings userSettings)
         {
             _context = context;
             _userDomain = userDomain;
             this.emailSender = emailSender;
+            _userSettings = userSettings;
         }
 
         public async Task<SimpleResult> GetUserByEmail(UserEmailInput input)
@@ -590,6 +595,77 @@ namespace Xataris.Application.Implimentations
                     IsSuccess = false
                 };
             }
+        }
+
+        public async Task<LoginSimpleResult> Login(LoginInput input, SignInManager<UserPoco> signInManager, UserManager<UserPoco> userManager)
+        {
+            try
+            {
+                var user = await userManager.FindByEmailAsync(input.Email);
+                LoginSimpleResult result;
+                if (user != null)
+                {
+                    var resultSign = await signInManager.PasswordSignInAsync(user.Email, input.Password, input.RememberMe, false);
+                    if (resultSign.Succeeded)
+                    {
+                        _userSettings.LocalJwt = this.CreateJwtPacket(user);
+                        result = new LoginSimpleResult
+                        {
+                            Id = user.Id,
+                            IsSuccess = resultSign.Succeeded,
+                            Name = user.FirstName + " " + user.LastName
+                        };
+                    }
+                    else
+                    {
+                        result = new LoginSimpleResult
+                        {
+                            Id = user.Id,
+                            IsSuccess = resultSign.Succeeded,
+                            ErrorMessage = "ACCOUNT.LOGIN.WRONGPASSWORD"
+                        };
+                    }
+                }
+                else
+                {
+                    result = new LoginSimpleResult
+                    {
+                        Id = null,
+                        IsSuccess = false,
+                        ErrorMessage = "ACCOUNT.LOGIN.EMAILDONTEXIST"
+                    };
+                }
+                return result;
+            }
+            catch
+            {
+                var result = new LoginSimpleResult
+                {
+                    Id = null,
+                    IsSuccess = false,
+                    ErrorMessage = "ACCOUNT.LOGIN.APIERROR"
+                };
+                return result;
+            }
+        }
+
+        private JwtPacket CreateJwtPacket(UserPoco user)
+        {
+            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("this is the secret phrase"));
+            var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
+            var claims = new Claim[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id)
+            };
+
+            var jwt = new JwtSecurityToken(claims: claims, signingCredentials: signingCredentials);
+            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+            return new JwtPacket()
+            {
+                Name = user.FirstName + " " + user.LastName,
+                Token = encodedJwt
+            };
         }
     }
 }

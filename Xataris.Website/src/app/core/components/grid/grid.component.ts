@@ -17,34 +17,11 @@ export class GridComponent implements OnInit, AfterViewInit {
     @Input('gridOptions') gridOptions: GridOptions;
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
-    /**
-     * ngOnInit
-     */
-    public ngOnInit() {
+    public ngOnInit () {
         this.dataSource.paginator = this.paginator;
         this.gridOptions.api = {} as m.GridApi;
-        for (let i = 0; i < this.gridOptions.columnDefs.length; i++) {
-            if (this.gridOptions.columnDefs[i].hide !== true) {
-                this.shownColumns.push(this.gridOptions.columnDefs[i].field);
-            }
-            switch (this.gridOptions.columnDefs[i].columnType) {
-                case m.ColumnType.currency:
-                case m.ColumnType.numeric:
-                case m.ColumnType.percentage:
-                    this.gridOptions.columnDefs[i].class = 'text-right';
-                break;
-                case m.ColumnType.text:
-                    if (this.gridOptions.columnDefs[i].renderType === m.RenderType.Anchor) {
-                        this.gridOptions.columnDefs[i].class = 'text-centre';
-                    } else {
-                        this.gridOptions.columnDefs[i].class = 'text-left';
-                    }
-                break;
-                case m.ColumnType.percentage:
-                case m.ColumnType.checkbox:
-                    this.gridOptions.columnDefs[i].class = 'text-centre';
-                break;
-            }
+        if (this.gridOptions.columnDefs.length > 0) {
+            this.setColumns(this.gridOptions.columnDefs);
         }
         if (!this.gridOptions.api){
             this.gridOptions.api = {} as m.GridApi;
@@ -57,6 +34,38 @@ export class GridComponent implements OnInit, AfterViewInit {
             this.gridOptions.rowData = data;
             this.dataSource.data = data;
         };
+
+        this.gridOptions.api.setColumnDefs = (columns: Array<m.ColumnDef>) => {
+            this.setColumns(columns);
+        };
+    }
+
+    private setColumns = (columns: Array<m.ColumnDef>) => {
+        this.shownColumns = [];
+        this.gridOptions.columnDefs = columns;
+        for (let i = 0; i < columns.length; i++) {
+            if (columns[i].hide !== true) {
+                this.shownColumns.push(columns[i].field);
+            }
+            switch (columns[i].columnType) {
+                case m.ColumnType.currency:
+                case m.ColumnType.numeric:
+                case m.ColumnType.percentage:
+                columns[i].class = 'text-right';
+                break;
+                case m.ColumnType.text:
+                    if (columns[i].renderType === m.RenderType.Anchor) {
+                        columns[i].class = 'text-centre';
+                    } else {
+                        columns[i].class = 'text-left';
+                    }
+                break;
+                case m.ColumnType.percentage:
+                case m.ColumnType.checkbox:
+                    columns[i].class = 'text-centre';
+                break;
+            }
+        }
     }
 
     public ngAfterViewInit () {

@@ -19,10 +19,12 @@ namespace Xataris.API.Controllers
 {
     [Produces("application/json")]
     [Route("api/User")]
+    [Authorize]
     public class UserController : BaseController
     {
         private readonly IUsers _user;
         private readonly IEmailSender _emailSender;
+        private readonly IUserSettings _userSettings;
         private readonly UserManager<UserPoco> _userManager;
         private readonly SignInManager<UserPoco> _signInManager;
 
@@ -54,11 +56,11 @@ namespace Xataris.API.Controllers
                     PhoneNumber = user.PhoneNumber,
                     UserName = user.UserName
                 };
-                return await GenerateResult(result, _user, input.GUID);
+                return await GenerateResult(result, _userSettings);
             }
             catch
             {
-                return await GenerateResult(null, _user, input.GUID);
+                return await GenerateResult(null, _userSettings);
             }
         }
 
@@ -73,7 +75,7 @@ namespace Xataris.API.Controllers
         public async Task<JsonResult> DeleteGroups([FromBody] GroupInput input)
         {
             var result = await _user.DeleteGroups(input);
-            return await GenerateResult(result, _user, input.GUID);
+            return await GenerateResult(result, _userSettings);
         }
 
         [HttpPost("GetGroups")]
@@ -107,14 +109,14 @@ namespace Xataris.API.Controllers
         public async Task<JsonResult> GetFilteredUserList([FromBody] UserFilterInput input)
         {
             var result = await _user.GetFilteredUsers(input);
-            return await GenerateResult(result, _user, input.GUID);
+            return await GenerateResult(result, _userSettings);
         }
 
         [HttpPost("GetUserPermissions")]
         public async Task<JsonResult> GetUserPermissions([FromBody] UsersIdInput input)
         {
             var result = await _user.GetUserPermissions(input);
-            return await GenerateResult(result, _user, input.GUID);
+            return await GenerateResult(result, _userSettings);
         }
 
         [HttpPost("ValidateById")]
@@ -127,54 +129,8 @@ namespace Xataris.API.Controllers
         [HttpPost("Login")]
         public async Task<JsonResult> Login([FromBody] LoginInput input)
         {
-            try
-            {
-                var user = await _userManager.FindByEmailAsync(input.Email);
-                if (user != null)
-                {
-                    var resultSign = await _signInManager.PasswordSignInAsync(user.Email, input.Password, input.RememberMe, false);
-                    SimpleResult result;
-                    if (resultSign.Succeeded)
-                    {
-                        result = new SimpleResult
-                        {
-                            Id = user.Id,
-                            IsSuccess = resultSign.Succeeded,
-                        };
-                    }
-                    else
-                    {
-                        result = new SimpleResult
-                        {
-                            Id = user.Id,
-                            IsSuccess = resultSign.Succeeded,
-                            ErrorMessage = "ACCOUNT.LOGIN.WRONGPASSWORD"
-                        };
-                    }
-                    return await GenerateResult(result);
-                }
-                else
-                {
-                    var result = new SimpleResult
-                    {
-                        Id = null,
-                        IsSuccess = false,
-                        ErrorMessage = "ACCOUNT.LOGIN.EMAILDONTEXIST"
-                    };
-                    return await GenerateResult(result);
-                }
-
-            }
-            catch
-            {
-                var result = new SimpleResult
-                {
-                    Id = null,
-                    IsSuccess = false,
-                    ErrorMessage = "ACCOUNT.LOGIN.APIERROR"
-                };
-                return await GenerateResult(result);
-            }
+            var result = await _user.Login(input, _signInManager, _userManager);
+            return await GenerateResult(result, _userSettings);
         }
 
         [HttpPost("ForgotPassword")]
@@ -191,14 +147,14 @@ namespace Xataris.API.Controllers
                         IsSuccess = false,
                         ErrorMessage = "Email is not valid"
                     };
-                    return await GenerateResult(invalid);
+                    return await GenerateResult(invalid, _userSettings);
                 }
 
                 var url = HttpUtility.HtmlEncode("http://www.xataris.com/#/account/login/token");
                 var body = "<p>Follow the following link to reset your password: </p><a href='" + url + "'>Reset Password</a>";
 
                 var emailResult = await _emailSender.SendEmailAsync(input.Email, "Password Reset", body, true);
-                return await GenerateResult(emailResult);
+                return await GenerateResult(emailResult, _userSettings);
 
             }
             catch (Exception ex)
@@ -208,7 +164,7 @@ namespace Xataris.API.Controllers
                     IsSuccess = false,
                     ErrorMessage = JsonConvert.SerializeObject(ex)
                 };
-                return await GenerateResult(result);
+                return await GenerateResult(result, _userSettings);
             }
         }
 
@@ -235,35 +191,35 @@ namespace Xataris.API.Controllers
                 };
             }
 
-            return await GenerateResult(result);
+            return await GenerateResult(result, _userSettings);
         }
 
         [HttpPost("GetWarehouses")]
         public async Task<JsonResult> GetWarehouses([FromBody] UserIdInput input)
         {
             var result = await _user.GetWarehouses();
-            return await GenerateResult(result, _user, input.GUID);
+            return await GenerateResult(result, _userSettings);
         }
 
         [HttpPost("GetUserByStatus")]
         public async Task<JsonResult> GetUserByStatus([FromBody] FilterUsersInput input)
         {
             var result = await _user.GetUserByStatus(input);
-            return await GenerateResult(result, _user, input.GUID);
+            return await GenerateResult(result, _userSettings);
         }
 
         [HttpPost("GetUser")]
         public async Task<JsonResult> GetUser([FromBody] UserEmailInput input)
         {
             var result = await _user.GetUser(input);
-            return await GenerateResult(result);
+            return await GenerateResult(result, _userSettings);
         }
 
         [HttpPost("DeleteUser")]
         public async Task<JsonResult> DeleteUser([FromBody] UserEmailInput input)
         {
             var result = await _user.DeleteUser(input, _userManager);
-            return await GenerateResult(result, _user, input.GUID);
+            return await GenerateResult(result, _userSettings);
         }
     }
 }

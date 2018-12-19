@@ -29,7 +29,9 @@ export class GroupManagementComponent implements OnInit {
 
     constructor(
         private translationLoader: FuseTranslationLoaderService,
-        private apiService: ApiService) { }
+        private apiService: ApiService) {
+            this.ngOnInit();
+         }
 
     public ngOnInit = async () => {
         this.translationLoader.loadTranslations(en, af);

@@ -2,8 +2,8 @@ import { Component, OnInit, ElementRef, ViewChild, OnDestroy } from '@angular/co
 import { FormBuilder } from '@angular/forms';
 import { FuseTranslationLoaderService } from '../../../../core/services/translation-loader.service';
 import { fuseAnimations } from '../../../../core/animations';
-import { locale as english } from './i18n/en';
-import { locale as afrikaans } from './i18n/af';
+import { locale as en } from './i18n/en';
+import { locale as af } from './i18n/af';
 import { DropdownModel, GridOptions, ColumnDef } from '../../../../core/models/sharedModels';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { FuseConfirmDialogComponent } from '../../../../core/components/confirm-dialog/confirm-dialog.component';
@@ -27,11 +27,21 @@ export class MyTimesheetComponent implements OnInit, OnDestroy {
         private formBuilder: FormBuilder,
         private apiService: ApiService,
         public dialog: MatDialog,
-        public snackBar: MatSnackBar) { }
+        public snackBar: MatSnackBar) {
+        Promise.all([
+            this.setupVariables()
+        ]).then(() => {
+            this.loadPage();
+        });
+    }
 
-    public ngOnInit = async () => {
+    public ngOnInit = () => {
+        // kjfd
+    }
+
+    private setupVariables = async () => {
         this.data = {} as Models.TimesheetViewModel;
-
+        this.translationLoader.loadTranslations(en, af);
         this.data.gridOptions = <GridOptions>{
             columnDefs: [
                 <ColumnDef>{
@@ -64,18 +74,15 @@ export class MyTimesheetComponent implements OnInit, OnDestroy {
             api: {}
         };
 
+        this.data.materials = [];
+
         this.data.loader = false;
         const dateNow = new Date();
         this.data.technician = '';
         this.data.date = dateNow.toLocaleDateString();
         this.data.confirmForm = false;
         this.data.searchInput = '';
-        this.translationLoader.loadTranslations(english, afrikaans);
         this.data.quoteEnabled = false;
-        this.data.operators = await this.apiService
-            .post('Timesheet/GetUsers');
-        this.data.sites = await this.apiService
-            .post('Site/GetSiteNames');
         const today = new Date();
         this.data.todaysDate = today.toString();
         this.data.hoursAvailable = this.timeOptions().hours;
@@ -106,6 +113,13 @@ export class MyTimesheetComponent implements OnInit, OnDestroy {
         this.data.form.valueChanges.subscribe(() => {
             this.onFormValuesChanged();
         });
+    }
+
+    private loadPage = async () => {
+        this.data.operators = await this.apiService
+            .post('Timesheet/GetUsers');
+        this.data.sites = await this.apiService
+            .post('Site/GetSiteNames');
     }
 
     private onFormValuesChanged = () => {

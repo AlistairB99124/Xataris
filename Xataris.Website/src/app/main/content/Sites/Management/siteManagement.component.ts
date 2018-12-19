@@ -23,6 +23,7 @@ export class SiteManagementComponent implements OnInit {
         private apiService: ApiService,
         private router: Router
     ) {
+        this.ngOnInit();
     }
 
     public ngOnInit = () => {

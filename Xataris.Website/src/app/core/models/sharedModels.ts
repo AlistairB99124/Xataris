@@ -217,6 +217,7 @@ export interface ColumnDef{
 export interface GridApi{
     getSelectedRows: () => Array<any>;
     setRowData: (data: Array<any>) => void;
+    setColumnDefs: (columns: ColumnDef[]) => void;
 }
 
 export interface GridOptions{

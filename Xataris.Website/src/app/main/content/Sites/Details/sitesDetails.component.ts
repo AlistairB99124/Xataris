@@ -26,7 +26,9 @@ export class SiteDetailsComponent implements OnInit {
         private translationLoader: FuseTranslationLoaderService,
         private apiService: ApiService,
         private route: Router
-    ) { }
+    ) {
+        this.ngOnInit();
+    }
 
     public saveSite = async () => {
         const input = {
@@ -37,7 +39,7 @@ export class SiteDetailsComponent implements OnInit {
             abbr: this.data.site.abbr
         };
         const result = await this.apiService.post('Site/AddSite', input);
-        if (result.data.isSuccess) {
+        if (result.isSuccess) {
             this.data.site.name = '';
             this.data.site.abbr = '';
             this.route.navigate(['Sites/Management']);

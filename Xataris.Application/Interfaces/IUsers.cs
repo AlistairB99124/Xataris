@@ -13,7 +13,7 @@ namespace Xataris.Application.Interfaces
     {
         Task<SimpleResult> GetUserByEmail(UserEmailInput input);
         Task<UsersManagementCounts> GetUserManagementCounts();
-        Task<List<UserViewModel>>GetUsersWithFilter(FilterUsersInput input);
+        Task<List<UserViewModel>> GetUsersWithFilter(FilterUsersInput input);
         Task<UserViewModel> GetUserByGUID(UserIdInput input);
         Task<GroupViewModel[]> GetGroups();
         Task<DropdownModel[]> GetAvailableModules();
@@ -31,5 +31,6 @@ namespace Xataris.Application.Interfaces
         Task<UserPoco> GetUser(UserEmailInput input);
         Task UpdateUser(string userId);
         Task<SimpleResult> DeleteUser(UserEmailInput input, UserManager<UserPoco> userManager);
+        Task<LoginSimpleResult> Login(LoginInput input, SignInManager<UserPoco> signInManager, UserManager<UserPoco> userManager);
     }
 }

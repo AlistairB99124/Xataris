@@ -9,85 +9,86 @@ namespace Xataris.API.Controllers
 {
     [Produces("application/json")]
     [Route("api/Order")]
+    [Authorize]
     public class OrderController : BaseController
     {
         private readonly IOrders _order;
-        private readonly IUsers _user;
+        private readonly IUserSettings _userSettings;
 
-        public OrderController(IOrders orders, IUsers user)
+        public OrderController(IOrders orders, IUserSettings userSettings)
         {
             _order = orders;
-            _user = user;
+            _userSettings = userSettings;
         }
 
         [HttpPost("Add")]
         public async Task<JsonResult> Add([FromBody] OrderPoco input)
         {
             var result = await _order.Add(input);
-            return await GenerateResult(result, _user, input.GUID);
+            return await GenerateResult(result, _userSettings);
         }
 
         [HttpPost("Edit")]
         public async Task<JsonResult> Edit([FromBody] OrderPoco input)
         {
             var result = await _order.Edit(input);
-            return await GenerateResult(result, _user, input.GUID);
+            return await GenerateResult(result, _userSettings);
         }
 
         [HttpPost("Delete")]
         public async Task<JsonResult> Delete([FromBody] GetOrderInput input)
         {
             var result = await _order.Delete(input.OrdersId);
-            return await GenerateResult(result, _user, input.GUID);
+            return await GenerateResult(result, _userSettings);
         }
 
         [HttpPost("Get")]
         public async Task<JsonResult> Get([FromBody] GetOrderInput input)
         {
             var result = await _order.Get(input.OrdersId);
-            return await GenerateResult(result, _user, input.GUID);
+            return await GenerateResult(result, _userSettings);
         }
 
         [HttpPost("GetAll")]
         public async Task<JsonResult> GetAll([FromBody] UserIdInput input)
         {
             var result = await _order.GetAll();
-            return await GenerateResult(result, _user, input.GUID);
+            return await GenerateResult(result, _userSettings);
         }
 
         [HttpPost("GetSites")]
         public async Task<JsonResult> GetSites([FromBody] UserIdInput input)
         {
             var result = await _order.GetSites();
-            return await GenerateResult(result, _user, input.GUID);
+            return await GenerateResult(result, _userSettings);
         }
 
         [HttpPost("GetUsers")]
         public async Task<JsonResult> GetUsers([FromBody] UserIdInput input)
         {
             var result = await _order.GetUsers();
-            return await GenerateResult(result, _user, input.GUID);
+            return await GenerateResult(result, _userSettings);
         }
 
         [HttpPost("GetMaterials")]
         public async Task<JsonResult> GetMaterials([FromBody] UserIdInput input)
         {
             var result = await _order.GetMaterials();
-            return await GenerateResult(result, _user, input.GUID);
+            return await GenerateResult(result, _userSettings);
         }
 
         [HttpPost("GetOrderItems")]
         public async Task<JsonResult> GetOrderItems([FromBody] GetOrderInput input)
         {
             var result = await _order.GetOrderItems(input.OrdersId);
-            return await GenerateResult(result, _user, input.GUID);
+            return await GenerateResult(result, _userSettings);
         }
 
         [HttpPost("GetOrderMaterials")]
         public async Task<JsonResult> GetOrderMaterials([FromBody] GetOrderInput input)
         {
             var result = await _order.GetOrderItems(input.OrdersId);
-            return await GenerateResult(result, _user, input.GUID);
+            return await GenerateResult(result, _userSettings);
         }
 
         

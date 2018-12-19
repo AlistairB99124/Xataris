@@ -1,3 +1,5 @@
+import { GridOptions } from '../../../../core/models/sharedModels';
+
 export interface PTMManagementViewModel {
   allTimesheets: Array<Timesheet>;
   confirmForm: boolean;
@@ -7,6 +9,8 @@ export interface PTMManagementViewModel {
   materials: Array<Material>;
   showToggleOn: boolean;
   showToggleOff: boolean;
+  timesheetsGrid: GridOptions;
+  showMore: boolean;
 }
 
 export interface Timesheet {

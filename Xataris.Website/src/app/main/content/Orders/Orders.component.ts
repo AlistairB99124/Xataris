@@ -29,11 +29,11 @@ export class OrdersComponent implements OnInit {
         private apiService: ApiService,
         private router: Router,
         private formBuilder: FormBuilder) {
+        this.setupVariables();
+        this.translationLoader.loadTranslations(english, afrikaans);
     }
 
     public ngOnInit = () => {
-        this.translationLoader.loadTranslations(english, afrikaans);
-        this.setupVariables();
     }
 
     enableDelete = (): boolean => {
@@ -60,7 +60,7 @@ export class OrdersComponent implements OnInit {
 
     enableEdit = (): boolean => {
         if (this.data.ordersGrid && this.data.ordersGrid.api) {
-            this.data.ordersGrid.api.getSelectedRows().length === 1;
+            return this.data.ordersGrid.api.getSelectedRows().length === 1;
         } else {
             return false;
         }

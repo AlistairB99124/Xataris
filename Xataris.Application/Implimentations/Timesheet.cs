@@ -100,10 +100,10 @@ namespace Xataris.Application.Implimentations
                 await _timesheet.AddTimesheet(poco);
                 await _context.SaveChangesAsync();
 
-                foreach (var email in _configuration["clients::plumbery::emails"].Split("::"))
-                {
-                    await _emailSender.SendEmailAsync(email, "Timesheet " + poco.Code + " submitted", "");
-                }
+                //foreach (var email in _configuration["clients:plumbery:emails"].Split("::"))
+                //{
+                //    await _emailSender.SendEmailAsync(email, "Timesheet " + poco.Code + " submitted", "");
+                //}
 
                 return new TimesheetResult
                 {
@@ -311,8 +311,7 @@ namespace Xataris.Application.Implimentations
                         Status = x.SheetStatus.ToString(),
                         Site = _context.Sites.Find(x.SiteId).Name,
                         Plumber = _context.Users.Find(x.UsersId).LastName + ", " + _context.Users.Find(x.UsersId).FirstName,
-                        AssistantTime = x.AssistantTime,
-                        IsSelected = false
+                        AssistantTime = x.AssistantTime
                     }).ToArray();
                 }
                 else
@@ -334,8 +333,7 @@ namespace Xataris.Application.Implimentations
                         Status = x.SheetStatus.ToString(),
                         Site = _context.Sites.Find(x.SiteId).Name,
                         Plumber = _context.Users.Find(x.UsersId).LastName + ", " + _context.Users.Find(x.UsersId).FirstName,
-                        AssistantTime = x.AssistantTime,
-                        IsSelected = false
+                        AssistantTime = x.AssistantTime
                     }).ToArray();
                 }
             }
