@@ -19,7 +19,6 @@ namespace Xataris.API.Controllers
 {
     [Produces("application/json")]
     [Route("api/User")]
-    [Authorize]
     public class UserController : BaseController
     {
         private readonly IUsers _user;
@@ -28,12 +27,13 @@ namespace Xataris.API.Controllers
         private readonly UserManager<UserPoco> _userManager;
         private readonly SignInManager<UserPoco> _signInManager;
 
-        public UserController(IUsers user, IEmailSender emailSender, UserManager<UserPoco> userManager, SignInManager<UserPoco> signInManager)
+        public UserController(IUsers user, IEmailSender emailSender, UserManager<UserPoco> userManager, SignInManager<UserPoco> signInManager, IUserSettings userSettings)
         {
             _user = user;
             _emailSender = emailSender;
             _userManager = userManager;
             _signInManager = signInManager;
+            _userSettings = userSettings;
         }
 
         [HttpPost("GetToolbarDetails")]
