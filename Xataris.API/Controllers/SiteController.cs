@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Xataris.Application.Interfaces;
+using Xataris.DBService;
 using Xataris.Infrastructure.ViewModels;
 
 namespace Xataris.API.Controllers
@@ -14,7 +15,7 @@ namespace Xataris.API.Controllers
         private readonly ISite _site;
         private readonly IUserSettings _userSettings;
 
-        public SiteController(ISite site, IUserSettings userSettings)
+        public SiteController(ISite site, IUserSettings userSettings, XatarisContext xatarisContext) : base(xatarisContext)
         {
             _site = site;
             _userSettings = userSettings;

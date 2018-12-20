@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Xataris.Application.Interfaces;
+using Xataris.DBService;
 using Xataris.Domain.Pocos;
 using Xataris.Infrastructure.ViewModels;
 
@@ -20,7 +21,7 @@ namespace Xataris.API.Controllers
         private readonly IJoey _joey;
         private readonly IUserSettings _userSettings;
 
-        public JoeyController(IJoey joey, IUserSettings userSettings)
+        public JoeyController(IJoey joey, IUserSettings userSettings, XatarisContext xatarisContext) : base(xatarisContext)
         {
             this._joey = joey;
             _userSettings = userSettings;

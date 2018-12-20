@@ -213,6 +213,9 @@ export class PTMManagementComponent {
                 'Site'
             ]
         };
+        _.forEach(this.data.timesheetsGrid.getRowData(), (x: Timesheet) => {
+            x.dateCreated = new Date(x.dateCreated).toDateString();
+        });
         new Angular5Csv(this.data.timesheetsGrid.getRowData(), 'Timesheets', options);
     }
 

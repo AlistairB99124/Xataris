@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Xataris.Application.Interfaces;
+using Xataris.DBService;
 using Xataris.Infrastructure.ViewModels;
 
 namespace Xataris.API.Controllers
@@ -15,7 +16,7 @@ namespace Xataris.API.Controllers
     public class DashboardController : BaseController
     {
         private readonly IDashboard dashboard;
-        public DashboardController(IDashboard dashboard)
+        public DashboardController(IDashboard dashboard, XatarisContext xatarisContext) : base(xatarisContext)
         {
             this.dashboard = dashboard;
         }

@@ -6,6 +6,7 @@ using Newtonsoft.Json.Serialization;
 using System;
 using System.Threading.Tasks;
 using Xataris.Application.Interfaces;
+using Xataris.DBService;
 using Xataris.Domain.Pocos;
 using Xataris.Infrastructure.ViewModels;
 
@@ -19,7 +20,7 @@ namespace Xataris.API.Controllers
         readonly UserManager<UserPoco> _userManager;
         readonly SignInManager<UserPoco> _signInManager;
 
-        public AccountController(UserManager<UserPoco> userManager, SignInManager<UserPoco> signInManager)
+        public AccountController(UserManager<UserPoco> userManager, SignInManager<UserPoco> signInManager, XatarisContext xatarisContext) : base(xatarisContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;

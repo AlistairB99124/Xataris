@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Xataris.Application.Interfaces;
+using Xataris.DBService;
 using Xataris.Domain.Pocos;
 using Xataris.Infrastructure.ViewModels;
 
@@ -15,7 +16,7 @@ namespace Xataris.API.Controllers
         private readonly IOrders _order;
         private readonly IUserSettings _userSettings;
 
-        public OrderController(IOrders orders, IUserSettings userSettings)
+        public OrderController(IOrders orders, IUserSettings userSettings, XatarisContext xatarisContext) : base(xatarisContext)
         {
             _order = orders;
             _userSettings = userSettings;

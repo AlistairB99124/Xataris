@@ -91,7 +91,6 @@ namespace Xataris.API
             services.AddTransient<IJoey, Joey>();
             services.AddTransient<IProcedureService, ProcedureService>();
             services.AddSingleton<IUserSettings, UserSettings>();
-            services.AddSingleton<IConfigSettings, ConfigSettings>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

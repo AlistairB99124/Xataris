@@ -14,7 +14,7 @@ namespace Xataris.API.Controllers
         private readonly IWarehouse _warehouse;
         private readonly IUserSettings _userSettings;
 
-        public WarehouseController(IWarehouse warehouse, IUserSettings userSettings)
+        public WarehouseController(IWarehouse warehouse, IUserSettings userSettings, DBService.XatarisContext xatarisContext) : base(xatarisContext)
         {
             _warehouse = warehouse;
             _userSettings = userSettings;

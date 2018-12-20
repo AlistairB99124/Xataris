@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Xataris.Application.Interfaces;
+using Xataris.DBService;
 using Xataris.Infrastructure.ViewModels;
 
 namespace Xataris.API.Controllers {
@@ -14,7 +15,8 @@ namespace Xataris.API.Controllers {
         private readonly IScrabble _scrabble;
         private readonly IUserSettings _userSettings;
 
-        public ScrabbleController(IScrabble scrabble, IUserSettings userSettings) {
+        public ScrabbleController(IScrabble scrabble, IUserSettings userSettings, XatarisContext xatarisContext) : base(xatarisContext)
+        {
             _scrabble = scrabble;
             _userSettings = userSettings;
         }

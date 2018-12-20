@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Xataris.Application.Interfaces;
+using Xataris.DBService;
 using Xataris.Infrastructure.ViewModels;
 
 namespace Xataris.API.Controllers
@@ -14,7 +15,7 @@ namespace Xataris.API.Controllers
         private IMaterial _material;
         private readonly IUserSettings _userSettings;
 
-        public MaterialController(IMaterial material, IUserSettings userSettings)
+        public MaterialController(IMaterial material, IUserSettings userSettings, XatarisContext xatarisContext) : base(xatarisContext)
         {
             _material = material;
             _userSettings = userSettings;

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Xataris.Application.Interfaces;
+using Xataris.DBService;
 using Xataris.Infrastructure.ViewModels;
 
 namespace Xataris.API.Controllers
@@ -20,7 +21,7 @@ namespace Xataris.API.Controllers
     {
         private ITimesheet _timesheet;
         private readonly IUserSettings _userSettings;
-        public TimesheetController(ITimesheet timesheet, IUserSettings userSettings)
+        public TimesheetController(ITimesheet timesheet, IUserSettings userSettings, XatarisContext xatarisContext): base(xatarisContext)
         {
             _timesheet = timesheet;
             _userSettings = userSettings;

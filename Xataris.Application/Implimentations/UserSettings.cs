@@ -10,11 +10,11 @@ namespace Xataris.Application.Implimentations
 {
     public class UserSettings : IUserSettings
     {
-        private readonly XatarisContext _context;
-        public UserSettings(XatarisContext context)
-        {
-            _context = context;
-        }
+        //private readonly XatarisContext _context;
+        //public UserSettings(XatarisContext context)
+        //{
+        //    _context = context;
+        //}
 
         public JwtPacket LocalJwt { get; set; }
         public string UsersId { get; set; }
@@ -27,12 +27,12 @@ namespace Xataris.Application.Implimentations
             throw new NotImplementedException();
         }
 
-        public async Task UpdateLastLogged()
-        {
-            var user = await this._context.Users.FindAsync(this.UsersId);
-            user.LastLoggedIn = DateTime.Now;
-            await _context.SaveChangesAsync();
-            this.CountLoggedIn = await _context.Users.Where(x => x.LastLoggedIn > DateTime.Now.AddHours(-1)).CountAsync();
-        }
+        //public async Task UpdateLastLogged()
+        //{
+        //    var user = await this._context.Users.FindAsync(this.UsersId);
+        //    user.LastLoggedIn = DateTime.Now;
+        //    await _context.SaveChangesAsync();
+        //    this.CountLoggedIn = await _context.Users.Where(x => x.LastLoggedIn > DateTime.Now.AddHours(-1)).CountAsync();
+        //}
     }
 }

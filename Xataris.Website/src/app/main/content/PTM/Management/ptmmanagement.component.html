@@ -21,7 +21,7 @@
                     <mat-slide-toggle matTooltip="Show More" [(ngModel)]="data.showMore" (change)="checkStatus()"></mat-slide-toggle>
                     <button matTooltip="Export Grid" mat-icon-button class="mat-icon-button" (click)="downloadGrid()"
                             aria-label="Add Order">
-                        <mat-icon class="s-24">cloud_download</mat-icon>
+                            <img src="assets/icons/excel.png" alt="excel" width="24" height="24">
                     </button>
                     <button matTooltip="Download Timesheet" [disabled]="!enableDelete()" mat-icon-button class="mat-icon-button" (click)="downloadPdf()"
                             aria-label="Add Order">

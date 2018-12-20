@@ -73,8 +73,9 @@ namespace Xataris.Application.Implimentations
         {
             try
             {
+                var allUSers = await _context.Users.ToListAsync();
                 var countLockedOut = await _context.Users.Where(x => x.LockoutEnd < DateTime.UtcNow).CountAsync();
-                var countNeverLoggedIn = await _context.Users.Where(x => x.LastLoggedIn < new DateTime(1970, 1, 1)).CountAsync();
+                var countNeverLoggedIn = await _context.Users.Where(x => x.LastLoggedIn < DateTime.Now.AddMonths(-1)).CountAsync();
                 var countLoggedInLastMonth = await _context.Users.Where(x => x.LastLoggedIn > DateTime.Now.AddMonths(-1)).CountAsync();
                 var loggedIn = await _context.Users.Where(x => x.LastLoggedIn > DateTime.Now.AddHours(-1)).CountAsync();
                 return new UsersManagementCounts
@@ -111,7 +112,7 @@ namespace Xataris.Application.Implimentations
                         result = GenerateUsers(usersLoggedLastMonth);
                         break;
                     case UserFilter.NeverLoggedIn:
-                        var usersNever = await _context.Users.Where(x => x.DateRegistered == null).ToListAsync();
+                        var usersNever = await _context.Users.Where(x => x.LastLoggedIn < DateTime.Now.AddMonths(-1)).ToListAsync();
                         result = GenerateUsers(usersNever);
                         break;
                     default:
@@ -507,7 +508,7 @@ namespace Xataris.Application.Implimentations
                         result = await _context.Users.Where(x => x.LastLoggedIn > DateTime.Now.AddMonths(-1)).ToListAsync();
                         break;
                     case UserFilter.NeverLoggedIn:
-                        result = await _context.Users.Where(x => x.LastLoggedIn < new DateTime(1970, 1, 1)).ToListAsync();
+                        result = await _context.Users.Where(x => x.LastLoggedIn < DateTime.Now.AddMonths(-1)).ToListAsync();
                         break;
                 }
                 return result.Select(x => new UserGridDetail
@@ -635,6 +636,7 @@ namespace Xataris.Application.Implimentations
                         ErrorMessage = "ACCOUNT.LOGIN.EMAILDONTEXIST"
                     };
                 }
+                this._userSettings.UsersId = result.Id;
                 return result;
             }
             catch

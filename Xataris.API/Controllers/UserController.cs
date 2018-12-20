@@ -14,6 +14,7 @@ using Xataris.Infrastructure.ViewModels;
 using System.Web;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
+using Xataris.DBService;
 
 namespace Xataris.API.Controllers
 {
@@ -27,7 +28,7 @@ namespace Xataris.API.Controllers
         private readonly UserManager<UserPoco> _userManager;
         private readonly SignInManager<UserPoco> _signInManager;
 
-        public UserController(IUsers user, IEmailSender emailSender, UserManager<UserPoco> userManager, SignInManager<UserPoco> signInManager, IUserSettings userSettings)
+        public UserController(IUsers user, IEmailSender emailSender, UserManager<UserPoco> userManager, SignInManager<UserPoco> signInManager, IUserSettings userSettings, XatarisContext xatarisContext) : base(xatarisContext)
         {
             _user = user;
             _emailSender = emailSender;
