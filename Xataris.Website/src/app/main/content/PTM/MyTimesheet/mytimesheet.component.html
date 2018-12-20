@@ -26,7 +26,7 @@
         <mat-card>
             <mat-card-content>
                 <mat-horizontal-stepper [linear]="true" #stepper="matHorizontalStepper">
-                    <mat-step [stepControl]="form">
+                    <mat-step [stepControl]="data.form">
                         <ng-template matStepLabel>{{'MYTIMESHEET.DETAILS' | translate}}</ng-template>
                         <form class="p-0" fxLayout="column" fxLayoutAlign="start" fxFlex name="form" [formGroup]="data.form">
                             <div fxLayout="row">
@@ -161,7 +161,7 @@
                             <button mat-button matStepperNext>{{'MYTIMESHEET.NEXT' | translate}}</button>
                         </div>
                     </mat-step>
-                    <mat-step [stepControl]="materialForm">
+                    <mat-step [stepControl]="data.materialForm">
                         <form class="p-0" fxLayout="column" fxLayoutAlign="start" fxFlex name="materialForm"
                             [formGroup]="data.materialForm">
                             <ng-template matStepLabel>{{'MYTIMESHEET.MATERIALS' | translate}}</ng-template>

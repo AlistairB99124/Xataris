@@ -18,7 +18,7 @@ import { ApiService } from '../../../services/api.service';
     styleUrls: ['./mytimesheet.component.scss'],
     animations: fuseAnimations
 })
-export class MyTimesheetComponent implements OnInit, OnDestroy {
+export class MyTimesheetComponent {
     data: Models.TimesheetViewModel;
     @ViewChild('content') content: ElementRef;
 
@@ -33,10 +33,6 @@ export class MyTimesheetComponent implements OnInit, OnDestroy {
         ]).then(() => {
             this.loadPage();
         });
-    }
-
-    public ngOnInit = () => {
-        // kjfd
     }
 
     private setupVariables = async () => {
@@ -305,9 +301,5 @@ export class MyTimesheetComponent implements OnInit, OnDestroy {
             }
         });
         this.data.filterMaterials = results;
-    }
-
-    public ngOnDestroy = async () => {
-        this.data = null;
     }
 }
