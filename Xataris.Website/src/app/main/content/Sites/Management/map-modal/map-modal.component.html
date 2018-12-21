@@ -1,0 +1,17 @@
+<div fxLayout="row">
+    <h1 fxFlex matDialogTitle>{{site.name}}</h1>
+    <button mat-icon-button matTooltip="Close" class="fuse-search-bar-collapser mat-icon-button" (click)="dialogRef.close(false)"
+        aria-label="Close">
+        <mat-icon class="s-24">close</mat-icon>
+    </button>
+</div>
+<mat-divider></mat-divider>
+<div mat-dialog-content>
+    <div fxFlex fxFlexLayout="row">
+        <agm-map [latitude]="site.latLng.lat" [longitude]="site.latLng.lng" [zoom]="16">
+            <agm-marker [latitude]="site.latLng.lat"
+                        [longitude]="site.latLng.lng"
+                        [markerDraggable]="false"></agm-marker>
+        </agm-map>
+    </div>
+</div>

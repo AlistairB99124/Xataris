@@ -4,6 +4,7 @@ import { SharedModule } from '../../../../core/modules/shared.module';
 import { SiteManagementComponent } from './siteManagement.component';
 import { AgmCoreModule } from '@agm/core';
 import { ApiService } from '../../../services/api.service';
+import { MapModalComponent } from './map-modal/map-modal.component';
 
 const routes = [
     {
@@ -14,7 +15,8 @@ const routes = [
 
 @NgModule({
     declarations: [
-        SiteManagementComponent
+        SiteManagementComponent,
+        MapModalComponent
     ],
     imports     : [
         SharedModule,
@@ -24,10 +26,14 @@ const routes = [
         })
     ],
     exports     : [
-        SiteManagementComponent
+        SiteManagementComponent,
+        MapModalComponent
     ],
     providers: [
         ApiService
+    ],
+    entryComponents: [
+        MapModalComponent
     ]
 })
 

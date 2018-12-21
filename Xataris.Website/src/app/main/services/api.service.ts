@@ -7,8 +7,8 @@ export class ApiService {
     BASE_URL: string;
     TOKEN_KEY: string;
     constructor(private http: HttpClient, private router: Router ) {
-        // this.BASE_URL = 'https://api.xataris.co.uk/api/';
-        this.BASE_URL = 'https://localhost:44360/api/';
+        this.BASE_URL = 'https://api.xataris.co.uk/api/';
+        // this.BASE_URL = 'https://localhost:44360/api/';
         this.TOKEN_KEY = 'localJwt';
     }
 

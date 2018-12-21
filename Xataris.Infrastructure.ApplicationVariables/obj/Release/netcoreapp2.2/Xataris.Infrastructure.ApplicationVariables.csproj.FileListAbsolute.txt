@@ -1,0 +1,9 @@
+C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Infrastructure.ApplicationVariables\bin\Release\netcoreapp2.2\Xataris.Infrastructure.ApplicationVariables.deps.json
+C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Infrastructure.ApplicationVariables\bin\Release\netcoreapp2.2\Xataris.Infrastructure.ApplicationVariables.dll
+C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Infrastructure.ApplicationVariables\bin\Release\netcoreapp2.2\Xataris.Infrastructure.ApplicationVariables.pdb
+C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Infrastructure.ApplicationVariables\obj\Release\netcoreapp2.2\Xataris.Infrastructure.ApplicationVariables.csprojAssemblyReference.cache
+C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Infrastructure.ApplicationVariables\obj\Release\netcoreapp2.2\Xataris.Infrastructure.ApplicationVariables.csproj.CoreCompileInputs.cache
+C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Infrastructure.ApplicationVariables\obj\Release\netcoreapp2.2\Xataris.Infrastructure.ApplicationVariables.AssemblyInfoInputs.cache
+C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Infrastructure.ApplicationVariables\obj\Release\netcoreapp2.2\Xataris.Infrastructure.ApplicationVariables.AssemblyInfo.cs
+C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Infrastructure.ApplicationVariables\obj\Release\netcoreapp2.2\Xataris.Infrastructure.ApplicationVariables.dll
+C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Infrastructure.ApplicationVariables\obj\Release\netcoreapp2.2\Xataris.Infrastructure.ApplicationVariables.pdb

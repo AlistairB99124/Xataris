@@ -4,10 +4,12 @@ import { fuseAnimations } from '../../../../core/animations';
 import { locale as en } from './i18n/en';
 import { locale as af } from './i18n/af';
 import { GridOptions, ColumnDef, ColumnType } from '../../../../core/models/sharedModels';
+import { MatDialog } from '@angular/material';
 import * as m from './siteManagement.models';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../services/api.service';
 import * as _ from 'lodash';
+import { MapModalComponent } from './map-modal/map-modal.component';
 
 @Component({
     selector: 'fuse-site-management',
@@ -21,7 +23,8 @@ export class SiteManagementComponent implements OnInit {
     constructor(
         private translationLoader: FuseTranslationLoaderService,
         private apiService: ApiService,
-        private router: Router
+        private router: Router,
+        private dialogService: MatDialog
     ) {
         this.ngOnInit();
     }
@@ -37,6 +40,13 @@ export class SiteManagementComponent implements OnInit {
                     columnType: ColumnType.checkbox
                 },
                 <ColumnDef>{
+                    title: '',
+                    field: 'latLng',
+                    columnType: ColumnType.icon,
+                    iconName: 'map',
+                    onClick: this.openMap
+                },
+                <ColumnDef>{
                     title: 'Name',
                     field: 'name',
                     columnType: ColumnType.text
@@ -50,7 +60,7 @@ export class SiteManagementComponent implements OnInit {
                     title: 'Address',
                     field: 'address',
                     columnType: ColumnType.text
-                },
+                }
             ],
             rowData: []
         };
@@ -61,7 +71,8 @@ export class SiteManagementComponent implements OnInit {
                     id: x.id,
                     name: x.name,
                     abbr: x.abbr,
-                    address: x.address
+                    address: x.address,
+                    latLng: x.latLng
                 };
             }));
             this.data.loader = false;
@@ -108,5 +119,12 @@ export class SiteManagementComponent implements OnInit {
         } else {
             return false;
         }
+    }
+
+    openMap = (site: m.Site) => {
+        this.data.dialogRef = this.dialogService.open(MapModalComponent, {
+            disableClose: false
+        });
+        this.data.dialogRef.componentInstance.site = site;
     }
 }
