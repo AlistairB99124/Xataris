@@ -12,6 +12,7 @@ export class FuseNavigationModel implements FuseNavigationModelInterface
                 'title'   : 'Modules',
                 'translate': 'NAV.MODULES',
                 'type'    : 'group',
+                'accesslevel': 'any::read',
                 'show': true,
                 'children': [
                     {
@@ -21,7 +22,7 @@ export class FuseNavigationModel implements FuseNavigationModelInterface
                         'type' : 'collapse',
                         'icon' : 'schedule',
                         'url'  : '#',
-                        'show': true,
+                        'accesslevel': 'ptm::read',
                         'permission': 0,
                         'children': [
                             {
@@ -29,7 +30,7 @@ export class FuseNavigationModel implements FuseNavigationModelInterface
                                 'title': 'PTM Management',
                                 'translate': 'NAV.PTM.PTMMANAGEMENT.TITLE',
                                 'type' : 'item',
-                                'show': true,
+                                'accesslevel': 'ptm::read',
                                 'url'  : 'PTM/PTMManagement'
                             },
                             {
@@ -37,7 +38,7 @@ export class FuseNavigationModel implements FuseNavigationModelInterface
                                 'title': 'My Time Sheet',
                                 'translate': 'NAV.PTM.MYTIMESHEET.TITLE',
                                 'type' : 'item',
-                                'show': true,
+                                'accesslevel': 'ptm::read',
                                 'url'  : 'PTM/MyTimesheet'
                             }
                         ]
@@ -49,15 +50,15 @@ export class FuseNavigationModel implements FuseNavigationModelInterface
                         'type' : 'collapse',
                         'icon' : 'markunread_mailbox',
                         'permission': 0,
-                        'show': true,
+                        'accesslevel': 'orders::read',
                         'url'  : '#',
                         'children': [
                             {
                                 'id'   : 'ordermanagement',
                                 'title': 'Order Management',
+                                'accesslevel': 'orders::read',
                                 'translate': 'NAV.ORDERS.MANAGEMENT.TITLE',
                                 'type' : 'item',
-                                'show': true,
                                 'url'  : '/orders/management'
                             }
                         ]
@@ -69,15 +70,15 @@ export class FuseNavigationModel implements FuseNavigationModelInterface
                         'type' : 'collapse',
                         'icon' : 'location_city',
                         'permission': 1,
-                        'show': true,
+                        'accesslevel': 'sites::read',
                         'url': '#',
                         'children': [
                             {
                                 'id'   : 'sitesManagement',
                                 'title': 'Sites Management',
+                                'accesslevel': 'sites::read',
                                 'translate': 'NAV.SITES.MANAGEMENT.TITLE',
                                 'type' : 'item',
-                                'show': true,
                                 'url'  : '/Sites/Management'
                             }
                         ]
@@ -89,12 +90,13 @@ export class FuseNavigationModel implements FuseNavigationModelInterface
                         'type' : 'collapse',
                         'icon' : 'insert_drive_file',
                         'permission': 1,
-                        'show': true,
+                        'accesslevel': 'inventory::read',
                         'url': '#',
                         'children': [
                             {
                                 'id'   : 'dataImport',
                                 'title': 'Management',
+                                'accesslevel': 'inventory::read',
                                 'translate': 'NAV.DATA.IMPORT.TITLE',
                                 'type' : 'item',
                                 'url'  : 'Inventory/Import'
@@ -109,14 +111,14 @@ export class FuseNavigationModel implements FuseNavigationModelInterface
                         'icon' : 'person',
                         'url': '#',
                         'permission': 4,
-                        'show': true,
+                        'accesslevel': 'users::admin',
                         'children': [
                             {
                                 'id'   : 'usersManagement',
                                 'title': 'User Management',
                                 'translate': 'NAV.USERS.MANAGEMENT.TITLE',
                                 'type' : 'item',
-                                'show': true,
+                                'accesslevel': 'users::admin',
                                 'url'  : '/users/management'
                             },
                             {
@@ -124,7 +126,7 @@ export class FuseNavigationModel implements FuseNavigationModelInterface
                                 'title': 'Group Management',
                                 'translate': 'NAV.USERS.GROUPMANAGEMENT.TITLE',
                                 'type' : 'item',
-                                'show': true,
+                                'accesslevel': 'users::admin',
                                 'url'  : '/users/groupmanagement'
                             }
                         ]

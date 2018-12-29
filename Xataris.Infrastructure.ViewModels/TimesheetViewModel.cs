@@ -31,7 +31,7 @@ namespace Xataris.Infrastructure.ViewModels
         public DateTime DateCreated { get; set; }
         public string SpecificLocation { get; set; }
         public string DetailedPoint { get; set; }
-        public string Status { get; set; }
+        public int Status { get; set; }
         public string Description { get; set; }
         public TimeSpan AssistantTime { get; set; }
         public TimeSpan OperatorTime { get; set; }
@@ -41,5 +41,12 @@ namespace Xataris.Infrastructure.ViewModels
         public string Plumber { get; set; }
         public string Site { get; set; }
         public bool IsSelected { get; set; }
+        public int Materials { get; set; }
+    }
+
+    public class MaterialCountModel
+    {
+        public int MaterialCount { get; set; }
+        public int NonMaterialCount { get; set; }
     }
 }

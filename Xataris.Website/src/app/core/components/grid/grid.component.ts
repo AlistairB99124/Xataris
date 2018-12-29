@@ -107,6 +107,8 @@ export class GridComponent implements OnInit, AfterViewInit {
                     return params[column.field];
                 case m.ColumnType.date:
                     return new Date(params[column.field]).toDateString();
+                    case m.ColumnType.boolean:
+                    return (params[column.field] as string).toLowerCase() === 'true' ? 'Yes' : 'No';
                 default:
                     return params[column.field];
             }

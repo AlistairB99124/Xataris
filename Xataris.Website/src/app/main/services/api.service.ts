@@ -7,12 +7,12 @@ export class ApiService {
     BASE_URL: string;
     TOKEN_KEY: string;
     constructor(private http: HttpClient, private router: Router ) {
-        this.BASE_URL = 'https://api.xataris.co.uk/api/';
-        // this.BASE_URL = 'https://localhost:44360/api/';
+        // this.BASE_URL = 'https://api.xataris.co.uk/api/';
+        this.BASE_URL = 'https://localhost:44360/api/';
         this.TOKEN_KEY = 'localJwt';
     }
 
-    public post = async (url: string, params?) => {
+    public post = async (url: string, params?: any) => {
         if (!params){
             params = {};
         }
@@ -22,7 +22,6 @@ export class ApiService {
                 this.router.navigate(['Account/Login']);
             });
         } else {
-            params['GUID'] = localStorage.getItem('userId');
             return this.http.post(this.BASE_URL + url, params, { headers: header }).toPromise().then((res) => {
                 if (res['logout']){
                     return this.http.post(this.BASE_URL + 'Account/Logout', { headers: header }).subscribe(() => {
@@ -32,10 +31,10 @@ export class ApiService {
                     });
                 } else {
                     localStorage.setItem(this.TOKEN_KEY, res[this.TOKEN_KEY]);
+                    localStorage.setItem('Modules', res['modules']);
                     return res['data'];
                 }
             }, (error) => {
-                console.log(error);
                 switch (error.status) {
                     case 401:
                     this.http.post(this.BASE_URL + 'Account/Logout', { headers: header }).subscribe(() => {
@@ -43,8 +42,11 @@ export class ApiService {
                         this.router.navigateByUrl('account/login');
                     });
                     break;
+                    default:
+                        localStorage.setItem(this.TOKEN_KEY, null);
+                        this.router.navigateByUrl('account/login');
+                    break;
                 }
-                return;
             });
         }
     }

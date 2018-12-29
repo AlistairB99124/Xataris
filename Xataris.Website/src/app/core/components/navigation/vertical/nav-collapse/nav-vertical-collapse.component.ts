@@ -2,7 +2,6 @@ import { Component, HostBinding, Input, OnInit } from '@angular/core';
 import { FuseNavigationService } from '../../navigation.service';
 import { NavigationEnd, Router } from '@angular/router';
 import { fuseAnimations } from '../../../../animations';
-import * as _ from 'lodash';
 
 @Component({
     selector   : 'fuse-nav-vertical-collapse',
@@ -21,10 +20,13 @@ export class FuseNavVerticalCollapseComponent implements OnInit
         private router: Router
     )
     {
+        // Listen for route changes
         router.events.subscribe(
             (event) => {
                 if ( event instanceof NavigationEnd )
                 {
+                    // Check if the url can be found in
+                    // one of the children of this item
                     if ( this.isUrlInChildren(this.item, event.urlAfterRedirects) )
                     {
                         this.expand();
@@ -37,19 +39,27 @@ export class FuseNavVerticalCollapseComponent implements OnInit
             }
         );
 
+        // Listen for collapsing of any navigation item
         this.navigationService.onNavCollapseToggled
             .subscribe(
                 (clickedItem) => {
                     if ( clickedItem && clickedItem.children )
                     {
+                        // Check if the clicked item is one
+                        // of the children of this item
                         if ( this.isChildrenOf(this.item, clickedItem) )
                         {
                             return;
                         }
+
+                        // Check if the url can be found in
+                        // one of the children of this item
                         if ( this.isUrlInChildren(this.item, this.router.url) )
                         {
                             return;
                         }
+
+                        // If the clicked item is not this item, collapse...
                         if ( this.item !== clickedItem )
                         {
                             this.collapse();
@@ -59,7 +69,10 @@ export class FuseNavVerticalCollapseComponent implements OnInit
             );
     }
 
-    public ngOnInit = async () => {
+    ngOnInit()
+    {
+        // Check if the url can be found in
+        // one of the children of this item
         if ( this.isUrlInChildren(this.item, this.router.url) )
         {
             this.expand();
@@ -68,18 +81,13 @@ export class FuseNavVerticalCollapseComponent implements OnInit
         {
             this.collapse();
         }
-        const user = localStorage.getItem('userId');
-        const res = await this.navigationService.getUserPermissions({ userId: user });
-        const moduleFound = _.find(res.data.modules, (x) => x.id === this.item.id);
-        if (moduleFound) {
-            if (res.data.permission >= this.item.permission) {
-                this.item.show = true;
-            }
-        } else {
-            this.item.show = false;
-        }
     }
 
+    /**
+     * Toggle collapse
+     *
+     * @param ev
+     */
     toggleOpen(ev)
     {
         ev.preventDefault();
@@ -91,6 +99,9 @@ export class FuseNavVerticalCollapseComponent implements OnInit
         this.navigationService.onNavCollapseToggle.emit();
     }
 
+    /**
+     * Expand the collapsable navigation
+     */
     expand()
     {
         if ( this.isOpen )
@@ -102,6 +113,9 @@ export class FuseNavVerticalCollapseComponent implements OnInit
         this.navigationService.onNavCollapseToggle.emit();
     }
 
+    /**
+     * Collapse the collapsable navigation
+     */
     collapse()
     {
         if ( !this.isOpen )
@@ -113,6 +127,14 @@ export class FuseNavVerticalCollapseComponent implements OnInit
         this.navigationService.onNavCollapseToggle.emit();
     }
 
+    /**
+     * Check if the given parent has the
+     * given item in one of its children
+     *
+     * @param parent
+     * @param item
+     * @return {any}
+     */
     isChildrenOf(parent, item)
     {
         if ( !parent.children )
@@ -134,6 +156,14 @@ export class FuseNavVerticalCollapseComponent implements OnInit
         }
     }
 
+    /**
+     * Check if the given url can be found
+     * in one of the given parent's children
+     *
+     * @param parent
+     * @param url
+     * @returns {any}
+     */
     isUrlInChildren(parent, url)
     {
         if ( !parent.children )

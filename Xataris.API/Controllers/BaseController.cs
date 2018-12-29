@@ -30,6 +30,7 @@ namespace Xataris.API.Controllers
             try
             {
                 result.localJwt = userSettings.LocalJwt.Token;
+                result.modules = userSettings.Modules;
                 result.logout = false;
             }
             catch

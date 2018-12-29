@@ -11,7 +11,10 @@
             <div *ngIf="column.columnType === 5">
                 <mat-header-cell *matHeaderCellDef class="icon"></mat-header-cell>
                 <mat-cell *matCellDef="let element" class="icon">
-                    <button mat-button mat-icon-button (click)="column.onClick(element)"><mat-icon style="color: #039be5;">{{column.iconName}}</mat-icon></button>
+                    <button mat-button mat-icon-button (click)="column.onClick(element)">
+                        <mat-icon *ngIf="column.iconName ? true : false" style="color: #039be5;">{{column.iconName}}</mat-icon>
+                        <span style="color: #039be5" *ngIf="column.iconName ? false : true">{{element[column.field]}}</span>
+                    </button>
                 </mat-cell>
             </div>
             <div *ngIf="column.columnType !== 4">

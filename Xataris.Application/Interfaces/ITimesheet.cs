@@ -18,9 +18,10 @@ namespace Xataris.Application.Interfaces
         Task<object> GetMaterial(InventoryIdInput input);
         Task<InventoryTimesheetViewModel> GetInventory();
         Task<SimpleResult> UploadTimesheet(ByteInput input);
-        Task<TimesheetView[]> GetTimesheets(UserIdInput input);
+        Task<List<TimesheetView>> GetTimesheets(UserIdInput input);
         Task<SimpleResult> DeleteTimesheet(TimesheetIdInput input);
         Task<object> GetTimesheetMaterials(TimesheetIdInput input);
         Task<SimpleResult> SaveMaterialItems(TimesheetCodeInput input);
+        Task<List<GetMaterialsByTimesheetView>> GetMaterialsByTimesheet(long input);
     }
 }

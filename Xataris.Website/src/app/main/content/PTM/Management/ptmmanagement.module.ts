@@ -5,6 +5,7 @@ import { SharedModule } from '../../../../core/modules/shared.module';
 
 import { PTMManagementComponent } from './ptmmanagement.component';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 const routes = [
     {

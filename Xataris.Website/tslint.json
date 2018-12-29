@@ -75,8 +75,8 @@
       "check-separator",
       "check-type"
     ],
-    "directive-selector": [true, "attribute", "fuse", "camelCase"],
-    "component-selector": [true, "element", "fuse", "kebab-case"],
+    "directive-selector": [true, "attribute", "", "camelCase"],
+    "component-selector": [true, "element", "", "kebab-case"],
     "use-input-property-decorator": true,
     "use-output-property-decorator": true,
     "use-host-property-decorator": true,

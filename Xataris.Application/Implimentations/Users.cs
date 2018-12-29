@@ -28,12 +28,15 @@ namespace Xataris.Application.Implimentations
         private IUserDomain _userDomain;
         private readonly IEmailSender emailSender;
         private readonly IUserSettings _userSettings;
-        public Users(XatarisContext context, IUserDomain userDomain, IEmailSender emailSender, IUserSettings userSettings)
+        private IProcedureService _procedureService;
+
+        public Users(XatarisContext context, IUserDomain userDomain, IEmailSender emailSender, IUserSettings userSettings, IProcedureService procedureService)
         {
             _context = context;
             _userDomain = userDomain;
             this.emailSender = emailSender;
             _userSettings = userSettings;
+            _procedureService = procedureService;
         }
 
         public async Task<SimpleResult> GetUserByEmail(UserEmailInput input)
@@ -610,6 +613,8 @@ namespace Xataris.Application.Implimentations
                     if (resultSign.Succeeded)
                     {
                         _userSettings.LocalJwt = this.CreateJwtPacket(user);
+                        var moduleResult = await _procedureService.CallProcedureAsync<GroupModuleViewModel>("dbo.ReadGroups", new { GroupsId = user.GroupId });
+                        _userSettings.Modules = JsonConvert.SerializeObject(moduleResult);
                         result = new LoginSimpleResult
                         {
                             Id = user.Id,

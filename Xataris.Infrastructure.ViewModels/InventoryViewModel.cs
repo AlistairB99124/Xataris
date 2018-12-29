@@ -19,4 +19,11 @@ namespace Xataris.Infrastructure.ViewModels
         public MaterialPoco[] Materials { get; set; }
         public InventoryPoco[] Inventory { get; set; }
     }
+
+    public class GetMaterialsByTimesheetView
+    {
+        public List<MaterialItemViewModel> Materials { get; set; }
+        public List<NonMaterialItemViewModel> NonMaterials { get; set; }
+    }
+
 }

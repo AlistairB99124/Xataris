@@ -1,16 +1,17 @@
-import { Component, OnInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, OnDestroy, ViewContainerRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { FuseTranslationLoaderService } from '../../../../core/services/translation-loader.service';
 import { fuseAnimations } from '../../../../core/animations';
 import { locale as en } from './i18n/en';
 import { locale as af } from './i18n/af';
-import { DropdownModel, GridOptions, ColumnDef } from '../../../../core/models/sharedModels';
+import { DropdownModel, GridOptions, ColumnDef, NotificationType } from '../../../../core/models/sharedModels';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { FuseConfirmDialogComponent } from '../../../../core/components/confirm-dialog/confirm-dialog.component';
 import * as _ from 'lodash';
 import * as Models from './mytimesheet.models';
 import { ColumnType } from '../../../../core/models/sharedModels';
 import { ApiService } from '../../../services/api.service';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 @Component({
     selector: 'fuse-mytimesheet',
@@ -27,7 +28,9 @@ export class MyTimesheetComponent {
         private formBuilder: FormBuilder,
         private apiService: ApiService,
         public dialog: MatDialog,
-        public snackBar: MatSnackBar) {
+        public snackBar: MatSnackBar,
+        private notificationService: NotificationService,
+        private viewContainerRef: ViewContainerRef) {
         Promise.all([
             this.setupVariables()
         ]).then(() => {
@@ -195,13 +198,9 @@ export class MyTimesheetComponent {
                 this.data.materialForm.reset();
                 this.data.gridOptions.api.setRowData([]);
                 this.data.materials = [];
-                this.snackBar.open('Save Successful', '', {
-                    duration: 2000
-                });
+                this.notificationService.addMessage(this.viewContainerRef, 'Save Successful', NotificationType.Success);
             } else {
-                this.snackBar.open('Save Unsuccessful', '', {
-                    duration: 2000
-                });
+                this.notificationService.addMessage(this.viewContainerRef, 'Save Unsuccessful', NotificationType.Error);
             }
         } else {
             this.snackBar.open('Save Unsuccessful', '', {

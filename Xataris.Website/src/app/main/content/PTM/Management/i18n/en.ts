@@ -4,6 +4,7 @@ export const locale = {
         'PTMMANAGEMENT': {
             'TITLE': 'PTM Management',
             'TIMESHEETS': 'Timesheets',
+            'DETAILS': '{{detailTitle}} > Details',
             'CODE': 'Code',
             'DATE': 'Date',
             'SPECIFICLOCATION': 'Specific Location',
@@ -16,7 +17,8 @@ export const locale = {
             'QUOTENO': 'Quote No.',
             'SINO': 'SI No',
             'PLUMBER': 'Plumber',
-            'SITE': 'Site' 
+            'SITE': 'Site',
+            'MATERIALS': 'Materials'
         }
     }
 };

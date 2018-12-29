@@ -193,7 +193,8 @@ export enum ColumnType{
     percentage,
     checkbox,
     icon,
-    date
+    date,
+    boolean
 }
 
 export enum RenderType{
@@ -226,4 +227,10 @@ export interface GridOptions{
     api?: GridApi;
     getRowData?: () => any;
     onReady: (param?) => void;
+}
+
+export enum NotificationType {
+    Warning,
+    Success,
+    Error
 }

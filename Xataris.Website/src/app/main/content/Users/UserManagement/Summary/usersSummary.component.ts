@@ -124,17 +124,17 @@ export class UsersSummaryComponent implements OnInit {
     }
 
 
-    async addNewUser() {
+    public addNewUser() {
         this.isEditUser = true;
         this.data.isUsersGridCollapsed = true;
         this.data.isUserDetailsGridCollapsed = false;
     }
 
-    async isEditButtonDisabled() {
+    public isEditButtonDisabled() {
         return this.data.usersGrid.api.getSelectedRows().length === 1;
     }
 
-    async saveUser() {
+    public saveUser = async () => {
         this.loader = true;
         const start = this.data.selectedUser.employmentStartDate;
         const end = this.data.selectedUser.employmentEndDate;

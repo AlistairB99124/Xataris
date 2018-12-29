@@ -103,5 +103,12 @@ namespace Xataris.API.Controllers
             var result = await _timesheet.SaveMaterialItems(input);
             return await GenerateResult(result, _userSettings);
         }
+
+        [HttpPost("GetMaterialsByTimesheet")]
+        public async Task<JsonResult> GetMaterialsByTimesheet([FromBody] long input)
+        {
+            var result = await _timesheet.GetMaterialsByTimesheet(input);
+            return await GenerateResult(result, _userSettings);
+        }
     }
 }

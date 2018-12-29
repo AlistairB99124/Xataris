@@ -1,8 +1,6 @@
 import { Component, Input, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { FuseNavigationService } from './navigation.service';
 import { Subscription } from 'rxjs/Subscription';
-import { AccessResult } from './navigation.service';
-import * as _ from 'lodash';
 
 @Component({
     selector     : 'fuse-navigation',
@@ -14,7 +12,9 @@ export class FuseNavigationComponent implements OnDestroy
 {
     navigationModel: any[];
     navigationModelChangeSubscription: Subscription;
-    userPermission: AccessResult;
+
+    @Input('layout') layout = 'vertical';
+
     constructor(private fuseNavigationService: FuseNavigationService)
     {
         this.navigationModelChangeSubscription =

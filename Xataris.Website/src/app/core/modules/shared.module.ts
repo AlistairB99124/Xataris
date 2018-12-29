@@ -18,22 +18,24 @@ import { FuseNavbarVerticalService } from '../../main/navbar/vertical/navbar-ver
 import { FuseHighlightComponent } from '../components/highlight/highlight.component';
 import { FusePerfectScrollbarDirective } from '../directives/fuse-perfect-scrollbar/fuse-perfect-scrollbar.directive';
 import { FuseIfOnDomDirective } from '../directives/fuse-if-on-dom/fuse-if-on-dom.directive';
-import { FuseAccessLevelDirective } from '../directives/fuse-access-level/fuseAccessLevel.directive';
+import { AccessLevelDirective } from '../directives/fuse-access-level/accessLevel.directive';
 import { FuseMaterialColorPickerComponent } from '../components/material-color-picker/material-color-picker.component';
 import { FuseTranslationLoaderService } from '../services/translation-loader.service';
 import { CookieService } from 'ngx-cookie-service';
 import { TranslateModule } from '@ngx-translate/core';
 import { GridComponent } from '../components/grid/grid.component';
+import { NotificationService, NotificationComponent } from '../services/notification.service';
 
 @NgModule({
     declarations   : [
         FuseMatSidenavHelperDirective,
         FuseMatSidenavTogglerDirective,
         FuseConfirmDialogComponent,
+        NotificationComponent,
         FuseCountdownComponent,
         FuseHighlightComponent,
         FuseIfOnDomDirective,
-        FuseAccessLevelDirective,
+        AccessLevelDirective,
         FusePerfectScrollbarDirective,
         FuseMaterialColorPickerComponent,
         GridComponent
@@ -65,20 +67,22 @@ import { GridComponent } from '../components/grid/grid.component';
         NgxDnDModule,
         NgxDatatableModule,
         FuseIfOnDomDirective,
-        FuseAccessLevelDirective,
+        AccessLevelDirective,
         FuseMaterialColorPickerComponent,
         GridComponent,
         TranslateModule
     ],
     entryComponents: [
-        FuseConfirmDialogComponent
+        FuseConfirmDialogComponent,
+        NotificationComponent
     ],
     providers      : [
         CookieService,
         FuseMatchMedia,
         FuseNavbarVerticalService,
         FuseMatSidenavHelperService,
-        FuseTranslationLoaderService
+        FuseTranslationLoaderService,
+        NotificationService
     ]
 })
 

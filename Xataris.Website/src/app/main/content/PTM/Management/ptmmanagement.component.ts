@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, Inject, ElementRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { FuseTranslationLoaderService } from '../../../../core/services/translation-loader.service';
 import { Angular5Csv } from 'angular5-csv/Angular5-csv';
 import { fuseAnimations } from '../../../../core/animations';
@@ -7,7 +7,8 @@ import { locale as afrikaans } from './i18n/af';
 import {
   GridOptions,
   ColumnDef,
-  ColumnType
+  ColumnType,
+  NotificationType
 } from '../../../../core/models/sharedModels';
 import { ApiService } from '../../../services/api.service';
 import { MatSnackBar } from '@angular/material';
@@ -35,6 +36,9 @@ export class PTMManagementComponent {
 
     private setupVariables = async () => {
         this.data = {} as PTMManagementViewModel;
+        this.data.detailTitle = '';
+        this.data.isSummaryCollapsed = false;
+        this.data.isDetailShown = false;
         this.data.showMore = false;
         this.data.showToggleOff = true;
         this.data.showToggleOn = false;
@@ -49,6 +53,37 @@ export class PTMManagementComponent {
             api: {} as any,
             onReady: this.loadPage
         };
+        this.data.materialDetailGrid = <GridOptions>{
+            columnDefs: await this.setMaterialColumns(),
+            rowData: [],
+            api: {} as any,
+            onReady: this.loadPage
+        };
+    }
+
+    private setMaterialColumns = async (): Promise<Array<ColumnDef>> => {
+        return [
+            <ColumnDef>{
+                title: 'BOM No',
+                field: 'bom',
+                columnType: ColumnType.text
+            },
+            <ColumnDef>{
+                title: 'Code',
+                field: 'code',
+                columnType: ColumnType.text
+            },
+            <ColumnDef>{
+                title: 'Description',
+                field: 'description',
+                columnType: ColumnType.text
+            },
+            <ColumnDef>{
+                title: 'Quantity',
+                field: 'quantity',
+                columnType: ColumnType.text
+            }
+        ];
     }
 
     private setAllColumns = async (): Promise<Array<ColumnDef>> => {
@@ -101,7 +136,7 @@ export class PTMManagementComponent {
             <ColumnDef>{
                 title: await this.translationLoader.getTranslation('PTMMANAGEMENT.ORIGINALQUOTE'),
                 field: 'originalQuote',
-                columnType: ColumnType.text
+                columnType: ColumnType.boolean
             },
             <ColumnDef>{
                 title: await this.translationLoader.getTranslation('PTMMANAGEMENT.QUOTENO'),
@@ -122,6 +157,12 @@ export class PTMManagementComponent {
                 title: await this.translationLoader.getTranslation('PTMMANAGEMENT.SITE'),
                 field: 'site',
                 columnType: ColumnType.text
+            },
+            <ColumnDef>{
+                title: await this.translationLoader.getTranslation('PTMMANAGEMENT.MATERIALS'),
+                field: 'materials',
+                columnType: ColumnType.icon,
+                onClick: this.openMaterials
             }
         ];
     }
@@ -161,7 +202,7 @@ export class PTMManagementComponent {
             <ColumnDef>{
                 title: await this.translationLoader.getTranslation('PTMMANAGEMENT.ORIGINALQUOTE'),
                 field: 'originalQuote',
-                columnType: ColumnType.text
+                columnType: ColumnType.boolean
             },
             <ColumnDef>{
                 title: await this.translationLoader.getTranslation('PTMMANAGEMENT.PLUMBER'),
@@ -172,8 +213,38 @@ export class PTMManagementComponent {
                 title: await this.translationLoader.getTranslation('PTMMANAGEMENT.SITE'),
                 field: 'site',
                 columnType: ColumnType.text
+            },
+            <ColumnDef>{
+                title: await this.translationLoader.getTranslation('PTMMANAGEMENT.MATERIALS'),
+                field: 'materials',
+                columnType: ColumnType.icon,
+                onClick: this.openMaterials
             }
         ];
+    }
+
+    public openMaterials = async (params) => {
+        this.data.detailTitle = params.code;
+        this.data.isSummaryCollapsed = true;
+        this.data.isDetailShown = true;
+        const result = await this.apiService.post('Timesheet/GetMaterialsByTimesheet', params.timesheetId);
+        const mats = _.map(result[0].materials, (x) => {
+            return {
+                bom: x.boM_No,
+                code: x.stockCode,
+                description: x.stockDescription,
+                quantity: x.quantity.toString(),
+            };
+        });
+        const non = _.map(result[0].nonMaterials, (x) => {
+            return {
+                bom: x.boM_No,
+                code: '',
+                description: x.description,
+                quantity: x.metric,
+            };
+        });
+        this.data.materialDetailGrid.api.setRowData(mats.concat(non));
     }
 
     private loadPage = async (): Promise<any> => {
@@ -182,7 +253,10 @@ export class PTMManagementComponent {
         return this.apiService
         .post('Timesheet/GetTimesheets')
         .then(timesheets => {
-            this.data.allTimesheets = timesheets;
+            this.data.allTimesheets = _.map(timesheets, (x) => {
+                x.status = x.status === 0 ? 'Chasing' : x.status === 1 ? 'First Fix' : x.status === 2 ? 'Second Fix' : 'Final Fix';
+                return x;
+            });
             this.data.timesheetsGrid.api.setRowData(this.data.allTimesheets);
             this.data.materials = [];
             this.data.loader = false;

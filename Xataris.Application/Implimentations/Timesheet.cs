@@ -14,6 +14,7 @@ using System.IO;
 using System.Net.Mail;
 using System.Net.Mime;
 using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Xataris.Application.Implimentations
 {
@@ -25,14 +26,16 @@ namespace Xataris.Application.Implimentations
         private readonly IEmailSender _emailSender;
         private List<char> alphabet;
         public IConfiguration _configuration { get; }
+        private IProcedureService _procedureService;
 
-        public Timesheet(XatarisContext context, ITimesheetDomain timesheet, IEmailSender emailSender, IConfiguration configuration)
+        public Timesheet(XatarisContext context, ITimesheetDomain timesheet, IEmailSender emailSender, IConfiguration configuration, IProcedureService procedureService)
         {
             _context = context;
             _timesheet = timesheet;
             _emailSender = emailSender;
             alphabet = new List<char> { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
             _configuration = configuration;
+            _procedureService = procedureService;
         }
 
         public async Task<TimesheetResult> AddTimesheet(TimesheetViewModel input)
@@ -135,7 +138,7 @@ namespace Xataris.Application.Implimentations
                         var inventory = await _context.Inventories.Where(x => x.MaterialId == materials.Id).FirstOrDefaultAsync();
                         var matItemPoco = new MaterialItemPoco
                         {
-                            BOM_No = mat.BomNo,
+                            BOM_No = mat.BOM_No,
                             Deleted = false,
                             TimeSheetId = timesheet.Id,
                             Quantity = Convert.ToDecimal(mat.Quantity),
@@ -150,7 +153,7 @@ namespace Xataris.Application.Implimentations
                     {
                         var non = new NonMaterialItemPoco
                         {
-                            BOM_No = mat.BomNo,
+                            BOM_No = mat.BOM_No,
                             Deleted = false,
                             Description = mat.StockDescription,
                             Metric = mat.Quantity.ToString(),
@@ -287,59 +290,35 @@ namespace Xataris.Application.Implimentations
             }
         }
 
-        public async Task<TimesheetView[]> GetTimesheets(UserIdInput input)
+        public async Task<List<TimesheetView>> GetTimesheets(UserIdInput input)
         {
             try
             {
-                var user = await _context.Users.FindAsync(input.GUID);
-                if (user.PtmEnabled == true)
+                var result = await _procedureService.CallProcedureAsync<TimesheetView>("[dbo].[ReadTimsheets]", new { });
+                return result.Select(s => new TimesheetView
                 {
-                    var result = await _context.TimeSheets.Where(o => o.UsersId == user.Id).OrderByDescending(x => x.DateCreated).ToArrayAsync();
-
-                    return result.Select(x => new TimesheetView
-                    {
-                        TimesheetId = x.Id,
-                        Code = x.Code,
-                        DateCreated = x.DateCreated,
-                        Description = x.Description,
-                        DetailedPoint = x.DetailedPoint,
-                        OriginalQuote = x.OriginalQuote ? "Yes" : "No",
-                        OperatorTime = x.OperatorTime,
-                        QuoteNo = x.QuoteNo,
-                        SINumber = x.SINumber,
-                        SpecificLocation = x.SpecificLocation,
-                        Status = x.SheetStatus.ToString(),
-                        Site = _context.Sites.Find(x.SiteId).Name,
-                        Plumber = _context.Users.Find(x.UsersId).LastName + ", " + _context.Users.Find(x.UsersId).FirstName,
-                        AssistantTime = x.AssistantTime
-                    }).ToArray();
-                }
-                else
-                {
-                    var result = await _context.TimeSheets.OrderByDescending(x => x.DateCreated).ToArrayAsync();
-
-                    return result.Select(x => new TimesheetView
-                    {
-                        TimesheetId = x.Id,
-                        Code = x.Code,
-                        DateCreated = x.DateCreated,
-                        Description = x.Description,
-                        DetailedPoint = x.DetailedPoint,
-                        OriginalQuote = x.OriginalQuote ? "Yes" : "No",
-                        OperatorTime = x.OperatorTime,
-                        QuoteNo = x.QuoteNo,
-                        SINumber = x.SINumber,
-                        SpecificLocation = x.SpecificLocation,
-                        Status = x.SheetStatus.ToString(),
-                        Site = _context.Sites.Find(x.SiteId).Name,
-                        Plumber = _context.Users.Find(x.UsersId).LastName + ", " + _context.Users.Find(x.UsersId).FirstName,
-                        AssistantTime = x.AssistantTime
-                    }).ToArray();
-                }
+                    AssistantTime = s.AssistantTime,
+                    Code = s.Code,
+                    DateCreated = s.DateCreated,
+                    Description = s.Description,
+                    DetailedPoint = s.DetailedPoint,
+                    IsSelected = s.IsSelected,
+                    Materials = _procedureService.CallProcedureAsync<MaterialCountModel>("[dbo].[ReadCountMaterials]", new { TimesheetsId = s.TimesheetId }).Result.FirstOrDefault().MaterialCount +
+                    _procedureService.CallProcedureAsync<MaterialCountModel>("[dbo].[ReadCountMaterials]", new { TimesheetsId = s.TimesheetId }).Result.FirstOrDefault().NonMaterialCount,
+                    OperatorTime = s.OperatorTime,
+                    OriginalQuote = s.OriginalQuote,
+                    Plumber = s.Plumber,
+                    QuoteNo = s.QuoteNo,
+                    SINumber = s.SINumber,
+                    Site = s.Site,
+                    SpecificLocation = s.SpecificLocation,
+                    Status = s.Status,
+                    TimesheetId = s.TimesheetId
+                }).ToList();
             }
             catch
             {
-                return null;
+                return new List<TimesheetView>();
             }
         }
 
@@ -377,6 +356,27 @@ namespace Xataris.Application.Implimentations
             catch
             {
                 return null;
+            }
+        }
+
+        public async Task<List<GetMaterialsByTimesheetView>> GetMaterialsByTimesheet(long input)
+        {
+            try
+            {
+                var mats = await _procedureService.CallProcedureAsync<MaterialItemViewModel>("[dbo].[ReadMaterialsByTimesheet]", new { TimesheetsId = input });
+                var nons = await _procedureService.CallProcedureAsync<NonMaterialItemViewModel>("[dbo].[ReadNonMaterialsByTimesheet]", new { TimesheetsId = input });
+                return new List<GetMaterialsByTimesheetView>
+                {
+                    new GetMaterialsByTimesheetView
+                    {
+                        Materials = mats,
+                        NonMaterials = nons
+                    }
+                };
+            }
+            catch
+            {
+                return new List<GetMaterialsByTimesheetView>();
             }
         }
     }

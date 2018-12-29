@@ -31,16 +31,46 @@
                             aria-label="Delete Order(s)">
                         <mat-icon class="s-24">delete</mat-icon>
                     </button>
+                    <button mat-icon-button class="fuse-search-bar-collapser mat-icon-button" 
+                            (click)="data.isSummaryCollapsed = !data.isSummaryCollapsed"
+                            aria-label="Collapse Search Bar">
+                        <mat-icon *ngIf="data.isSummaryCollapsed === true" class="s-24">keyboard_arrow_left</mat-icon>
+                        <mat-icon *ngIf="data.isSummaryCollapsed !== true" class="s-24">keyboard_arrow_down</mat-icon>
+                    </button>
                 </mat-toolbar-row>
             </mat-toolbar>
             <mat-divider></mat-divider>
-            <mat-card class="p-0">
+            <mat-card class="p-0" [ngStyle]="{'display': data.isSummaryCollapsed ? 'none' : 'block'}">
                 <mat-card-content class="p-0">
                     <fuse-grid [gridOptions]="data.timesheetsGrid" style="width: 100%"></fuse-grid>
                 </mat-card-content>
             </mat-card>
         </div>
         <!-- / CONTENT -->
+        <div class="fuse-widget-front mat-white-bg mat-elevation-z2 mt-20"  [ngStyle]="{'display': data.isDetailShown ? 'block' : 'none'}">
+            <mat-toolbar class="mat-white-bg mat-elevation-z4">
+                <mat-toolbar-row fxFlex>
+                    <span fxFlex [translate]="'PTMMANAGEMENT.DETAILS'" [translateParams]="{detailTitle: data.detailTitle}"></span>
+                    <button *ngIf="data.isDetailCollapsed !== true" mat-icon-button class="fuse-search-bar-collapser mat-icon-button" 
+                            (click)="data.isDetailShown = false; data.isSummaryCollapsed = !data.isSummaryCollapsed"
+                            aria-label="Close Details">
+                        <mat-icon class="s-24">close</mat-icon>
+                    </button>
+                    <button mat-icon-button class="fuse-search-bar-collapser mat-icon-button" 
+                            (click)="data.isDetailCollapsed = !data.isDetailCollapsed"
+                            aria-label="Collapse Search Bar">
+                        <mat-icon *ngIf="data.isDetailCollapsed === true" class="s-24">keyboard_arrow_left</mat-icon>
+                        <mat-icon *ngIf="data.isDetailCollapsed !== true" class="s-24">keyboard_arrow_down</mat-icon>
+                    </button>
+                </mat-toolbar-row>
+            </mat-toolbar>
+            <mat-divider></mat-divider>
+            <mat-card class="p-0" [ngStyle]="{'display': data.isDetailCollapsed ? 'none' : 'block'}">
+                <mat-card-content class="p-0">
+                    <fuse-grid [gridOptions]="data.materialDetailGrid" style="width: 100%"></fuse-grid>
+                </mat-card-content>
+            </mat-card>
+        </div>
 
     </div>
     <!-- / CENTER -->

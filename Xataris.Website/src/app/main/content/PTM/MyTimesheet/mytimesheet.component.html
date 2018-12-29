@@ -76,8 +76,8 @@
                                     </div>
                                     <div fxLayout="row" style="width:100%">
                                         <mat-form-field fxFlex>
-                                            <input matInput #description placeholder="{{'MYTIMESHEET.DESCRIPTION' | translate}}"
-                                                formControlName="description">
+                                            <textarea matInput  matTextareaAutosize matAutosizeMinRows="3" matAutosizeMaxRows="10" #description placeholder="{{'MYTIMESHEET.DESCRIPTION' | translate}}"
+                                                formControlName="description"></textarea>
                                         </mat-form-field>
                                     </div>
                                     <div fxLayout="row" style="width:100%">

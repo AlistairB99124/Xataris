@@ -10,6 +10,7 @@ namespace Xataris.Application.Interfaces
         string UsersId { get; set; }
         long ClientsId { get; set; }
         DateTime LastLoggedIn { get; set; }
+        string Modules { get; set; }
         Task<object> GetUserModules();
         // Task UpdateLastLogged();
         int CountLoggedIn { get; set; }

@@ -11,6 +11,10 @@ export interface PTMManagementViewModel {
   showToggleOff: boolean;
   timesheetsGrid: GridOptions;
   showMore: boolean;
+  isSummaryCollapsed: boolean;
+  materialDetailGrid: GridOptions;
+  isDetailShown: boolean;
+  detailTitle: string;
 }
 
 export interface Timesheet {

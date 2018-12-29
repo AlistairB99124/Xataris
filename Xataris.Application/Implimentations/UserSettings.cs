@@ -21,6 +21,7 @@ namespace Xataris.Application.Implimentations
         public long ClientsId { get; set; }
         public DateTime LastLoggedIn { get; set; }
         public int CountLoggedIn { get; set; }
+        public string Modules { get; set; }
 
         public Task<object> GetUserModules()
         {
