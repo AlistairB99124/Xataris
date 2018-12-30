@@ -19,6 +19,7 @@ using System.Web;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Text.Encodings.Web;
 
 namespace Xataris.Application.Implimentations
 {
@@ -333,7 +334,21 @@ namespace Xataris.Application.Implimentations
                         EmploymentEndDate = input.EmploymentEndDate
                     };
                     result = await _userDomain.SaveUser(poco, userManager, input.Password);
-                    var body = "<p>Welcome to Xataris " + poco.FirstName + " " + poco.LastName + ". Please follow the following link to set your password.</p><a href='" + "https://www.xataris.co.uk/#/account/login/token" + "'>Set Password</a>";
+                    var token = await userManager.GeneratePasswordResetTokenAsync(poco);
+                    StringBuilder sb = new StringBuilder();
+                    foreach (char x in token)
+                    {
+                        if (x == '/')
+                        {
+                            sb.Append('@');
+                        } else
+                        {
+                            sb.Append(x);
+                        }
+                    }
+                    var postUrl = "https://www.xataris.co.uk/#/account/login/";
+                    var localUrl = "http://localhost:4200/#/account/login/";
+                    var body = "<p>Welcome to Xataris " + poco.FirstName + " " + poco.LastName + ". Please follow the following link to set your password.</p><a href='" + HtmlEncoder.Default.Encode(postUrl + sb.ToString()) + "'>Set Password</a>";
                     await emailSender.SendEmailAsync(input.Email, "Welcome to Xataris", body, true);
                 }
                 return new SimpleResult

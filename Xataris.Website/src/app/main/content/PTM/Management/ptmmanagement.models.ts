@@ -13,6 +13,7 @@ export interface PTMManagementViewModel {
   showMore: boolean;
   isSummaryCollapsed: boolean;
   materialDetailGrid: GridOptions;
+  isDetailCollapsed: boolean;
   isDetailShown: boolean;
   detailTitle: string;
 }

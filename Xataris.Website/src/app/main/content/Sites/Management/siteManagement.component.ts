@@ -25,11 +25,27 @@ export class SiteManagementComponent implements OnInit {
         private apiService: ApiService,
         private router: Router,
         private dialogService: MatDialog
-    ) {
-        this.ngOnInit();
+    ) { }
+
+    public ngOnInit() {
+        this.setupVariables().then(this.load);
     }
 
-    public ngOnInit = () => {
+    private load = async () => {
+        const res = await this.apiService.post('Site/GetSites', {});
+        this.data.siteGrid.api.setRowData(_.map(res, (x) => {
+             return <m.Site>{
+                id: x.id,
+                name: x.name,
+                abbr: x.abbr,
+                address: x.address,
+                latLng: x.latLng
+            };
+        }));
+        this.data.loader = false;
+    }
+
+    private setupVariables = async () => {
         this.data = {} as m.SiteManagementViewModel;
         this.translationLoader.loadTranslations(en, af);
         this.data.siteGrid = <GridOptions>{
@@ -65,24 +81,11 @@ export class SiteManagementComponent implements OnInit {
             rowData: []
         };
         this.data.loader = true;
-        this.apiService.post('Site/GetSites', {}).then(res => {
-            this.data.siteGrid.api.setRowData(_.map(res, (x) => {
-                return <m.Site>{
-                    id: x.id,
-                    name: x.name,
-                    abbr: x.abbr,
-                    address: x.address,
-                    latLng: x.latLng
-                };
-            }));
-            this.data.loader = false;
-        });
     }
 
-    deleteSites() {
+    public deleteSites() {
         this.data.loader = true;
         const input = {
-            gUID: localStorage.getItem('userId'),
             ids: _.map(this.data.siteGrid.api.getSelectedRows(), o => o.id.toString())
         };
         this.apiService.post('Site/DeleteSites', input).then((res) => {
@@ -103,17 +106,17 @@ export class SiteManagementComponent implements OnInit {
         });
     }
 
-    goToDetails() {
-        const site = this.data.siteGrid.api.getSelectedRows()[0];
-        if (site) {
-            localStorage.setItem('siteId', site.id);
-        } else {
+    public goToDetails(add: boolean) {
+        if (add) {
             localStorage.setItem('siteId', null);
+        } else {
+            const site = this.data.siteGrid.api.getSelectedRows()[0];
+            localStorage.setItem('siteId', site.id);
         }
         this.router.navigate(['Sites/Details']);
     }
 
-    enableEdit = () => {
+    public enableEdit = () => {
         if (this.data.siteGrid && this.data.siteGrid.api) {
             return this.data.siteGrid.api.getSelectedRows().length !== 1;
         } else {
@@ -121,7 +124,15 @@ export class SiteManagementComponent implements OnInit {
         }
     }
 
-    openMap = (site: m.Site) => {
+    public enableDelete = () => {
+        if (this.data.siteGrid && this.data.siteGrid.api) {
+            return this.data.siteGrid.api.getSelectedRows().length > 0;
+        } else {
+            return false;
+        }
+    }
+
+    public openMap = (site: m.Site) => {
         this.data.dialogRef = this.dialogService.open(MapModalComponent, {
             disableClose: false
         });

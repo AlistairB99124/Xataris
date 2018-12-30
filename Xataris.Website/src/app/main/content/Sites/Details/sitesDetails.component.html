@@ -32,11 +32,38 @@
         <mat-divider></mat-divider>
         <mat-card>
             <mat-card-content fxLayout="column" fxFlex="100">
-                <div fxLayout="row" *ngIf="isMapReady">
+                <div fxLayout="row">
+                    <button style="position: absolute; z-index: 100;" 
+                        mat-icon-button 
+                        matTooltip="Search Address" 
+                        class="fuse-search-bar-collapser mat-icon-button" 
+                        (click)="data.showSearchInput = !data.showSearchInput"
+                        aria-label="Search Address"
+                        [hidden]="data.showSearchInput">
+                        <mat-icon class="s-24">search</mat-icon>
+                    </button>
+                    <mat-form-field [hidden]="!data.showSearchInput" fxFlex class="agm-search">
+                        <input placeholder="search for location"
+                                name="search"
+                                autocorrect="off" 
+                                autocapitalize="off" 
+                                spellcheck="off" 
+                                type="text"                                
+                                matInput
+                                #search [formControl]="data.searchControl">
+                        <button
+                            mat-icon-button 
+                            matTooltip="Close Search" 
+                            style="position: absolute; top: 0px; right: 5px"
+                            class="fuse-search-bar-collapser mat-icon-button" 
+                            (click)="data.showSearchInput = !data.showSearchInput"
+                            aria-label="Close Search">
+                        <mat-icon class="s-24">close</mat-icon>
+                    </button>
+                    </mat-form-field>
                     <agm-map [latitude]="data.site.latLng.lat" [longitude]="data.site.latLng.lng" [zoom]="16">
                         <agm-marker [latitude]="data.site.latLng.lat"
                                     [longitude]="data.site.latLng.lng"
-                                    (markerClick)="onMarkerClick(marker.id)"
                                     [markerDraggable]="true"
                                     (dragEnd)="updateCoords($event)"></agm-marker>
                     </agm-map>

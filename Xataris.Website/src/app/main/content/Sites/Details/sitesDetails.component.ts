@@ -1,16 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { FuseTranslationLoaderService } from '../../../../core/services/translation-loader.service';
 import { fuseAnimations } from '../../../../core/animations';
-import { locale as english } from './i18n/en';
-import { locale as afrikaans } from './i18n/af';
+import { locale as en } from './i18n/en';
+import { locale as af } from './i18n/af';
 import { ApiService } from '../../../services/api.service';
 import * as _ from 'lodash';
+declare const google: any;
 import {
     SiteDetailsViewModel,
     Location,
     Site
 } from './sitesDetails.models';
+import { MapsAPILoader } from '@agm/core';
+import { FormControl } from '@angular/forms';
 
 @Component({
     selector: 'fuse-site-details',
@@ -20,14 +23,20 @@ import {
 })
 export class SiteDetailsComponent implements OnInit {
     data: SiteDetailsViewModel;
-    isMapReady = false;
-    currgeocoder;
+
+    @ViewChild('search')
+    public searchElementRef: ElementRef;
+
     constructor(
         private translationLoader: FuseTranslationLoaderService,
         private apiService: ApiService,
-        private route: Router
-    ) {
-        this.ngOnInit();
+        private route: Router,
+        private mapsAPILoader: MapsAPILoader,
+        private ngZone: NgZone
+    ) { }
+
+    public async ngOnInit() {
+        await this.setupVariables().then(this.load);
     }
 
     public saveSite = async () => {
@@ -50,14 +59,40 @@ export class SiteDetailsComponent implements OnInit {
         this.data.site.latLng = $event.coords;
     }
 
-    public ngOnInit = async () => {
+    private setupVariables = async () => {
+        this.translationLoader.loadTranslations(en, af);
         this.data = {} as SiteDetailsViewModel;
+        this.data.showSearchInput = false;
         this.data.site = {} as Site;
         this.data.site.latLng = {} as Location;
-        this.isMapReady = false;
-        const siteId = localStorage.getItem('siteId');
-        if (siteId !== null && siteId !== 'null') {
-            const input = { siteId: siteId };
+        this.data.siteId = _.parseInt(localStorage.getItem('siteId'));
+    }
+
+    private load = async () => {
+        this.mapsAPILoader.load().then(async () => {
+            this.data.searchControl = new FormControl();
+            await this.setCurrentPosition();
+            const autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement, {
+                types: ['address']
+            });
+
+            autocomplete.addListener('place_changed', () => {
+                this.ngZone.run(() => {
+                    const place: google.maps.places.PlaceResult = autocomplete.getPlace();
+
+                    if (place.geometry === undefined || place.geometry === null) {
+                      return;
+                    }
+                    this.data.site.latLng.lat = place.geometry.location.lat();
+                    this.data.site.latLng.lng = place.geometry.location.lng();
+                });
+            });
+        });
+    }
+
+    private setCurrentPosition = async () => {
+        if (this.data.siteId) {
+            const input = { siteId: this.data.siteId };
             const res = await this.apiService.post('Site/GetSite', input);
             this.data.site = <Site>{
                 name: res.name,
@@ -69,16 +104,9 @@ export class SiteDetailsComponent implements OnInit {
                 address: res.address,
                 id: res.id
             };
-            this.isMapReady = true;
         } else {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(position => {
-                    const event = {
-                        coords: {
-                            lat: position.coords.latitude,
-                            lng: position.coords.longitude
-                        }
-                    };
                     this.data.site = <Site>{
                         name: '',
                         latLng: <Location>{
@@ -88,7 +116,6 @@ export class SiteDetailsComponent implements OnInit {
                         abbr: '',
                         address: ''
                     };
-                    this.isMapReady = true;
                 });
             }
         }

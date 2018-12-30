@@ -28,16 +28,18 @@ export class FuseToolbarComponent
     ) {
         this.data = {} as ToolbarViewModel;
         const input = { gUID: localStorage.getItem('userId') };
-        this.apiService.post('user/getToolbarDetails', input).then(res => {
-            if (res) {
-              const user = res;
-              if (user) {
-                this.data.userFullname = user.firstName + ' ' + user.lastName;
-              }
-            } else {
-              // console.log(res);
-            }
-        });
+        if (!location.href.includes('account')) {
+            this.apiService.post('user/getToolbarDetails', input).then(res => {
+                if (res) {
+                  const user = res;
+                  if (user) {
+                    this.data.userFullname = user.firstName + ' ' + user.lastName;
+                  }
+                } else {
+                  // console.log(res);
+                }
+            });
+        }
 
         this.languages = [{ id: 'en', title: 'English', flag: 'en-gb' }, { id: 'af', title: 'Afrikaans', flag: 'af-za' }, { id: 'fr', title: 'French', flag: 'fr' }];
 

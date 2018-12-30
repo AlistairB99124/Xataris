@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FuseTranslationLoaderService } from '../../../../../core/services/translation-loader.service';
-import { HttpClient } from '@angular/common/http';
 import { fuseAnimations } from '../../../../../core/animations';
 import { MatSnackBar } from '@angular/material';
 import { locale as en } from './i18n/en';
@@ -36,16 +35,43 @@ export class UsersSummaryComponent implements OnInit {
         private translationLoader: FuseTranslationLoaderService,
         private apiService: ApiService,
         public snackBar: MatSnackBar,
-        public dialog: MatDialog) {
-            this.ngOnInit();
+        public dialog: MatDialog) { }
+
+    public ngOnInit() {
+        this.setupVariables().then(this.load);
     }
 
-    ngOnInit = async () => {
+    private getGroups = async () => {
+        const result = await this.apiService.post('User/GetGroups');
+        this.data.availableGroups = _.map(result, (x) => {
+            return <s.DropdownModel<number>>{
+                text: x.title,
+                value: x.id,
+                selected: false
+            };
+        });
+    }
+
+    private getWarehouses = async () => {
+        this.data.availableWarehouses = await this.apiService.post('User/GetWarehouses');
+    }
+
+    private load = async () => {
+        Promise.all([
+            this.getTileCounts(),
+            this.getGroups(),
+            this.getWarehouses(),
+        ]).then(() => {
+            setTimeout(() => {
+                this.onTileClick(this.data.selectedFilter).then(() => this.loader = false);
+            }, 900);
+        });
+    }
+
+    private setupVariables = async () => {
+        this.loader = true;
+        this.translationLoader.loadTranslations(en, af);
         this.data = {} as UsersManagementViewModel;
-        await this.setupVariables();
-    }
-
-    setupVariables = async () => {
         this.data.usersGrid = <s.GridOptions>{
             columnDefs: [
                 <s.ColumnDef>{
@@ -77,6 +103,8 @@ export class UsersSummaryComponent implements OnInit {
             ],
             rowData: []
         };
+        this.data.filterText = 'Logged In Users';
+        this.data.selectedFilter = UserFilter.LoggedIn;
         this.data.selectedUsers = [];
         this.data.showUsersList = false;
         this.data.isUserDetailsGridCollapsed = true;
@@ -86,24 +114,9 @@ export class UsersSummaryComponent implements OnInit {
             loggedLastMonthCount: 0,
             loggedInCount: 0
         };
-        await this.getTileCounts();
-        this.isEditUser = false;
-        this.translationLoader.loadTranslations(en, af);
-        this.data.selectedUser = {} as s.UserDetails;
-        this.loader = true;
-        const result = await this.apiService.post('User/GetGroups');
-        const groups = _.map(result.data, (x) => {
-            return <s.DropdownModel<number>>{
-                text: x.title,
-                value: x.id,
-                selected: false
-            };
-        });
-        this.data.availableGroups = groups;
-        this.loader = false;
-        const res = await this.apiService.post('User/GetWarehouses');
-        this.data.availableWarehouses = res.data;
         this.data.warehouseSelected = {} as s.DropdownModel<number>;
+        this.isEditUser = false;
+        this.data.selectedUser = {} as s.UserDetails;
     }
 
     onTileClick = async (userFilter: UserFilter) => {
@@ -111,6 +124,21 @@ export class UsersSummaryComponent implements OnInit {
             filter: userFilter
         };
         this.data.selectedFilter = userFilter;
+        switch (this.data.selectedFilter) {
+            case UserFilter.LockedOut:
+                this.data.filterText = 'Locked Out';
+            break;
+            case UserFilter.NeverLoggedIn:
+                this.data.filterText = 'Never Logged In';
+            break;
+            case UserFilter.LoggedInLastMonth:
+                this.data.filterText = 'Logged in the Last Month';
+            break;
+            case UserFilter.LoggedIn:
+                this.data.filterText = 'Logged In Users';
+            break;
+        }
+
         const res = await this.apiService.post('User/GetUserByStatus', input);
         if (res) {
             this.data.showUsersList = true;
@@ -155,7 +183,7 @@ export class UsersSummaryComponent implements OnInit {
             employmentEndDate: endDate
         };
         const res = await this.apiService.post('User/SaveUser', input);
-        if (res.data.isSuccess) {
+        if (res.isSuccess) {
             if (this.data.selectedUser.id) {
                 this.snackBar.open('User Updated Successfully', '', {
                     duration: 2000,
@@ -170,6 +198,7 @@ export class UsersSummaryComponent implements OnInit {
             this.isEditUser = false;
             this.data.isUsersGridCollapsed = false;
             this.loader = false;
+            await this.onTileClick(this.data.selectedFilter);
             await this.getTileCounts();
         } else {
             this.snackBar.open('There was a problem adding the user', '', {

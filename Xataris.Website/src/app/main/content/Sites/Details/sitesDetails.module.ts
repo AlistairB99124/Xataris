@@ -19,7 +19,8 @@ const routes = [
         SharedModule,
         RouterModule.forChild(routes),
         AgmCoreModule.forRoot({
-            apiKey: 'AIzaSyCJCX7rYxZqSd4tRp4mbBeWUqfGg80VWK0'
+            apiKey: 'AIzaSyCJCX7rYxZqSd4tRp4mbBeWUqfGg80VWK0',
+            libraries: ['places']
         })
     ],
     exports     : [

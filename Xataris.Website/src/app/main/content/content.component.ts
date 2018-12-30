@@ -34,26 +34,12 @@ export class FuseContentComponent implements OnInit, OnDestroy
         private activatedRoute: ActivatedRoute,
         private fuseConfig: FuseConfigService,
         private apiService: ApiService,
-        public snackBar: MatSnackBar,
-        private location: Location
+        public snackBar: MatSnackBar
     )
     {
-        const userId = localStorage.getItem('userId');
-        this.apiService
-          .post('User/ValidateById', { gUID: userId })
-          .then(
-            res => {
-              if ((res && !res.isSuccess) || res === undefined) {
-                this.router.navigate(['account/login']);
-              }
-            },
-            reason => {
-              this.router.navigate(['account/login']);
-              this.snackBar.open('Failed to connect to the API', '', {
-                duration: 4000
-              });
-            }
-          );
+        if (location.href.includes('http://')  && !location.href.includes('localhost')) {
+            location.href = 'https://www.xataris.co.uk';
+        }
         this.router.events
             .filter((event) => event instanceof NavigationEnd)
             .map(() => this.activatedRoute)

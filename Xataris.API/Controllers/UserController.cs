@@ -15,6 +15,7 @@ using System.Web;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Xataris.DBService;
+using System.Text.Encodings.Web;
 
 namespace Xataris.API.Controllers
 {
@@ -151,7 +152,20 @@ namespace Xataris.API.Controllers
                     return await GenerateResult(invalid, _userSettings);
                 }
 
-                var url = HttpUtility.HtmlEncode("http://www.xataris.com/#/account/login/token");
+                var sb = new StringBuilder();
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                foreach (char x in token)
+                {
+                    if (x == '/')
+                    {
+                        sb.Append('@');
+                    } else
+                    {
+                        sb.Append(x);
+                    }
+                }
+
+                var url = HtmlEncoder.Default.Encode("http://www.xataris.com/#/account/login/" + sb.ToString());
                 var body = "<p>Follow the following link to reset your password: </p><a href='" + url + "'>Reset Password</a>";
 
                 var emailResult = await _emailSender.SendEmailAsync(input.Email, "Password Reset", body, true);
@@ -172,15 +186,27 @@ namespace Xataris.API.Controllers
         [HttpPost("ResetPassword")]
         public async Task<JsonResult> ResetPassword([FromBody] ResetInput input)
         {
+            var sb = new StringBuilder();
+            foreach (char x in input.Token)
+            {
+                if (x == '@')
+                {
+                    sb.Append('/');
+                } else
+                {
+                    sb.Append(x);
+                }
+            }
             var user = await _userManager.FindByEmailAsync(input.Email);
             SimpleResult result;
             if (user != null)
             {
-                await _userManager.RemovePasswordAsync(user);
-                await _userManager.AddPasswordAsync(user, input.Password);
+                var reset = await _userManager.ResetPasswordAsync(user, sb.ToString(), input.Password);
+                //await _userManager.RemovePasswordAsync(user);
+                //await _userManager.AddPasswordAsync(user, input.Password);
                 result = new SimpleResult
                 {
-                    IsSuccess = true
+                    IsSuccess = reset.Succeeded
                 };
             }
             else

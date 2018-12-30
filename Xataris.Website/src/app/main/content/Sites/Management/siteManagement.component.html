@@ -4,7 +4,7 @@
         <div class="header xataris-accent-bg p-24 h-160" fxLayout="row" fxLayoutAlign="start center">
             <div fxLayout="column" fxLayoutAlign="center start">
                 <div class="black-fg" fxLayout="row" fxLayoutAlign="start center">
-                    <mat-icon class="secondary-text s-16">Sites</mat-icon>
+                    <mat-icon class="secondary-text s-16">location_city</mat-icon>
                     <mat-icon class="secondary-text s-16">chevron_right</mat-icon>
                     <span class="secondary-text">Management</span>
                 </div>
@@ -20,17 +20,28 @@
         <div class="content p-24">
             <mat-toolbar class="mat-white-bg mat-elevation-z4">                   
                 <mat-toolbar-row fxLayoutAlign="end center">
-                        <button mat-icon-button matTooltip="Delete Sites" [disabled]="enableEdit()" class="fuse-search-bar-collapser mat-icon-button" (click)="deleteSites()"
-                        aria-label="Delete Sites">
-                    <mat-icon class="s-24">delete</mat-icon>
-                </button>
-                        <button mat-icon-button matTooltip="Edit" [disabled]="enableEdit()" class="fuse-search-bar-collapser mat-icon-button" (click)="goToDetails()"
-                        aria-label="Collapse Search Bar">
-                    <mat-icon class="s-24">edit_mode</mat-icon>
-                </button>
-                    <button mat-icon-button matTooltip="Add" class="fuse-search-bar-collapser mat-icon-button" (click)="goToDetails()"
+                    <button mat-icon-button 
+                            matTooltip="Delete Sites" 
+                            [disabled]="!enableDelete()" 
+                            class="fuse-search-bar-collapser mat-icon-button" 
+                            (click)="deleteSites()"
+                            aria-label="Delete Sites">
+                        <mat-icon class="s-24">delete</mat-icon>
+                    </button>
+                    <button mat-icon-button 
+                            matTooltip="Edit" 
+                            [disabled]="enableEdit()" 
+                            class="fuse-search-bar-collapser mat-icon-button" 
+                            (click)="goToDetails(false)"
                             aria-label="Collapse Search Bar">
-                        <mat-icon class="s-24">add</mat-icon>
+                            <mat-icon class="s-24">edit_mode</mat-icon>
+                    </button>
+                    <button mat-icon-button 
+                            matTooltip="Add" 
+                            class="fuse-search-bar-collapser mat-icon-button" 
+                            (click)="goToDetails(true)"
+                            aria-label="Collapse Search Bar">
+                            <mat-icon class="s-24">add</mat-icon>
                     </button>
                 </mat-toolbar-row>
             </mat-toolbar>

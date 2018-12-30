@@ -51,28 +51,28 @@ namespace Xataris.API.Controllers
         }
 
         [HttpPost("GetAll")]
-        public async Task<JsonResult> GetAll([FromBody] UserIdInput input)
+        public async Task<JsonResult> GetAll()
         {
             var result = await _order.GetAll();
             return await GenerateResult(result, _userSettings);
         }
 
         [HttpPost("GetSites")]
-        public async Task<JsonResult> GetSites([FromBody] UserIdInput input)
+        public async Task<JsonResult> GetSites()
         {
             var result = await _order.GetSites();
             return await GenerateResult(result, _userSettings);
         }
 
         [HttpPost("GetUsers")]
-        public async Task<JsonResult> GetUsers([FromBody] UserIdInput input)
+        public async Task<JsonResult> GetUsers()
         {
             var result = await _order.GetUsers();
             return await GenerateResult(result, _userSettings);
         }
 
         [HttpPost("GetMaterials")]
-        public async Task<JsonResult> GetMaterials([FromBody] UserIdInput input)
+        public async Task<JsonResult> GetMaterials()
         {
             var result = await _order.GetMaterials();
             return await GenerateResult(result, _userSettings);

@@ -1,5 +1,10 @@
+import { FormControl } from '@angular/forms';
+
 export interface SiteDetailsViewModel {
   site: Site;
+  siteId: number;
+  searchControl: FormControl;
+  showSearchInput: boolean;
 }
 
 export interface Site {

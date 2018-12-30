@@ -34,14 +34,14 @@ namespace Xataris.API.Controllers
         }
 
         [HttpPost("GetUsers")]
-        public async Task<JsonResult> GetUsers([FromBody] UserIdInput input)
+        public async Task<JsonResult> GetUsers()
         {
             var result = await _timesheet.GetUsers();
             return await GenerateResult(result, _userSettings);
         }
 
         [HttpPost("GetInventory")]
-        public async Task<JsonResult> GetInventory([FromBody] UserIdInput input)
+        public async Task<JsonResult> GetInventory()
         {
             try
             {

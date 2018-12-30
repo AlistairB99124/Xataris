@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ElementRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, Inject, ElementRef, ViewChild, ViewContainerRef, ViewEncapsulation } from '@angular/core';
 import { FuseTranslationLoaderService } from '../../../../core/services/translation-loader.service';
 import { Angular5Csv } from 'angular5-csv/Angular5-csv';
 import { fuseAnimations } from '../../../../core/animations';
@@ -7,8 +7,7 @@ import { locale as afrikaans } from './i18n/af';
 import {
   GridOptions,
   ColumnDef,
-  ColumnType,
-  NotificationType
+  ColumnType
 } from '../../../../core/models/sharedModels';
 import { ApiService } from '../../../services/api.service';
 import { MatSnackBar } from '@angular/material';
@@ -21,7 +20,8 @@ import { PTMManagementViewModel, Timesheet } from './ptmmanagement.models';
     selector: 'fuse-ptmmanagement',
     templateUrl: './ptmmanagement.component.html',
     styleUrls: ['./ptmmanagement.component.scss'],
-    animations: fuseAnimations
+    animations: fuseAnimations,
+    encapsulation: ViewEncapsulation.Emulated,
 })
 export class PTMManagementComponent {
 
@@ -36,6 +36,7 @@ export class PTMManagementComponent {
 
     private setupVariables = async () => {
         this.data = {} as PTMManagementViewModel;
+        this.data.isDetailCollapsed = false;
         this.data.detailTitle = '';
         this.data.isSummaryCollapsed = false;
         this.data.isDetailShown = false;

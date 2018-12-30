@@ -11,6 +11,7 @@ import { locale as english } from './i18n/en';
 import { locale as afrikaans } from './i18n/af';
 import * as _ from 'lodash';
 import { SimpleResult } from '../../Scrabble/scrabble.models';
+import { LoginViewModel } from './login.models';
 
 @Component({
     selector   : 'fuse-login',
@@ -20,16 +21,7 @@ import { SimpleResult } from '../../Scrabble/scrabble.models';
 })
 export class LoginComponent implements OnInit
 {
-    loginForm: FormGroup;
-    loginFormErrors: any;
-    resetForm: FormGroup;
-    resetFormErrors: any;
-    resetConfirmForm: FormGroup;
-    resetConfirmErrors: any;
-    rememberMe: boolean;
-    forgotPassword: boolean;
-    isResetForm: boolean;
-    token: string;
+    data: LoginViewModel;
 
     constructor(
         private router: Router,
@@ -40,8 +32,8 @@ export class LoginComponent implements OnInit
         private translateService: TranslateService,
         public snackBar: MatSnackBar,
         private apiService: ApiService
-    )
-    {
+    ) {
+        this.data = {} as LoginViewModel;
         this.translationLoader.loadTranslations(english, afrikaans);
         this.fuseConfig.setSettings({
             layout: {
@@ -51,40 +43,54 @@ export class LoginComponent implements OnInit
             }
         });
 
-        this.loginFormErrors = {
+        this.data.loginFormErrors = {
             email   : {},
             password: {}
         };
-        this.resetFormErrors = {
+        this.data.resetFormErrors = {
             email: {}
         };
-        this.resetConfirmErrors = {
+        this.data.resetConfirmErrors = {
             email: {},
             password: {},
             confirmPassword: {}
         };
-        this.forgotPassword = false;
-        this.isResetForm = false;
-    }
+        this.data.forgotPassword = false;
+        this.data.isResetForm = false;
+        this.data.loginForm = this.formBuilder.group({
+            email   : ['', [Validators.required, Validators.email]],
+            password: ['', [Validators.required]]
+        });
+        this.data.resetForm = this.formBuilder.group({
+            email   : ['', [Validators.required, Validators.email]]
+        });
+        this.data.resetConfirmForm = this.formBuilder.group({
+            email   : [''],
+            password: [''],
+            confirmPassword: ['']
+        });
+     }
 
     toggleForgotPassword(){
-        this.forgotPassword = !this.forgotPassword;
+        this.data.forgotPassword = !this.data.forgotPassword;
     }
 
-    resetPassword(){
-        this.apiService.post('User/ForgotPassword', this.resetForm.value).then((res: SimpleResult) => {
+    public resetPassword = () => {
+        const input = _.cloneDeep(this.data.resetConfirmForm.value);
+        input.token = this.data.token;
+        this.apiService.post('User/ForgotPassword', input).then((res: SimpleResult) => {
             if (res.isSuccess) {
-                this.resetForm.reset();
-                this.forgotPassword = false;
+                this.data.resetForm.reset();
+                this.data.forgotPassword = false;
             }
         });
     }
 
-    login(){
+    public login(){
         const input = {
-            email: this.loginForm.value.email,
-            password: this.loginForm.value.password,
-            rememberMe: this.rememberMe
+            email: this.data.loginForm.value.email,
+            password: this.data.loginForm.value.password,
+            rememberMe: this.data.rememberMe
         };
         this.apiService.post('User/Login', input).then((res: SimpleResult) => {
           if (res.isSuccess){
@@ -98,118 +104,103 @@ export class LoginComponent implements OnInit
         });
     }
 
-    ngOnInit()
+    public async ngOnInit()
     {
-        this.loginForm = this.formBuilder.group({
-            email   : ['', [Validators.required, Validators.email]],
-            password: ['', [Validators.required]]
-        });
-
-        this.loginForm.valueChanges.subscribe(() => {
-            this.onLoginFormValuesChanged();
-        });
-        this.resetForm = this.formBuilder.group({
-            email   : ['', [Validators.required, Validators.email]]
-        });
-
-        this.resetForm.valueChanges.subscribe(() => {
-            this.onResetFormValuesChanged();
-        });
-        this.resetConfirmForm = this.formBuilder.group({
-            email   : [''],
-            password: [''],
-            confirmPassword: ['']
-        });
-        this.resetConfirmForm.valueChanges.subscribe(() => {
-            this.onConfirmResetFormValuesChanged();
-        });
-        this.route.params.subscribe(params => {
-            if (params['token'] === null || params['token'] === undefined) {
-                this.isResetForm = false;
+        await this.data.loginForm.valueChanges.subscribe();
+        await this.data.resetForm.valueChanges.subscribe();
+        await this.data.resetConfirmForm.valueChanges.subscribe();
+        await this.onLoginFormValuesChanged();
+        await this.onResetFormValuesChanged();
+        await this.onConfirmResetFormValuesChanged();
+        this.route.params.subscribe((params) => {
+            if (params.token === null || params.token === undefined) {
+                this.data.isResetForm = false;
             } else {
-                this.isResetForm = true;
+                this.data.token = params.token;
+                this.data.isResetForm = true;
             }
         });
     }
 
-    onConfirmResetFormValuesChanged(){
-        for ( const field in this.resetConfirmErrors )
+    public async onConfirmResetFormValuesChanged(){
+        for ( const field in this.data.resetConfirmErrors )
         {
-            if ( !this.resetConfirmErrors.hasOwnProperty(field) )
+            if ( !this.data.resetConfirmErrors.hasOwnProperty(field) )
             {
                 continue;
             }
 
             // Clear previous errors
-            this.resetConfirmErrors[field] = {};
+            this.data.resetConfirmErrors[field] = {};
 
             // Get the control
-            const control = this.resetConfirmForm.get(field);
+            const control = this.data.resetConfirmForm.get(field);
 
             if ( control && control.dirty && !control.valid )
             {
-                this.resetConfirmErrors[field] = control.errors;
+                this.data.resetConfirmErrors[field] = control.errors;
             }
         }
     }
 
     resetPasswordConfirm(){
             const input = {
-                email: this.resetConfirmForm.controls.email.value,
-                password: this.resetConfirmForm.controls.password.value,
-                confirmPassword: this.resetConfirmForm.controls.confirmPassword.value
+                email: this.data.resetConfirmForm.controls.email.value,
+                password: this.data.resetConfirmForm.controls.password.value,
+                confirmPassword: this.data.resetConfirmForm.controls.confirmPassword.value,
+                token: this.data.token
             };
             if (input.password !== input.confirmPassword) {
                 return;
             }
             this.apiService.post('User/ResetPassword', input).then((res: SimpleResult) => {
                 if (res.isSuccess) {
-                    this.resetConfirmForm.reset();
-                    this.forgotPassword = false;
-                    this.isResetForm = false;
+                    this.data.resetConfirmForm.reset();
+                    this.data.forgotPassword = false;
+                    this.data.isResetForm = false;
                 }
             });
     }
 
-    onResetFormValuesChanged(){
-        for ( const field in this.resetFormErrors )
+    public async onResetFormValuesChanged(){
+        for ( const field in this.data.resetFormErrors )
         {
-            if ( !this.resetFormErrors.hasOwnProperty(field) )
+            if ( !this.data.resetFormErrors.hasOwnProperty(field) )
             {
                 continue;
             }
 
             // Clear previous errors
-            this.resetFormErrors[field] = {};
+            this.data.resetFormErrors[field] = {};
 
             // Get the control
-            const control = this.resetForm.get(field);
+            const control = this.data.resetForm.get(field);
 
             if ( control && control.dirty && !control.valid )
             {
-                this.resetFormErrors[field] = control.errors;
+                this.data.resetFormErrors[field] = control.errors;
             }
         }
     }
 
-    onLoginFormValuesChanged()
+    public async onLoginFormValuesChanged()
     {
-        for ( const field in this.loginFormErrors )
+        for ( const field in this.data.loginFormErrors )
         {
-            if ( !this.loginFormErrors.hasOwnProperty(field) )
+            if ( !this.data.loginFormErrors.hasOwnProperty(field) )
             {
                 continue;
             }
 
             // Clear previous errors
-            this.loginFormErrors[field] = {};
+            this.data.loginFormErrors[field] = {};
 
             // Get the control
-            const control = this.loginForm.get(field);
+            const control = this.data.loginForm.get(field);
 
             if ( control && control.dirty && !control.valid )
             {
-                this.loginFormErrors[field] = control.errors;
+                this.data.loginFormErrors[field] = control.errors;
             }
         }
     }

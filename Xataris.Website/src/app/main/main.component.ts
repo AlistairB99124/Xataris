@@ -36,7 +36,7 @@ export class FuseMainComponent implements OnInit, OnDestroy
         if ( this.platform.ANDROID || this.platform.IOS )
         {
             this.document.body.className += ' is-mobile';
-        }     
+        }
     }
 
     ngOnInit()

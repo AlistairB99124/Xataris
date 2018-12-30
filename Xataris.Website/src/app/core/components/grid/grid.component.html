@@ -13,7 +13,7 @@
                 <mat-cell *matCellDef="let element" class="icon">
                     <button mat-button mat-icon-button (click)="column.onClick(element)">
                         <mat-icon *ngIf="column.iconName ? true : false" style="color: #039be5;">{{column.iconName}}</mat-icon>
-                        <span style="color: #039be5" *ngIf="column.iconName ? false : true">{{element[column.field]}}</span>
+                        <span style="color: rgba(139, 63, 139, 0.8)" *ngIf="column.iconName ? false : true">{{element[column.field]}}</span>
                     </button>
                 </mat-cell>
             </div>
@@ -22,7 +22,7 @@
                 <mat-cell *matCellDef="let element">
                     <div fxLayout="row" fxLayoutAlign="{{column.class === 'text-centre' ? 'center center' : column.class === 'text-right' ? 'end center' : 'start center'}}">
                         <span *ngIf="column.renderType === undefined">{{renderCell(element, column)}}</span>
-                        <a *ngIf="column.renderType === 0" style="cursor: pointer" (click)="column.onClick(element)">{{renderCell(element, column)}}</a>
+                        <a *ngIf="column.renderType === 0" style="cursor: pointer; color: rgba(139, 63, 139, 1)" (click)="column.onClick(element)">{{renderCell(element, column)}}</a>
                     </div>
                 </mat-cell>
             </div>

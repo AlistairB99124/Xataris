@@ -10,20 +10,17 @@
                 </div>
                 <div fxLayout="row" style="width: 100%">
                     <div fxFlex class="h1 mt-16">User Management</div>
-                    <button matTooltip="Add New User" *ngIf="!isEditUser" mat-icon-button class="fuse-search-bar-collapser mat-icon-button" (click)="addNewUser()" aria-label="Add New User">
-                        <mat-icon class="s-24">add</mat-icon>
-                    </button>
                 </div>
             </div>
         </div>
         <mat-progress-bar *ngIf="data.loader" mode="indeterminate"></mat-progress-bar>
         <div class="content p-16">
-            <div class="widget-group p-12" fxLayout="row" fxLayoutWrap *fuseIfOnDom [@animateStagger]="{value:'50'}">
+            <div class="widget-group p-12" fxLayout="row" fxLayoutWrap *fuseIfOnDom [@animateStagger]="{value:'100'}">
     
-                <fuse-widget [@animate]="{value:'*',params:{y:'100%'}}" class="widget" fxLayout="column" fxFlex="100" fxFlex.gt-xs="50" fxFlex.gt-md="25">
+                <fuse-widget [@animate]="{value:'*',params:{y:'500px', x: '-500px', scale: 0.1, delay: '100ms'}}" class="widget" fxLayout="column" fxFlex="100" fxFlex.gt-xs="50" fxFlex.gt-md="25">
     
                     <div class="fuse-widget-front mat-white-bg mat-elevation-z2">
-                        <div class="pl-16 pr-8 py-16 h-52" fxLayout="row" fxLayoutAlign="space-between center">
+                        <div class="pl-16 pr-8 py-16 h-52" fxLayout="row" fxLayoutAlign="center center">
                             <div class="h3">Locked Out</div>
                         </div>
                         <mat-divider></mat-divider>
@@ -34,10 +31,10 @@
                         </div>
                     </div>
                 </fuse-widget>
-                <fuse-widget [@animate]="{value:'*',params:{y:'100%'}}" class="widget" fxLayout="column" fxFlex="100" fxFlex.gt-xs="50" fxFlex.gt-md="25">
+                <fuse-widget [@animate]="{value:'*',params:{y:'-500px', x: '-500px', scale: 0.1, delay: '500ms'}}" class="widget" fxLayout="column" fxFlex="100" fxFlex.gt-xs="50" fxFlex.gt-md="25">
     
                     <div class="fuse-widget-front mat-white-bg mat-elevation-z2">
-                        <div class="pl-16 pr-8 py-16 h-52" fxLayout="row" fxLayoutAlign="space-between center">
+                        <div class="pl-16 pr-8 py-16 h-52" fxLayout="row" fxLayoutAlign="center center">
                             <div class="h3">Never Logged In</div>
                         </div>
                         <mat-divider></mat-divider>
@@ -48,10 +45,10 @@
                         </div>
                     </div>
                 </fuse-widget>
-                <fuse-widget [@animate]="{value:'*',params:{y:'100%'}}" class="widget" fxLayout="column" fxFlex="100" fxFlex.gt-xs="50" fxFlex.gt-md="25">
+                <fuse-widget [@animate]="{value:'*',params:{y:'500px', x: '500px', scale: 0.1, delay: '700ms'}}" class="widget" fxLayout="column" fxFlex="100" fxFlex.gt-xs="50" fxFlex.gt-md="25">
     
                     <div class="fuse-widget-front mat-white-bg mat-elevation-z2">
-                        <div class="pl-16 pr-8 py-16 h-52" fxLayout="row" fxLayoutAlign="space-between center">
+                        <div class="pl-16 pr-8 py-16 h-52" fxLayout="row" fxLayoutAlign="center center">
                             <div class="h3">Logged in the Last Month</div>
                         </div>
                         <mat-divider></mat-divider>
@@ -62,10 +59,10 @@
                         </div>
                     </div>
                 </fuse-widget>
-                <fuse-widget [@animate]="{value:'*',params:{y:'100%'}}" class="widget" fxLayout="column" fxFlex="100" fxFlex.gt-xs="50" fxFlex.gt-md="25">
+                <fuse-widget [@animate]="{value:'*',params:{y:'500px', x: '500px', scale: 0.1, delay: '300ms'}}" class="widget" fxLayout="column" fxFlex="100" fxFlex.gt-xs="50" fxFlex.gt-md="25">
     
                     <div class="fuse-widget-front mat-white-bg mat-elevation-z2">
-                        <div class="pl-16 pr-8 py-16 h-52" fxLayout="row" fxLayoutAlign="space-between center">
+                        <div class="pl-16 pr-8 py-16 h-52" fxLayout="row" fxLayoutAlign="center center">
                             <div class="h3">Logged In Users</div>
                         </div>
                         <mat-divider></mat-divider>
@@ -76,11 +73,11 @@
                         </div>
                     </div>
                 </fuse-widget>
-                <fuse-widget [@animate]="{value:'*',params:{y:'100%'}}" class="widget" fxLayout="row" fxFlex="100">
-                    <div class="fuse-widget-front mat-white-bg mat-elevation-z2" [ngStyle]="{'display': data.showUsersList ? 'block' : 'none'}">
+                <fuse-widget [@animate]="{value:'*',params:{y:'1000px', x: '1000px', delay: '900ms'}}" class="widget" fxLayout="row" fxFlex="100">
+                    <div class="fuse-widget-front mat-white-bg mat-elevation-z2">
                         <mat-toolbar class="mat-white-bg mat-elevation-z4">
                             <mat-toolbar-row fxFlex>
-                                <span fxFlex>Users</span>
+                                <span fxFlex>Users: {{data.filterText}}</span>
                                 <button *ngIf="!data.isUsersGridCollapsed" [disabled]="!isEditButtonDisabled()" mat-icon-button class="fuse-search-bar-collapser mat-icon-button" (click)="deleteUser()"
                                         aria-label="Collapse Search Bar">
                                     <mat-icon class="s-24">delete</mat-icon>
@@ -88,6 +85,9 @@
                                 <button *ngIf="!data.isUsersGridCollapsed" [disabled]="!isEditButtonDisabled()" mat-icon-button class="fuse-search-bar-collapser mat-icon-button" (click)="editUser()"
                                         aria-label="Collapse Search Bar">
                                     <mat-icon class="s-24">mode_edit</mat-icon>
+                                </button>
+                                <button matTooltip="Add New User" *ngIf="!isEditUser" mat-icon-button class="fuse-search-bar-collapser mat-icon-button" (click)="addNewUser()" aria-label="Add New User">
+                                    <mat-icon class="s-24">add</mat-icon>
                                 </button>
                                 <button mat-icon-button class="fuse-search-bar-collapser mat-icon-button" (click)="data.isUsersGridCollapsed = !data.isUsersGridCollapsed"
                                         aria-label="Collapse Search Bar">

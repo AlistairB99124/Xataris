@@ -14,7 +14,6 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { ApiService } from './main/services/api.service';
 import { HttpInterceptorService } from './main/services/httpInterceptor.service';
-import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 import {MatCheckboxModule} from '@angular/material';
 import {MatButtonModule} from '@angular/material';
@@ -47,10 +46,6 @@ import {MatTableModule} from '@angular/material/table';
 import {MatSortModule} from '@angular/material/sort';
 import {MatPaginatorModule} from '@angular/material/paginator';
 
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-
-import { HttpModule } from '@angular/http';
-
 const appRoutes: Routes = [
     {
         path      : '',
@@ -71,7 +66,6 @@ const appRoutes: Routes = [
         SharedModule,
         TranslateModule.forRoot(),
         FuseMainModule,
-        NgxMatSelectSearchModule,
         MatCheckboxModule,
         MatButtonModule,
         MatInputModule,
@@ -101,9 +95,7 @@ const appRoutes: Routes = [
         MatSnackBarModule,
         MatTableModule,
         MatSortModule,
-        MatPaginatorModule,
-        NgxDatatableModule,
-        HttpModule
+        MatPaginatorModule
     ],
     providers   : [
         ApiService,

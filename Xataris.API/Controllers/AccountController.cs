@@ -14,7 +14,6 @@ namespace Xataris.API.Controllers
 {
     [Produces("application/json")]
     [Route("api/Account")]
-    [Authorize]
     public class AccountController : BaseController
     {
         readonly UserManager<UserPoco> _userManager;

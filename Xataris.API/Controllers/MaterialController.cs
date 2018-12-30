@@ -36,7 +36,7 @@ namespace Xataris.API.Controllers
         }
 
         [HttpPost("GetMaterials")]
-        public async Task<JsonResult> GetMaterials([FromBody] UserIdInput input)
+        public async Task<JsonResult> GetMaterials()
         {
             var result = await _material.GetMaterials();
             return await GenerateResult(result, _userSettings);
@@ -44,14 +44,14 @@ namespace Xataris.API.Controllers
 
         
         [HttpPost("GetInventory")]
-        public async Task<JsonResult> GetInventory([FromBody] UserIdInput input)
+        public async Task<JsonResult> GetInventory()
         {
             var result = await _material.GetInventory();
             return await GenerateResult(result, _userSettings);
         }
 
         [HttpPost("GetUsers")]
-        public async Task<JsonResult> GetUsers([FromBody] UserIdInput input)
+        public async Task<JsonResult> GetUsers()
         {
             var result = await _material.GetUsers();
             return await GenerateResult(result, _userSettings);

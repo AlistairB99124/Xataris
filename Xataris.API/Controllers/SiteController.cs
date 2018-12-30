@@ -29,7 +29,7 @@ namespace Xataris.API.Controllers
         }
 
         [HttpPost("GetSites")]
-        public async Task<JsonResult> GetSites([FromBody] UserIdInput input)
+        public async Task<JsonResult> GetSites()
         {
             var result = await _site.GetSites();
             return await GenerateResult(result, _userSettings);
@@ -43,7 +43,7 @@ namespace Xataris.API.Controllers
         }
 
         [HttpPost("GetSiteNames")]
-        public async Task<JsonResult> GetSiteNames([FromBody] UserIdInput input)
+        public async Task<JsonResult> GetSiteNames()
         {
             var result = await _site.GetSiteNames();
             return await GenerateResult(result, _userSettings);
