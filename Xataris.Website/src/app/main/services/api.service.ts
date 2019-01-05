@@ -12,10 +12,16 @@ export class ApiService {
         this.TOKEN_KEY = 'localJwt';
     }
 
+
+    public getHealthyStuff = () => {
+        return this.http.get('https://www.hummusapien.com/healthy-vegetarian-meal-plan-week-of-12-22-18/');
+    }
+
     public post = async (url: string, params?: any) => {
         if (!params){
             params = {};
         }
+
         const header = new HttpHeaders({ Authorization: 'Bearer ' + localStorage.getItem(this.TOKEN_KEY) });
         if (localStorage.getItem(this.TOKEN_KEY) === null) {
             this.http.post(this.BASE_URL + 'Account/Logout', { headers: header }).subscribe(() => {

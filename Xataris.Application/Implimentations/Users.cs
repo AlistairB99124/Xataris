@@ -6,16 +6,13 @@ using System.Threading.Tasks;
 using Xataris.Application.Interfaces;
 using Xataris.DBService;
 using Xataris.Infrastructure.ViewModels;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Xataris.Infrastructure.ApplicationVariables;
 using Xataris.Domain.Pocos;
-using Microsoft.EntityFrameworkCore.Internal;
 using Xataris.Domain.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using System.Web;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -60,24 +57,10 @@ namespace Xataris.Application.Implimentations
             }
         }
 
-        public async Task<UserViewModel> GetUserByGUID(UserIdInput input)
-        {
-            try
-            {
-                var result = await _context.Users.FindAsync(input.GUID);
-                return GenerateUser(result);
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
         public async Task<UsersManagementCounts> GetUserManagementCounts()
         {
             try
             {
-                var allUSers = await _context.Users.ToListAsync();
                 var countLockedOut = await _context.Users.Where(x => x.LockoutEnd < DateTime.UtcNow).CountAsync();
                 var countNeverLoggedIn = await _context.Users.Where(x => x.LastLoggedIn < DateTime.Now.AddMonths(-1)).CountAsync();
                 var countLoggedInLastMonth = await _context.Users.Where(x => x.LastLoggedIn > DateTime.Now.AddMonths(-1)).CountAsync();
@@ -94,73 +77,6 @@ namespace Xataris.Application.Implimentations
             {
                 return null;
             }
-        }
-
-        public async Task<List<UserViewModel>> GetUsersWithFilter(FilterUsersInput input)
-        {
-            try
-            {
-                List<UserViewModel> result = new List<UserViewModel>();
-                switch (input.Filter)
-                {
-                    case UserFilter.LockedOut:
-                        var usersLockedOut = await _context.Users.Where(x => x.AccessFailedCount > 5).ToListAsync();
-                        result = GenerateUsers(usersLockedOut);
-                        break;
-                    case UserFilter.LoggedIn:
-                        var usersLoggedin = await _context.Users.Where(x => x.DateRegistered == (DateTime.Today)).ToListAsync();
-                        result = GenerateUsers(usersLoggedin);
-                        break;
-                    case UserFilter.LoggedInLastMonth:
-                        var usersLoggedLastMonth = await _context.Users.Where(x => x.DateRegistered < (DateTime.Today.AddMonths(-1))).ToListAsync();
-                        result = GenerateUsers(usersLoggedLastMonth);
-                        break;
-                    case UserFilter.NeverLoggedIn:
-                        var usersNever = await _context.Users.Where(x => x.LastLoggedIn < DateTime.Now.AddMonths(-1)).ToListAsync();
-                        result = GenerateUsers(usersNever);
-                        break;
-                    default:
-                        result = null;
-                        break;
-                }
-                return result;
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        private List<UserViewModel> GenerateUsers(List<UserPoco> users)
-        {
-            return users.Select(s => new UserViewModel
-            {
-                DateRegistered = s.DateRegistered,
-                Email = s.Email,
-                EmailConfirmed = s.EmailConfirmed,
-                FirstName = s.FirstName,
-                Id = s.Id,
-                LastName = s.LastName,
-                PasswordHash = s.PasswordHash,
-                PhoneNumber = s.PhoneNumber,
-                UserName = s.UserName
-            }).ToList();
-        }
-
-        private UserViewModel GenerateUser(UserPoco user)
-        {
-            return new UserViewModel
-            {
-                DateRegistered = user.DateRegistered,
-                Email = user.Email,
-                EmailConfirmed = user.EmailConfirmed,
-                FirstName = user.FirstName,
-                Id = user.Id,
-                LastName = user.LastName,
-                PasswordHash = user.PasswordHash,
-                PhoneNumber = user.PhoneNumber,
-                UserName = user.UserName
-            };
         }
 
         public async Task<GroupViewModel[]> GetGroups()
@@ -347,7 +263,6 @@ namespace Xataris.Application.Implimentations
                         }
                     }
                     var postUrl = "https://www.xataris.co.uk/#/account/login/";
-                    var localUrl = "http://localhost:4200/#/account/login/";
                     var body = "<p>Welcome to Xataris " + poco.FirstName + " " + poco.LastName + ". Please follow the following link to set your password.</p><a href='" + HtmlEncoder.Default.Encode(postUrl + sb.ToString()) + "'>Set Password</a>";
                     await emailSender.SendEmailAsync(input.Email, "Welcome to Xataris", body, true);
                 }
@@ -396,98 +311,6 @@ namespace Xataris.Application.Implimentations
             catch
             {
                 return null;
-            }
-        }
-
-        public async Task<ModulePoco[]> GetModules(long groupId)
-        {
-            try
-            {
-                var group = await _context.UserGroups.FindAsync(groupId);
-
-                return JsonConvert.DeserializeObject<ModulePoco[]>(group.Modules);
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        public async Task<UserGroupPoco> GetTheGroup(long id)
-        {
-            try
-            {
-                return await _context.UserGroups.FindAsync(id);
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        public async Task<AccessResult> GetUserPermissions(UsersIdInput input)
-        {
-            try
-            {
-                var user = await _context.Users.FindAsync(input.UserId);
-                if (user != null)
-                {
-                    var group = await _context.UserGroups.FindAsync(user.GroupId);
-                    if (group != null)
-                    {
-                        var modules = JsonConvert.DeserializeObject<ModulePoco[]>(group.Modules);
-                        if (modules != null)
-                        {
-                            return new AccessResult
-                            {
-                                Modules = modules.Select(x => new ModuleViewModel
-                                {
-                                    Id = x.Id,
-                                    Name = x.Name
-                                }).ToArray(),
-                                Permission = (int)group.AccessLevel
-                            };
-                        }
-                        return new AccessResult();
-                    }
-                    return new AccessResult();
-                }
-                return new AccessResult();
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        public async Task<SimpleResult> ValidateById(UserIdInput input, UserManager<UserPoco> userManager)
-        {
-            try
-            {
-                var user = await userManager.FindByIdAsync(input.GUID);
-                if (user == null)
-                {
-                    return new SimpleResult
-                    {
-                        IsSuccess = false,
-                        ErrorMessage = "User Does Not Exist"
-                    };
-                }
-                else
-                {
-                    return new SimpleResult
-                    {
-                        IsSuccess = true
-                    };
-                }
-            }
-            catch (Exception ex)
-            {
-                return new SimpleResult
-                {
-                    IsSuccess = false,
-                    ErrorMessage = JsonConvert.SerializeObject(ex)
-                };
             }
         }
 

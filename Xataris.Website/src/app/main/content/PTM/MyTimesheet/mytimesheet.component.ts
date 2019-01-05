@@ -1,17 +1,19 @@
 import { Component, OnInit, ElementRef, ViewChild, OnDestroy, ViewContainerRef } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
 import { FuseTranslationLoaderService } from '../../../../core/services/translation-loader.service';
 import { fuseAnimations } from '../../../../core/animations';
 import { locale as en } from './i18n/en';
 import { locale as af } from './i18n/af';
 import { DropdownModel, GridOptions, ColumnDef, NotificationType } from '../../../../core/models/sharedModels';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog, MatSnackBar, MatStepper } from '@angular/material';
 import { FuseConfirmDialogComponent } from '../../../../core/components/confirm-dialog/confirm-dialog.component';
 import * as _ from 'lodash';
 import * as Models from './mytimesheet.models';
 import { ColumnType } from '../../../../core/models/sharedModels';
 import { ApiService } from '../../../services/api.service';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { Subject, ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'fuse-mytimesheet',
@@ -19,9 +21,12 @@ import { NotificationService } from '../../../../core/services/notification.serv
     styleUrls: ['./mytimesheet.component.scss'],
     animations: fuseAnimations
 })
-export class MyTimesheetComponent {
+export class MyTimesheetComponent implements OnInit, OnDestroy {
     data: Models.TimesheetViewModel;
+    _onDestroy = new Subject<void>();
+    @ViewChild('stepper') stepper: MatStepper;
     @ViewChild('content') content: ElementRef;
+    materialCtrl: FormControl;
 
     constructor(
         private translationLoader: FuseTranslationLoaderService,
@@ -31,22 +36,55 @@ export class MyTimesheetComponent {
         public snackBar: MatSnackBar,
         private notificationService: NotificationService,
         private viewContainerRef: ViewContainerRef) {
-        Promise.all([
-            this.setupVariables()
-        ]).then(() => {
-            this.loadPage();
-        });
+        this.setupVariables();
     }
+
+    public ngOnInit() {
+        this.loadPage();
+        this.materialCtrl.valueChanges
+      .pipe(takeUntil<any>(this._onDestroy))
+      .subscribe(() => {
+        this.filterBanks();
+      });
+    }
+
+    public ngOnDestroy() {
+        this._onDestroy.next();
+        this._onDestroy.complete();
+    }
+
+    private filterBanks() {
+        if (!this.data.filterMaterials) {
+          return;
+        }
+        // get the search keyword
+        let search = this.materialCtrl.value;
+        if (!search) {
+          this.data.filterMaterials.next(this.data.materialsAvailable.slice());
+          return;
+        } else {
+          search = search.toLowerCase();
+        }
+        // filter the banks
+        this.data.filterMaterials.next(
+          this.data.materialsAvailable.filter((option) => option.text.toLowerCase().includes(search))
+        );
+      }
 
     private setupVariables = async () => {
         this.data = {} as Models.TimesheetViewModel;
+        this.data.filterMaterials = new ReplaySubject<any>(1);
+        this.materialCtrl = new FormControl();
+        this.data.hoursSelected = [];
         this.translationLoader.loadTranslations(en, af);
         this.data.gridOptions = <GridOptions>{
             columnDefs: [
                 <ColumnDef>{
                     title: '',
                     field: 'id',
-                    columnType: ColumnType.checkbox
+                    columnType: ColumnType.icon,
+                    onClick: this.deleteMaterial,
+                    iconName: 'delete'
                 },
                 <ColumnDef>{
                     title: await this.translationLoader.getTranslation('MYTIMESHEET.BOMNO'),
@@ -163,11 +201,10 @@ export class MyTimesheetComponent {
             .post('Timesheet/GetMaterials', input);
         if (res) {
             this.data.materialsAvailable = res;
-            this.data.filterMaterials = this.data.materialsAvailable;
+            this.data.filterMaterials.next(this.data.materialsAvailable.slice());
             this.data.loader = false;
         } else {
             this.data.materialsAvailable = [];
-            this.data.filterMaterials = this.data.materialsAvailable;
         }
     }
 
@@ -191,13 +228,14 @@ export class MyTimesheetComponent {
 
             if (areMatereialsAdded.isSuccess) {
                 this.data.timesheetNo = isTimesheetAdded.timesheetCode;
-                this.data.filterMaterials = [];
+                this.data.filterMaterials.unsubscribe();
                 this.data.materialsAvailable = [];
                 this.data.confirmForm = false;
                 this.data.form.reset();
                 this.data.materialForm.reset();
                 this.data.gridOptions.api.setRowData([]);
                 this.data.materials = [];
+                this.stepper.selectedIndex = 0;
                 this.notificationService.addMessage(this.viewContainerRef, 'Save Successful', NotificationType.Success);
             } else {
                 this.notificationService.addMessage(this.viewContainerRef, 'Save Unsuccessful', NotificationType.Error);
@@ -209,8 +247,8 @@ export class MyTimesheetComponent {
         }
     }
 
-    public deleteMaterial = (id) => {
-        const row = _.find(this.data.gridOptions.getRowData(), x => x.id === id);
+    public deleteMaterial = (params) => {
+        const row = _.find(this.data.gridOptions.getRowData(), x => x.id === params.id);
         _.remove(this.data.materials, row);
         this.data.gridOptions.api.setRowData(this.data.materials);
     }
@@ -227,10 +265,17 @@ export class MyTimesheetComponent {
             this.data.gridOptions.api.setRowData(this.data.materials);
             this.data.materialForm.reset();
         } else {
+            let quantity = this.data.materialForm.controls.quantity.value;
+            if (typeof quantity === 'string') {
+                quantity = parseFloat(quantity);
+            }
+            if (_.isNaN(quantity)) {
+                quantity = 0;
+            }
             const input = {
                 id: this.data.materialForm.controls.material.value,
                 bomNo: this.data.materialForm.controls.bomNo.value,
-                quantity: this.data.materialForm.controls.quantity.value
+                quantity: quantity
             };
             const result = await this.apiService
                 .post('Timesheet/GetMaterial', input);
@@ -245,8 +290,7 @@ export class MyTimesheetComponent {
         }
     }
 
-    private getStatuses = () => {
-        return [
+    private getStatuses = () => [
             <DropdownModel<number>>{
                 text: 'Chasing',
                 value: 0,
@@ -267,8 +311,7 @@ export class MyTimesheetComponent {
                 value: 3,
                 selected: false
             }
-        ];
-    }
+        ]
 
     private timeOptions = (): Models.TimeOptions => {
         const options = <Models.TimeOptions>{
@@ -290,15 +333,5 @@ export class MyTimesheetComponent {
             });
         }
         return options;
-    }
-
-    public searchMaterials = () => {
-        const results = [];
-        _.forEach(this.data.materialsAvailable, (x: DropdownModel<number>) => {
-            if (x.text.toLowerCase().includes(this.data.searchInput.toLowerCase())) {
-                results.push(x);
-            }
-        });
-        this.data.filterMaterials = results;
     }
 }

@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using Xataris.Application.Interfaces;
 using Xataris.DBService;
 using Xataris.Infrastructure.ViewModels;

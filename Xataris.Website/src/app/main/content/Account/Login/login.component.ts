@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { FuseConfigService } from '../../../../core/services/config.service';
 import { fuseAnimations } from '../../../../core/animations';
 import { MatSnackBar } from '@angular/material';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FuseTranslationLoaderService } from '../../../../core/services/translation-loader.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService } from '../../../services/api.service';
-import { locale as english } from './i18n/en';
-import { locale as afrikaans } from './i18n/af';
+import { locale as en } from './i18n/en';
+import { locale as af } from './i18n/af';
+import { locale as fr } from './i18n/fr';
 import * as _ from 'lodash';
 import { SimpleResult } from '../../Scrabble/scrabble.models';
 import { LoginViewModel } from './login.models';
@@ -34,7 +35,7 @@ export class LoginComponent implements OnInit
         private apiService: ApiService
     ) {
         this.data = {} as LoginViewModel;
-        this.translationLoader.loadTranslations(english, afrikaans);
+        this.translationLoader.loadTranslations(en, af, fr);
         this.fuseConfig.setSettings({
             layout: {
                 navigation: 'none',

@@ -59,12 +59,12 @@ export class InventoryComponent implements OnInit {
                     columnType: m.ColumnType.text
                 },
                 <m.ColumnDef>{
-                    field: 'quantity',
+                    field: 'level',
                     title: 'Level',
                     columnType: m.ColumnType.numeric
                 },
                 <m.ColumnDef>{
-                    field: 'cost',
+                    field: 'unitCostPrice',
                     title: 'Unit Cost',
                     columnType: m.ColumnType.currency,
                     currencySymbol: 'R'

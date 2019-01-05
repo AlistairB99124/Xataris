@@ -5,6 +5,7 @@ import {
   MatDialogRef
 } from '@angular/material';
 import { GridOptions } from '../../../../core/models/sharedModels';
+import { ReplaySubject } from 'rxjs';
 
 export interface TimesheetViewModel {
   title: string;
@@ -17,7 +18,7 @@ export interface TimesheetViewModel {
   statusAvailable: Array<DropdownModel<number>>;
   materialsAvailable: Array<DropdownModel<number>>;
   nonStockItem: boolean;
-  filterMaterials: Array<DropdownModel<number>>;
+  filterMaterials: ReplaySubject<Array<DropdownModel<number>>>;
   confirmForm: boolean;
   date: string;
   technician: string;
@@ -33,6 +34,7 @@ export interface TimesheetViewModel {
   searchInput: string;
   dialogRef: MatDialogRef<FuseConfirmDialogComponent>;
   gridOptions: GridOptions;
+  hoursSelected: Array<DropdownModel<any>>;
 }
 
 export interface SiteViewModel {

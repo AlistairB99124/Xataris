@@ -1,2 +1,10 @@
 // Import Fuse main library
 @import "app/core/scss/core";
+.black-fg {
+    mat-icon.secondary-text {
+        color: #ffffff !important;
+    }
+    span.secondary-text {
+        color: #ffffff !important;
+    }
+}

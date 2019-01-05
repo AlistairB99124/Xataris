@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms';
 import { FuseTranslationLoaderService } from '../../../core/services/translation-loader.service';
 import { fuseAnimations } from '../../../core/animations';
 import { locale as english } from './i18n/en';
@@ -11,6 +11,8 @@ import * as _ from 'lodash';
 import * as jsPDF from 'jspdf';
 import * as m from './Orders.models';
 import { ApiService } from '../../services/api.service';
+import { ReplaySubject, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'fuse-orders',
@@ -19,21 +21,137 @@ import { ApiService } from '../../services/api.service';
     encapsulation: ViewEncapsulation.None,
     animations: fuseAnimations
 })
-export class OrdersComponent implements OnInit {
+export class OrdersComponent implements OnInit, OnDestroy {
 
     data: m.OrdersViewModel;
-    searchInput;
+    materialCtrl: FormControl;
+    _onDestroy = new Subject<void>();
 
     constructor(
         private translationLoader: FuseTranslationLoaderService,
         private apiService: ApiService,
-        private router: Router,
         private formBuilder: FormBuilder) {
         this.setupVariables();
-        this.translationLoader.loadTranslations(english, afrikaans);
     }
 
-    public ngOnInit = () => {
+    setupVariables = () => {
+        this.translationLoader.loadTranslations(english, afrikaans);
+        this.data = {} as m.OrdersViewModel;
+        this.data.loader = true;
+        this.data.order = {} as m.OrderPoco;
+        this.data.itemsSelected = [];
+        this.data.formErrors = {
+            plumber: {},
+            material: {},
+            site: {},
+            quantity: {},
+            nonQuantity: {},
+            description: {}
+        };
+        this.data.orderForm = new FormGroup({
+            plumber: new FormControl({}, [Validators.required]),
+            material: new FormControl({}),
+            site: new FormControl({}, [Validators.required]),
+            quantity: new FormControl(0),
+            nonQuantity: new FormControl(''),
+            description: new FormControl('')
+        });
+        this.materialCtrl = new FormControl();
+        this.data.filterMaterials = new ReplaySubject(1);
+        this.data.confirmForm = false;
+        this.data.ordersDetail = {} as m.OrderPoco;
+        this.data.useNonMaterialField = new FormControl(false);
+        this.data.nonMaterialDescription = '';
+        this.data.materials = [];
+        this.data.ordersGrid = <GridOptions>{
+            columnDefs: [
+                <ColumnDef>{
+                    field: 'id',
+                    title: '',
+                    columnType: ColumnType.checkbox
+                },
+                <ColumnDef>{
+                    field: 'dateCreated',
+                    title: 'Date Created',
+                    columnType: ColumnType.text
+                },
+                <ColumnDef>{
+                    field: 'plumber',
+                    title: 'Plumber',
+                    columnType: ColumnType.text
+                },
+                <ColumnDef>{
+                    field: 'site',
+                    title: 'Site',
+                    columnType: ColumnType.text
+                }
+            ],
+            rowData: [],
+            onReady: this.getAll
+        };
+        this.getMaterials().then(() => {
+            this.apiService.post('order/getSites').then(res => {
+                _.forEach(res, (x) => {
+                    x.isSelected = false;
+                });
+                this.data.sitesAvailable = res;
+                this.apiService.post('order/getUsers').then(result => {
+                    _.forEach(result, (x) => {
+                        x.isSelected = false;
+                    });
+                    this.data.usersAvailable = result;
+                    this.data.itemsSelected = [];
+                    this.data.loader = false;
+                });
+            });
+        });
+    }
+
+    private filterMaterials = () => {
+        if (!this.data.filterMaterials) {
+            return;
+          }
+          // get the search keyword
+          let search = this.materialCtrl.value;
+          if (!search) {
+            this.data.filterMaterials.next(this.data.materialsAvailable.slice());
+            return;
+          } else {
+            search = search.toLowerCase();
+          }
+          // filter the banks
+          this.data.filterMaterials.next(
+            this.data.materialsAvailable.filter((option) => option.stockCode.toLowerCase().includes(search) || option.stockDescription.toLowerCase().includes(search))
+          );
+    }
+
+    private onOrderFormValuesChanged = () => {
+        for (const field in this.data.formErrors) {
+            if (!this.data.formErrors.hasOwnProperty(field)) {
+                continue;
+            }
+            this.data.formErrors[field] = {};
+            const control = this.data.orderForm.get(field);
+            if (control && control.dirty && !control.valid) {
+                this.data.formErrors[field] = control.errors;
+            }
+        }
+    }
+
+    public ngOnInit() {
+        this.data.orderForm.valueChanges.subscribe(() => {
+            this.onOrderFormValuesChanged();
+        });
+        this.materialCtrl.valueChanges
+        .pipe(takeUntil<any>(this._onDestroy))
+        .subscribe(() => {
+            this.filterMaterials();
+        });
+    }
+
+    public ngOnDestroy = () => {
+        this._onDestroy.next();
+        this._onDestroy.complete();
     }
 
     enableDelete = (): boolean => {
@@ -48,16 +166,6 @@ export class OrdersComponent implements OnInit {
         }
     }
 
-    searchMaterials = () => {
-        const results = [];
-        _.forEach(this.data.materialsAvailable, (x: MaterialPoco) => {
-            if (x.stockCode.toLowerCase().includes(this.searchInput.toLowerCase()) || x.stockDescription.toLowerCase().includes(this.searchInput.toLowerCase())) {
-                results.push(x);
-            }
-        });
-        this.data.filterMaterials = results;
-    }
-
     enableEdit = (): boolean => {
         if (this.data.ordersGrid && this.data.ordersGrid.api) {
             return this.data.ordersGrid.api.getSelectedRows().length === 1;
@@ -69,24 +177,14 @@ export class OrdersComponent implements OnInit {
     add = () => {
         this.data.loader = true;
         this.data.ordersDetail.orderItems = _.cloneDeep(this.data.itemsSelected);
-        this.data.ordersDetail.plumber = this.data.userSelected.firstName + ' ' + this.data.userSelected.lastName;
-        this.data.ordersDetail.site = this.data.siteSelected.name;
+        this.data.ordersDetail.plumber = this.data.orderForm.controls.plumber.value.firstName + ' ' + this.data.orderForm.controls.plumber.value.lastName;
+        this.data.ordersDetail.site = this.data.orderForm.controls.site.value.name;
         this.apiService.post('order/add', this.data.ordersDetail).then(res => {
             if (res.isSuccess) {
                 this.data.ordersDetail = {} as m.OrderPoco;
-                this.data.isOrderDetailCollapsed = true;
-                this.data.isOrderListCollapsed = false;
-                this.data.showDetailsPanel = false;
                 this.getAll();
-                this.data.orderItemGrid.api.setRowData([]);
                 this.data.loader = false;
             }
-        });
-    }
-
-    edit = () => {
-        this.apiService.post('order/edit', this.data.ordersDetail).then(res => {
-
         });
     }
 
@@ -121,8 +219,6 @@ export class OrdersComponent implements OnInit {
 
     showDetailsPanel = () => {
         this.data.loader = true;
-        this.data.isOrderListCollapsed = true;
-        this.data.showDetailsPanel = true;
             this.data.ordersDetail = <m.OrderPoco>{
                 id: 0,
                 dateCreated: new Date(),
@@ -138,178 +234,35 @@ export class OrdersComponent implements OnInit {
     addMaterialItem = () => {
         this.data.itemsSelected.push(<m.OrderItemPoco>{
             isSelected: false,
-            materialId: this.data.useNonMaterialField ? 0 : this.data.materialSelected.id,
-            stockCode: this.data.useNonMaterialField ? '' : this.data.materialSelected.stockCode,
-            stockDescription: this.data.useNonMaterialField ? this.data.nonMaterialDescription : this.data.materialSelected.stockDescription,
-            stockCost: this.data.useNonMaterialField ? 0 : this.data.materialSelected.cost,
-            quantity: this.data.itemQuantity,
+            materialId: this.data.useNonMaterialField ? 0 : this.data.orderForm.controls.material.value.id,
+            stockCode: this.data.useNonMaterialField ? '' : this.data.orderForm.controls.material.value.stockCode,
+            stockDescription: this.data.useNonMaterialField ? this.data.nonMaterialDescription : this.data.orderForm.controls.material.value.stockDescription,
+            stockCost: this.data.useNonMaterialField ? 0 : this.data.orderForm.controls.material.value.cost,
+            quantity: this.data.orderForm.controls.quantity.value ? this.data.orderForm.controls.quantity.value : this.data.orderForm.controls.nonQuantity.value,
             orderId: this.data.ordersDetail.id,
             order: this.data.ordersDetail
         });
-        this.data.orderItemGrid.api.setRowData(this.data.itemsSelected);
-        this.data.itemQuantity = 0;
-        this.data.materialSelected = {} as MaterialPoco;
+        this.data.orderForm.controls.material.reset();
+        this.data.orderForm.controls.quantity.reset();
+        this.data.orderForm.controls.nonQuantity.reset();
     }
 
-    deleteMaterialItem = () => {
-        const itemSelected = this.data.orderItemGrid.api.getSelectedRows()[0];
-        _.remove(this.data.orderItemGrid.getRowData(), x => x['stockCode'] === itemSelected.stockCode);
-        this.data.orderItemGrid.api.setRowData(this.data.itemsSelected);
-    }
-
-    disableDeleteItem = () => {
-        if (this.data.orderItemGrid.api) {
-            return this.data.orderItemGrid.api.getSelectedRows().length === 1;
-        }
-    }
-
-    disableAddItem = () => {
-        if (this.data.useNonMaterialField) {
-            if (this.data.itemQuantity) {
-                if (this.data.itemQuantity === 0) {
-                    return true;
-                } else {
-                    if (this.data.nonMaterialDescription !== '') {
-                        return false;
-                    } else {
-                        return true;
-                    }
-                }
-            } else {
-                return true;
-            }
-        } else {
-            if (this.data.materialSelected) {
-                if (this.data.materialSelected.id) {
-                    if (this.data.itemQuantity) {
-                        if (this.data.itemQuantity === 0) {
-                            return true;
-                        }
-                        else {
-                            return false;
-                        }
-                    } else {
-                        return true;
-                    }
-                } else {
-                    return true;
-                }
-            } else {
-                return true;
-            }
-        }
-    }
-
-    getMaterials = () => {
-        this.apiService.post('order/getMaterials', {}).then(res => {
+    getMaterials = async () => {
+        return this.apiService.post('order/getMaterials', {}).then(res => {
             this.data.materialsAvailable = res;
-            this.data.filterMaterials = this.data.materialsAvailable;
-        });
-    }
-
-    setupVariables = () => {
-        this.data = {} as m.OrdersViewModel;
-        this.data.loader = true;
-        this.searchInput = '';
-        this.data.confirmForm = false;
-        this.data.isOrderListCollapsed = false;
-        this.data.isOrderDetailCollapsed = false;
-        this.data.showDetailsPanel = false;
-        this.data.ordersDetail = {} as m.OrderPoco;
-        this.data.useNonMaterialField = false;
-        this.data.nonMaterialDescription = '';
-        this.data.materials = [];
-        this.data.orderItemGrid = <GridOptions>{
-            columnDefs: [
-                <ColumnDef>{
-                    field: 'materialId',
-                    title: '',
-                    columnType: ColumnType.checkbox
-                },
-                <ColumnDef>{
-                    field: 'stockCode',
-                    title: '',
-                    columnType: ColumnType.text
-                },
-                <ColumnDef>{
-                    field: 'stockDescription',
-                    title: '',
-                    columnType: ColumnType.text
-                },
-                <ColumnDef>{
-                    field: 'stockCost',
-                    title: '',
-                    columnType: ColumnType.currency,
-                    currencySymbol: 'R'
-                },
-                <ColumnDef>{
-                    field: 'quantity',
-                    title: '',
-                    columnType: ColumnType.numeric
-                },
-            ],
-            rowData: []
-        };
-        this.data.ordersGrid = <GridOptions>{
-            columnDefs: [
-                <ColumnDef>{
-                    field: 'id',
-                    title: '',
-                    columnType: ColumnType.checkbox
-                },
-                <ColumnDef>{
-                    field: 'dateCreated',
-                    title: 'Date Created',
-                    columnType: ColumnType.text
-                },
-                <ColumnDef>{
-                    field: 'plumber',
-                    title: 'Plumber',
-                    columnType: ColumnType.text
-                },
-                <ColumnDef>{
-                    field: 'site',
-                    title: 'Site',
-                    columnType: ColumnType.text
-                }
-            ],
-            rowData: [],
-            onReady: this.getAll
-        };
-        this.getMaterials();
-        this.apiService.post('order/getSites').then(res => {
-            _.forEach(res, (x) => {
-                x.isSelected = false;
-            });
-            this.data.sitesAvailable = res;
-            this.apiService.post('order/getUsers').then(result => {
-                _.forEach(result, (x) => {
-                    x.isSelected = false;
-                });
-                this.data.usersAvailable = result;
-                this.data.itemsSelected = [];
-                this.data.loader = false;
-            });
+            this.data.filterMaterials.next(this.data.materialsAvailable.slice());
         });
     }
 
     disableSave = () => {
-        if (this.data.siteSelected) {
-            if (this.data.userSelected) {
-                if (this.data.siteSelected.id || this.data.userSelected.id) {
-                    if (this.data.itemsSelected.length === 0) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                } else {
-                    return true;
-                }
-            } else {
-                return true;
-            }
+        return !(this.data.orderForm.valid && this.data.itemsSelected.length > 0);
+    }
+
+    disableAddItem = () => {
+        if (this.data.useNonMaterialField) {
+            return this.data.orderForm.controls.nonQuantity.value === '';
         } else {
-            return true;
+            return this.data.orderForm.controls.quantity.value === 0 && this.data.orderForm.controls.material;
         }
     }
 

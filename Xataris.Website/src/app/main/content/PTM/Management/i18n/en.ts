@@ -3,7 +3,7 @@ export const locale = {
     data: {
         'PTMMANAGEMENT': {
             'TITLE': 'PTM Management',
-            'TIMESHEETS': 'Timesheets',
+            'TIMESHEETS': 'PTM',
             'DETAILS': '{{detailTitle}} > Details',
             'CODE': 'Code',
             'DATE': 'Date',

@@ -5,6 +5,7 @@ import { SharedModule } from '../../../core/modules/shared.module';
 import { FuseWidgetModule } from '../../../core/components/widget/widget.module';
 import { OrdersComponent } from './Orders.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 const routes = [
   {
@@ -19,7 +20,8 @@ const routes = [
     SharedModule,
     RouterModule.forChild(routes),
     FuseWidgetModule,
-    NgxChartsModule
+    NgxChartsModule,
+    NgxMatSelectSearchModule
   ],
   exports: [OrdersComponent]
 })

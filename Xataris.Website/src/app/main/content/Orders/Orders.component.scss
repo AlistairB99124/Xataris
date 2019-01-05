@@ -1,5 +1,6 @@
 @import "src/app/core/scss/fuse";
-
+$top-bg-image: url('../../../../assets/images/backgrounds/header-bg.png');
+$carded-header-height:200px !default;
     .content {
         width: 100%;
     }
@@ -16,7 +17,6 @@
     }
 
     .xataris-accent-bg {
-        background-color: rgb(139, 63, 139);
         color: #ffffff !important;
     }
 
@@ -189,3 +189,21 @@
             }
         }
     }
+
+    .header-bg{
+            height: $carded-header-height;
+            background-image: $top-bg-image;
+            background-size: cover;
+            // background-color: rgba($color: #8b3f8b, $alpha: 0.5);
+    }
+
+    .border-radius-15 {
+        border-radius: 15px 15px 15px 15px !important;
+    }
+
+    .truncate {
+        width: 250px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }

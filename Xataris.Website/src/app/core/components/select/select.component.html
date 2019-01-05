@@ -1,0 +1,6 @@
+<mat-form-field style="width: 100%">
+        <input type="text" matInput placeholder="{{placeholder}}" [formControl]="output" [matAutocomplete]="auto">
+</mat-form-field>
+<mat-autocomplete #auto="matAutocomplete" [displayWith]="displayText">
+   <mat-option *ngFor="let option of filteredOptions | async" [value]="option">{{option.text}}</mat-option>
+</mat-autocomplete>

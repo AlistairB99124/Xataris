@@ -25,6 +25,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { TranslateModule } from '@ngx-translate/core';
 import { GridComponent } from '../components/grid/grid.component';
 import { NotificationService, NotificationComponent } from '../services/notification.service';
+import { XSelectComponent } from '../components/select/select.component';
 
 @NgModule({
     declarations   : [
@@ -38,7 +39,8 @@ import { NotificationService, NotificationComponent } from '../services/notifica
         AccessLevelDirective,
         FusePerfectScrollbarDirective,
         FuseMaterialColorPickerComponent,
-        GridComponent
+        GridComponent,
+        XSelectComponent
     ],
     imports        : [
         FlexLayoutModule,
@@ -70,7 +72,8 @@ import { NotificationService, NotificationComponent } from '../services/notifica
         AccessLevelDirective,
         FuseMaterialColorPickerComponent,
         GridComponent,
-        TranslateModule
+        TranslateModule,
+        XSelectComponent
     ],
     entryComponents: [
         FuseConfirmDialogComponent,

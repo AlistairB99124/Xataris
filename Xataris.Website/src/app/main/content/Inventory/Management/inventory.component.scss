@@ -2,11 +2,10 @@
 
 #file-manager {
     .xataris-accent-bg {
-        background-color: rgb(139, 63, 139);
         color: #ffffff !important;
     }
-    mat-sidenav-container {
-
+    mat-drawer-container {
+        height: 100%;
         .sidenav {
             width: 320px !important;
             min-width: 320px !important;
@@ -30,6 +29,8 @@
                     height: 160px;
                     min-height: 160px;
                     max-height: 160px;
+
+                    background-image: url('/assets/images/backgrounds/header-bg.png');
 
                     @include media-breakpoint-down('sm') {
                         height: 120px;
@@ -77,5 +78,14 @@
                 color: #4CAF50;
             }
         }
+    }
+}
+
+.side-nav-x {
+    min-width: 400px;
+    padding: 15px 15px 15px 15px;
+
+    mat-form-field {
+        width: 100%;
     }
 }

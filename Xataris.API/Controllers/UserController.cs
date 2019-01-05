@@ -114,20 +114,6 @@ namespace Xataris.API.Controllers
             return await GenerateResult(result, _userSettings);
         }
 
-        [HttpPost("GetUserPermissions")]
-        public async Task<JsonResult> GetUserPermissions([FromBody] UsersIdInput input)
-        {
-            var result = await _user.GetUserPermissions(input);
-            return await GenerateResult(result, _userSettings);
-        }
-
-        [HttpPost("ValidateById")]
-        public async Task<JsonResult> ValidateById([FromBody] UserIdInput input)
-        {
-            var result = await _user.ValidateById(input, _userManager);
-            return Json(new { Data = new { result.IsSuccess } }, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
-        }
-
         [HttpPost("Login")]
         public async Task<JsonResult> Login([FromBody] LoginInput input)
         {

@@ -46,6 +46,8 @@ import {MatTableModule} from '@angular/material/table';
 import {MatSortModule} from '@angular/material/sort';
 import {MatPaginatorModule} from '@angular/material/paginator';
 
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+
 const appRoutes: Routes = [
     {
         path      : '',
@@ -95,7 +97,8 @@ const appRoutes: Routes = [
         MatSnackBarModule,
         MatTableModule,
         MatSortModule,
-        MatPaginatorModule
+        MatPaginatorModule,
+        NgxMatSelectSearchModule
     ],
     providers   : [
         ApiService,

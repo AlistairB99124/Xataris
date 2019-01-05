@@ -1,30 +1,26 @@
 import * as m from '../../../core/models/sharedModels';
+import { ReplaySubject } from 'rxjs';
+import { FormGroup, FormControl } from '@angular/forms';
 
 export interface OrdersViewModel{
     ordersGrid: m.GridOptions;
-    orderItemGrid: m.GridOptions;
-
-    isOrderListCollapsed: boolean;
-    isOrderDetailCollapsed: boolean;
-    showDetailsPanel: boolean;
     ordersDetail: OrderPoco;
     orders: Array<OrderPoco>;
     sitesAvailable: Array<m.SitePoco>;
-    siteSelected: m.SitePoco;
     usersAvailable: Array<m.UserDetails>;
-    userSelected: m.UserDetails;
     materialsAvailable: Array<m.MaterialPoco>;
-    materialSelected: m.MaterialPoco;
     itemQuantity: number;
     itemsSelected: Array<OrderItemPoco>;
     loader: boolean;
-    filterMaterials: Array<m.MaterialPoco>;
-    useNonMaterialField: boolean;
+    filterMaterials: ReplaySubject<any>;
+    useNonMaterialField: FormControl;
     nonMaterialDescription: string;
     selectedOrderMaterials: Array<OrderMaterial>;
     order: OrderPoco;
     confirmForm: boolean;
     materials: Array<any>;
+    formErrors: any;
+    orderForm: FormGroup;
 }
 
 export interface OrderPoco {
