@@ -1,3 +1,7 @@
+## 2018-10-09 Version 0.10.20
+* ASM - Network
+  - Added associate/deassociate commands to ASM reserved IP
+
 ## 2018-06-06 Version 0.10.19
 * ASM - Network
   * Fixed incorrect assignment of idleTimeout in ASM's LB Set #3687

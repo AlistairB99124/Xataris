@@ -6,3 +6,4 @@ C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Infrastructure.ApplicationVar
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Infrastructure.ApplicationVariables\obj\Debug\netcoreapp2.2\Xataris.Infrastructure.ApplicationVariables.AssemblyInfo.cs
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Infrastructure.ApplicationVariables\obj\Debug\netcoreapp2.2\Xataris.Infrastructure.ApplicationVariables.dll
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Infrastructure.ApplicationVariables\obj\Debug\netcoreapp2.2\Xataris.Infrastructure.ApplicationVariables.pdb
+C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Infrastructure.ApplicationVariables\obj\Debug\netcoreapp2.2\Xataris.Infrastructure.ApplicationVariables.csprojAssemblyReference.cache
