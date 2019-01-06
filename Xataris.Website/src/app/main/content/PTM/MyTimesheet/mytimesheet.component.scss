@@ -1,6 +1,12 @@
 @import "src/app/core/scss/fuse";
 
 :host {
+    .material-item {
+        background-color: rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        margin: 5px 0 5px 0;
+    }
+
     .content {
         width: 100%;
         max-width: 800px;

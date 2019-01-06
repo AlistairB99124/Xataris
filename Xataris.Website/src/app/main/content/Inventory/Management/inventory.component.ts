@@ -204,4 +204,8 @@ export class InventoryComponent implements OnInit {
             });
         });
     }
+
+    saveWarehouseDisabled = () => {
+        return (this.data.selectedUser === undefined || this.data.warehouseName === '');
+    }
 }

@@ -210,7 +210,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
         this.apiService.post('order/getAll').then(res => {
             _.forEach(res, (x) => {
                 const date = new Date(x.dateCreated);
-                x.dateCreated = date.toDateString();
+                x.dateCreated = date.toLocaleDateString();
             });
             this.data.orders = res;
             this.data.ordersGrid.api.setRowData(this.data.orders);

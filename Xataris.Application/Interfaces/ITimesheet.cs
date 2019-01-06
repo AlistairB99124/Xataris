@@ -14,11 +14,11 @@ namespace Xataris.Application.Interfaces
     {
         Task<TimesheetResult> AddTimesheet(TimesheetViewModel input);
         Task<IDropdownModel<string>[]> GetUsers();
-        Task<object> GetMaterials(MaterialIdInput input);
+        Task<List<DropdownModel>> GetMaterials(MaterialIdInput input);
         Task<object> GetMaterial(InventoryIdInput input);
         Task<InventoryTimesheetViewModel> GetInventory();
         Task<SimpleResult> UploadTimesheet(ByteInput input);
-        Task<List<TimesheetView>> GetTimesheets(UserIdInput input);
+        Task<List<TimesheetsViewModel>> GetTimesheets(UserIdInput input);
         Task<SimpleResult> DeleteTimesheet(TimesheetIdInput input);
         Task<object> GetTimesheetMaterials(TimesheetIdInput input);
         Task<SimpleResult> SaveMaterialItems(TimesheetCodeInput input);

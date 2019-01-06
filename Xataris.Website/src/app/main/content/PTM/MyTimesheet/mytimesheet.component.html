@@ -29,11 +29,12 @@
                     <mat-step [stepControl]="data.form">
                         <ng-template matStepLabel>{{'MYTIMESHEET.DETAILS' | translate}}</ng-template>
                         <form class="p-0" fxLayout="column" fxLayoutAlign="start" fxFlex name="form" [formGroup]="data.form">
+                            <mat-progress-bar mode="query" *ngIf="data.loadMaterials"></mat-progress-bar>
                             <div fxLayout="row">
                                 <div fxLayout="column" fxFlex fxLayoutAlign="start center">
                                     <div fxLayout="row" style="width:100%">
                                         <mat-form-field fxFlex>
-                                            <mat-select fxFlex matInput #primaryTechnician (change)="reloadMaterials()"
+                                            <mat-select fxFlex matInput #primaryTechnician (selectionChange)="reloadMaterials()"
                                                 required placeholder="{{'MYTIMESHEET.TECHNICIAN' | translate}}"
                                                 formControlName="primaryTechnician">
                                                 <mat-option *ngFor="let op of data.operators" [value]="op.value">
@@ -44,7 +45,7 @@
                                     </div>
                                     <div fxLayout="row" style="width:100%">
                                         <mat-form-field fxFlex>
-                                            <mat-select fxFlex matInput #site (change)="updateSite()" placeholder="{{'MYTIMESHEET.SITE' | translate}}"
+                                            <mat-select fxFlex matInput #site (selectionChange)="updateSite()" placeholder="{{'MYTIMESHEET.SITE' | translate}}"
                                                 formControlName="site" required>
                                                 <mat-option *ngFor="let site of data.sites" [value]="site.id">
                                                     {{site.name}}
@@ -218,7 +219,14 @@
                                         </button>
                                     </div>
                                     <div fxLayout="row" style="width:100%" class="mb-20">
-                                        <fuse-grid [gridOptions]="data.gridOptions" style="width: 100%"></fuse-grid>
+                                        <mat-list fxFlex>
+                                            <mat-list-item class="material-item" *ngFor="let item of data.materials; index as i">
+                                                <span class="truncate" fxFlex>{{item.stockCode + ': ' + item.stockDescription + ' | ' + item.bomNo + ' (' + item.quantity + ')'}}</span>
+                                                <button mat-button mat-icon-button (click)="data.materials.splice(i)" attr.aria-label="{{'MYTIMESHEET.ADDMATERIAL' | translate}}">
+                                                    <mat-icon attr.aria-label="Remove Material" matTooltip="Remove Material">close</mat-icon>
+                                                </button>
+                                            </mat-list-item>
+                                        </mat-list>
                                     </div>
                                 </div>
                             </div>

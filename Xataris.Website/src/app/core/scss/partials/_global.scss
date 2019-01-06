@@ -4,3 +4,9 @@ body {
         height: 100%;
     }
 }
+.truncate {
+    width: 250px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}

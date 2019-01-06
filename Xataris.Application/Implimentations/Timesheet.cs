@@ -207,25 +207,16 @@ namespace Xataris.Application.Implimentations
             }
         }
 
-        public async Task<object> GetMaterials(MaterialIdInput input)
+        public async Task<List<DropdownModel>> GetMaterials(MaterialIdInput input)
         {
             try
             {
                 var warehouse = await _context.Warehouses.Where(x => x.UserId == input.PrimaryTechnicianId).FirstOrDefaultAsync();
-                var result = await _context.Inventories.Where(x => x.WarehouseId == warehouse.Id).ToArrayAsync();
-                return result.Select(x => new DropdownModel
-                {
-                    Value = x.Id,
-                    Text = x.Quantity.ToString() + ": " + _context.Materials.Where(o => o.Id == x.MaterialId).FirstOrDefault().StockCode + " - " + _context.Materials.Where(o => o.Id == x.MaterialId).FirstOrDefault().StockDescription,
-                    Selected = false
-                }).ToArray();
+                return await _procedureService.CallProcedureAsync<DropdownModel>("[dbo].[ReadInventoryFromWarehouseDropdown]", new { WarehousesId = warehouse.Id });
             }
             catch (Exception ex)
             {
-                return new SimpleResult
-                {
-                    ErrorMessage = JsonConvert.SerializeObject(ex)
-                };
+                return new List<DropdownModel>();
             }
         }
 
@@ -290,16 +281,16 @@ namespace Xataris.Application.Implimentations
             }
         }
 
-        public async Task<List<TimesheetView>> GetTimesheets(UserIdInput input)
+        public async Task<List<TimesheetsViewModel>> GetTimesheets(UserIdInput input)
         {
             try
             {
                 var result = await _procedureService.CallProcedureAsync<TimesheetView>("[dbo].[ReadTimsheets]", new { });
-                return result.Select(s => new TimesheetView
+                return result.Select(s => new TimesheetsViewModel
                 {
                     AssistantTime = s.AssistantTime,
                     Code = s.Code,
-                    DateCreated = s.DateCreated,
+                    DateCreated = s.DateCreated.ToShortDateString(),
                     Description = s.Description,
                     DetailedPoint = s.DetailedPoint,
                     IsSelected = s.IsSelected,
@@ -318,7 +309,7 @@ namespace Xataris.Application.Implimentations
             }
             catch
             {
-                return new List<TimesheetView>();
+                return new List<TimesheetsViewModel>();
             }
         }
 

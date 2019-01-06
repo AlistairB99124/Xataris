@@ -33,8 +33,8 @@ export interface TimesheetViewModel {
   materials: Array<any>;
   searchInput: string;
   dialogRef: MatDialogRef<FuseConfirmDialogComponent>;
-  gridOptions: GridOptions;
   hoursSelected: Array<DropdownModel<any>>;
+  loadMaterials: boolean;
 }
 
 export interface SiteViewModel {

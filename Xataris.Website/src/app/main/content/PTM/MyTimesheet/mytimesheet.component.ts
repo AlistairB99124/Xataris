@@ -73,46 +73,12 @@ export class MyTimesheetComponent implements OnInit, OnDestroy {
 
     private setupVariables = async () => {
         this.data = {} as Models.TimesheetViewModel;
+        this.data.loadMaterials = false;
         this.data.filterMaterials = new ReplaySubject<any>(1);
         this.materialCtrl = new FormControl();
         this.data.hoursSelected = [];
         this.translationLoader.loadTranslations(en, af);
-        this.data.gridOptions = <GridOptions>{
-            columnDefs: [
-                <ColumnDef>{
-                    title: '',
-                    field: 'id',
-                    columnType: ColumnType.icon,
-                    onClick: this.deleteMaterial,
-                    iconName: 'delete'
-                },
-                <ColumnDef>{
-                    title: await this.translationLoader.getTranslation('MYTIMESHEET.BOMNO'),
-                    field: 'bomNo',
-                    columnType: ColumnType.text
-                },
-                <ColumnDef>{
-                    title: await this.translationLoader.getTranslation('MYTIMESHEET.CODE'),
-                    field: 'stockCode',
-                    columnType: ColumnType.text
-                },
-                <ColumnDef>{
-                    title: await this.translationLoader.getTranslation('MYTIMESHEET.DESCRIPTION'),
-                    field: 'stockDescription',
-                    columnType: ColumnType.text
-                },
-                <ColumnDef>{
-                    title: await this.translationLoader.getTranslation('MYTIMESHEET.QUANTITY'),
-                    field: 'quantity',
-                    columnType: ColumnType.numeric
-                },
-            ],
-            rowData: [],
-            api: {}
-        };
-
         this.data.materials = [];
-
         this.data.loader = false;
         const dateNow = new Date();
         this.data.technician = '';
@@ -186,7 +152,6 @@ export class MyTimesheetComponent implements OnInit, OnDestroy {
         this.data.dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.data.materials.push(data);
-                this.data.gridOptions.api.setRowData(this.data.materials);
                 this.data.materialForm.reset();
             }
             this.data.dialogRef = null;
@@ -194,6 +159,7 @@ export class MyTimesheetComponent implements OnInit, OnDestroy {
     }
 
     public reloadMaterials = async () => {
+        this.data.loadMaterials = true;
         const input = {
             primaryTechnicianId: this.data.form.controls.primaryTechnician.value
         };
@@ -202,9 +168,10 @@ export class MyTimesheetComponent implements OnInit, OnDestroy {
         if (res) {
             this.data.materialsAvailable = res;
             this.data.filterMaterials.next(this.data.materialsAvailable.slice());
-            this.data.loader = false;
+            this.data.loadMaterials = false;
         } else {
             this.data.materialsAvailable = [];
+            this.data.loadMaterials = false;
         }
     }
 
@@ -212,7 +179,7 @@ export class MyTimesheetComponent implements OnInit, OnDestroy {
     public saveTimesheet = async () => {
         const input = _.cloneDeep(this.data.form.value);
         input['originalQuote'] = this.data.quoteEnabled;
-        input['materials'] = this.data.gridOptions.getRowData();
+        input['materials'] = this.data.materials;
         this.data.statusLabel = _.find(this.data.statusAvailable, x => x.value === this.data.form.controls.status.value).text;
         this.data.technician = _.find(this.data.operators, x => x.value === this.data.form.controls.primaryTechnician.value).text;
         const isTimesheetAdded = await this.apiService
@@ -221,7 +188,7 @@ export class MyTimesheetComponent implements OnInit, OnDestroy {
         if (isTimesheetAdded.isSuccess) {
             const matInput = {
                 code: isTimesheetAdded.timesheetCode,
-                materials: this.data.gridOptions.getRowData()
+                materials: this.data.materials
             };
             const areMatereialsAdded = await this.apiService
                 .post('Timesheet/SaveMaterialItems', matInput);
@@ -233,7 +200,6 @@ export class MyTimesheetComponent implements OnInit, OnDestroy {
                 this.data.confirmForm = false;
                 this.data.form.reset();
                 this.data.materialForm.reset();
-                this.data.gridOptions.api.setRowData([]);
                 this.data.materials = [];
                 this.stepper.selectedIndex = 0;
                 this.notificationService.addMessage(this.viewContainerRef, 'Save Successful', NotificationType.Success);
@@ -247,12 +213,6 @@ export class MyTimesheetComponent implements OnInit, OnDestroy {
         }
     }
 
-    public deleteMaterial = (params) => {
-        const row = _.find(this.data.gridOptions.getRowData(), x => x.id === params.id);
-        _.remove(this.data.materials, row);
-        this.data.gridOptions.api.setRowData(this.data.materials);
-    }
-
     public addMaterial = async () => {
         if (this.data.nonStockItem) {
             const row = {
@@ -262,7 +222,6 @@ export class MyTimesheetComponent implements OnInit, OnDestroy {
                 stockDescription: this.data.materialForm.controls.nonMaterial.value
             };
             this.data.materials.push(row);
-            this.data.gridOptions.api.setRowData(this.data.materials);
             this.data.materialForm.reset();
         } else {
             let quantity = this.data.materialForm.controls.quantity.value;
@@ -284,7 +243,6 @@ export class MyTimesheetComponent implements OnInit, OnDestroy {
                 this.openConfirmationMaterialDialog(result);
             } else {
                 this.data.materials.push(result);
-                this.data.gridOptions.api.setRowData(this.data.materials);
                 this.data.materialForm.reset();
             }
         }

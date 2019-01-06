@@ -63,6 +63,7 @@
                 <mat-toolbar-row fxLayoutAlign="end center">
                     <span fxFlex>{{ 'INVENTORY.ADDNEWWAREHOUSE' | translate}}</span>
                     <button mat-button (click)="saveWarehouse()" 
+                        [disabled]="saveWarehouseDisabled()"
                             attr.aria-label="{{'INVENTORY.SAVEWAREHOUSE' | translate}}"
                             matTooltip="{{'INVENTORY.SAVEWAREHOUSE' | translate}}" 
                             mat-icon-button>

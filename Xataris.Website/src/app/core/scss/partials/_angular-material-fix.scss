@@ -133,9 +133,12 @@ mat-card {
     display: initial !important;
 }
 
-mat-checkbox {
-    margin-left: -18px !important;
+td.checkbox {
+    mat-checkbox {
+        margin-left: -18px !important;
+    }
 }
+
 
 .mat-header-cell {
     font-size: 14px;

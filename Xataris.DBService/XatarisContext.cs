@@ -26,20 +26,20 @@ namespace Xataris.DBService
             builder.ApplyConfiguration(new NonMaterialItemMap());
             builder.ApplyConfiguration(new WarehouseMap());
             builder.ApplyConfiguration(new LookupValuesMap());
-            builder.ApplyConfiguration(new GamesMap());
-            builder.ApplyConfiguration(new PlayerMap());
+            //builder.ApplyConfiguration(new GamesMap());
+            //builder.ApplyConfiguration(new PlayerMap());
 
-            builder.ApplyConfiguration(new QuoteMap());
-            builder.ApplyConfiguration(new QuoteItemMap());
-            builder.ApplyConfiguration(new QuoteProductMap());
-            builder.ApplyConfiguration(new ItemMap());
-            builder.ApplyConfiguration(new ItemInventoryMap());
-            builder.ApplyConfiguration(new CustomerMap());
-            builder.ApplyConfiguration(new ItemTypeMap());
-            builder.ApplyConfiguration(new ItemTypeGroupMap());
-            builder.ApplyConfiguration(new PredefinedItemMap());
-            builder.ApplyConfiguration(new SupplierMap());
-            builder.ApplyConfiguration(new ProductMap());
+            //builder.ApplyConfiguration(new QuoteMap());
+            //builder.ApplyConfiguration(new QuoteItemMap());
+            //builder.ApplyConfiguration(new QuoteProductMap());
+            //builder.ApplyConfiguration(new ItemMap());
+            //builder.ApplyConfiguration(new ItemInventoryMap());
+            //builder.ApplyConfiguration(new CustomerMap());
+            //builder.ApplyConfiguration(new ItemTypeMap());
+            //builder.ApplyConfiguration(new ItemTypeGroupMap());
+            //builder.ApplyConfiguration(new PredefinedItemMap());
+            //builder.ApplyConfiguration(new SupplierMap());
+            //builder.ApplyConfiguration(new ProductMap());
         }
 
         public DbSet<InventoryPoco> Inventories { get; set; }
@@ -55,19 +55,19 @@ namespace Xataris.DBService
         public DbSet<OrderPoco> Orders { get; set; }
         public DbSet<OrderItemPoco> OrderItems { get; set; }
         public DbSet<LookupValue> LookupValues { get; set; }
-        public DbSet<Game> Games { get; set; }
-        public DbSet<Player> Players { get; set; }
+        //public DbSet<Game> Games { get; set; }
+        //public DbSet<Player> Players { get; set; }
 
-        public DbSet<Quote> Quotes { get; set; }
-        public DbSet<QuoteItem> QuoteItems { get; set; }
-        public DbSet<QuoteProduct> QuoteProducts { get; set; }
-        public DbSet<Item> Items { get; set; }
-        public DbSet<ItemInventory> ItemInventories { get; set; }
-        public DbSet<Customer> Customers { get; set; }
-        public DbSet<ItemType> ItemTypes { get; set; }
-        public DbSet<ItemTypeGroup> ItemTypeGroups { get; set; }
-        public DbSet<PredefinedItem> PredefinedItems { get; set; }
-        public DbSet<Supplier> Suppliers { get; set; }
-        public DbSet<Product> Products { get; set; }        
+        //public DbSet<Quote> Quotes { get; set; }
+        //public DbSet<QuoteItem> QuoteItems { get; set; }
+        //public DbSet<QuoteProduct> QuoteProducts { get; set; }
+        //public DbSet<Item> Items { get; set; }
+        //public DbSet<ItemInventory> ItemInventories { get; set; }
+        //public DbSet<Customer> Customers { get; set; }
+        //public DbSet<ItemType> ItemTypes { get; set; }
+        //public DbSet<ItemTypeGroup> ItemTypeGroups { get; set; }
+        //public DbSet<PredefinedItem> PredefinedItems { get; set; }
+        //public DbSet<Supplier> Suppliers { get; set; }
+        //public DbSet<Product> Products { get; set; }        
     }
 }

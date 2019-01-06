@@ -28,15 +28,44 @@ export class GroupManagementComponent implements OnInit {
     constructor(
         private translationLoader: FuseTranslationLoaderService,
         private apiService: ApiService) {
-            this.ngOnInit();
         }
 
-    public ngOnInit = async () => {
+    public async ngOnInit() {
         this.translationLoader.loadTranslations(en, af);
         this.data = {} as GroupManagementViewModel;
         this.data.isGroupListCollapsed = false;
         this.data.isGroupDetailCollapsed = false;
-        this.getGroups();
+        this.data.groupsGrid = {
+            columnDefs: [
+                <s.ColumnDef>{
+                    field: 'id',
+                    title: '',
+                    columnType: s.ColumnType.checkbox
+                },
+                <s.ColumnDef>{
+                    field: 'title',
+                    title: 'Title',
+                    columnType: s.ColumnType.text
+                },
+                <s.ColumnDef>{
+                    field: 'description',
+                    title: 'Description',
+                    columnType: s.ColumnType.text
+                },
+                <s.ColumnDef>{
+                    field: 'modules',
+                    title: 'Modules',
+                    columnType: s.ColumnType.text
+                },
+                <s.ColumnDef>{
+                    field: 'accessLevel',
+                    title: 'Access Level',
+                    columnType: s.ColumnType.text,
+                },
+            ],
+            rowData: [],
+            onReady: this.getGroups
+        };
         this.data.availableModules = await this.apiService.post('User/GetAvailableModules');
         this.data.availableAccess = [
             <DropdownModel<number>>{

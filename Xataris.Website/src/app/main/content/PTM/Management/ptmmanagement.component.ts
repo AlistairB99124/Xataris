@@ -108,7 +108,7 @@ export class PTMManagementComponent implements OnInit {
             <ColumnDef>{
                 title: await this.translationLoader.getTranslation('PTMMANAGEMENT.DATE'),
                 field: 'dateCreated',
-                columnType: ColumnType.date
+                columnType: ColumnType.text
             },
             <ColumnDef>{
                 title: await this.translationLoader.getTranslation('PTMMANAGEMENT.SPECIFICLOCATION'),
@@ -189,7 +189,7 @@ export class PTMManagementComponent implements OnInit {
             <ColumnDef>{
                 title: await this.translationLoader.getTranslation('PTMMANAGEMENT.DATE'),
                 field: 'dateCreated',
-                columnType: ColumnType.date
+                columnType: ColumnType.text
             },
             <ColumnDef>{
                 title: await this.translationLoader.getTranslation('PTMMANAGEMENT.SHEETSTATUS'),
@@ -294,9 +294,6 @@ export class PTMManagementComponent implements OnInit {
                 'Site'
             ]
         };
-        _.forEach(this.data.timesheetsGrid.getRowData(), (x: Timesheet) => {
-            x.dateCreated = new Date(x.dateCreated).toDateString();
-        });
         new csv.AngularCsv(this.data.timesheetsGrid.getRowData(), 'Timesheets', options);
     }
 

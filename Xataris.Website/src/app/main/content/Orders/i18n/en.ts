@@ -2,7 +2,8 @@ export const locale = {
     lang: 'en',
     data: {
         'ORDERS': {
-            'TITLE': 'Orders Management',
+            'TITLE': 'Management',
+            'ORDERS': 'Orders',
             'DETAILS': {
                 'TEXT': {
                     'LISTTITLE': 'Orders',
