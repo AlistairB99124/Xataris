@@ -227,6 +227,7 @@ export interface GridOptions{
     api?: GridApi;
     getRowData?: () => any;
     onReady: (param?) => void;
+    showFooter?: boolean;
 }
 
 export enum NotificationType {

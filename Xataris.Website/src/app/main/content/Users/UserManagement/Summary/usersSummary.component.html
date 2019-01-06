@@ -73,38 +73,40 @@
                         </div>
                     </div>
                 </fuse-widget>
-                <fuse-widget [@animate]="{value:'*',params:{y:'1000px', x: '1000px', delay: '900ms'}}" class="widget" fxLayout="row" fxFlex="100">
-                    <div class="fuse-widget-front mat-white-bg mat-elevation-z2">
-                        <mat-toolbar class="mat-white-bg mat-elevation-z4">
-                            <mat-toolbar-row fxFlex>
-                                <span fxFlex>Users: {{data.filterText}}</span>
-                                <button *ngIf="!data.isUsersGridCollapsed" [disabled]="!isEditButtonDisabled()" mat-icon-button class="fuse-search-bar-collapser mat-icon-button" (click)="deleteUser()"
-                                        aria-label="Collapse Search Bar">
-                                    <mat-icon class="s-24">delete</mat-icon>
-                                </button>
-                                <button *ngIf="!data.isUsersGridCollapsed" [disabled]="!isEditButtonDisabled()" mat-icon-button class="fuse-search-bar-collapser mat-icon-button" (click)="editUser()"
-                                        aria-label="Collapse Search Bar">
-                                    <mat-icon class="s-24">mode_edit</mat-icon>
-                                </button>
-                                <button matTooltip="Add New User" *ngIf="!isEditUser" mat-icon-button class="fuse-search-bar-collapser mat-icon-button" (click)="addNewUser()" aria-label="Add New User">
-                                    <mat-icon class="s-24">add</mat-icon>
-                                </button>
-                                <button mat-icon-button class="fuse-search-bar-collapser mat-icon-button" (click)="data.isUsersGridCollapsed = !data.isUsersGridCollapsed"
-                                        aria-label="Collapse Search Bar">
-                                    <mat-icon *ngIf="data.isUsersGridCollapsed === true" class="s-24">keyboard_arrow_left</mat-icon>
-                                    <mat-icon *ngIf="data.isUsersGridCollapsed !== true" class="s-24">keyboard_arrow_down</mat-icon>
-                                </button>
-                            </mat-toolbar-row>
-                        </mat-toolbar>
-                        <mat-divider></mat-divider>
-                        <mat-card class="p-0" [ngStyle]="{'display': data.isUsersGridCollapsed ? 'none' : 'block'}">
-                            <mat-card-content class="p-0">
-                                <fuse-grid [gridOptions]="data.usersGrid" style="width: 100%"></fuse-grid>
-                            </mat-card-content>
-                        </mat-card>
-                    </div>
-                </fuse-widget>
             </div>
+                    <div fxLayout="row">
+                        <fuse-widget [@animate]="{value:'*',params:{y:'1000px', x: '1000px', delay: '900ms'}}" class="widget" fxLayout="row" fxFlex="100">
+                            <div class="fuse-widget-front mat-white-bg mat-elevation-z2">
+                                <mat-toolbar class="mat-white-bg mat-elevation-z4">
+                                    <mat-toolbar-row fxFlex>
+                                        <span fxFlex>Users: {{data.filterText}}</span>
+                                        <button *ngIf="!data.isUsersGridCollapsed" [disabled]="!isEditButtonDisabled()" mat-icon-button class="fuse-search-bar-collapser mat-icon-button" (click)="deleteUser()"
+                                                aria-label="Collapse Search Bar">
+                                            <mat-icon class="s-24">delete</mat-icon>
+                                        </button>
+                                        <button *ngIf="!data.isUsersGridCollapsed" [disabled]="!isEditButtonDisabled()" mat-icon-button class="fuse-search-bar-collapser mat-icon-button" (click)="editUser()"
+                                                aria-label="Collapse Search Bar">
+                                            <mat-icon class="s-24">mode_edit</mat-icon>
+                                        </button>
+                                        <button matTooltip="Add New User" *ngIf="!isEditUser" mat-icon-button class="fuse-search-bar-collapser mat-icon-button" (click)="addNewUser()" aria-label="Add New User">
+                                            <mat-icon class="s-24">add</mat-icon>
+                                        </button>
+                                        <button mat-icon-button class="fuse-search-bar-collapser mat-icon-button" (click)="data.isUsersGridCollapsed = !data.isUsersGridCollapsed"
+                                                aria-label="Collapse Search Bar">
+                                            <mat-icon *ngIf="data.isUsersGridCollapsed === true" class="s-24">keyboard_arrow_left</mat-icon>
+                                            <mat-icon *ngIf="data.isUsersGridCollapsed !== true" class="s-24">keyboard_arrow_down</mat-icon>
+                                        </button>
+                                    </mat-toolbar-row>
+                                </mat-toolbar>
+                                <mat-divider></mat-divider>
+                                <mat-card class="p-0" [ngStyle]="{'display': data.isUsersGridCollapsed ? 'none' : 'block'}">
+                                    <mat-card-content class="p-0">
+                                        <fuse-grid [gridOptions]="data.usersGrid" style="width: 100%"></fuse-grid>
+                                    </mat-card-content>
+                                </mat-card>
+                            </div>
+                        </fuse-widget>
+                    </div>
         </div>
         <div class="my-8 mx-40" *ngIf="isEditUser">
             <mat-toolbar class="mat-white-bg mat-elevation-z4">

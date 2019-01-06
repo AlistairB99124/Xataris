@@ -1,8 +1,9 @@
 import { Component, Input, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { GridOptions } from '../../models/sharedModels';
-import { MatPaginator, MatTableDataSource } from '@angular/material';
+import { MatPaginator, MatTableDataSource, MatSort } from '@angular/material';
 import * as m from '../../models/sharedModels';
 import * as _ from 'lodash';
+import { ColumnType } from '../../../main/content/PTM/MyTimesheet/mytimesheet.models';
 
 @Component({
     selector : 'fuse-grid',
@@ -14,12 +15,16 @@ export class GridComponent implements OnInit, AfterViewInit {
 
     dataSource = new MatTableDataSource();
     shownColumns = new Array<string>();
+    showFooter = false;
     @Input('gridOptions') gridOptions: GridOptions;
     @ViewChild(MatPaginator) paginator: MatPaginator;
+    @ViewChild(MatSort) sort: MatSort;
 
     public ngOnInit () {
         this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
         this.gridOptions.api = {} as m.GridApi;
+        this.showFooter = this.gridOptions.showFooter;
         if (this.gridOptions.columnDefs.length > 0) {
             this.setColumns(this.gridOptions.columnDefs);
         }
@@ -74,6 +79,12 @@ export class GridComponent implements OnInit, AfterViewInit {
         }
     }
 
+    private numberWithQuote(x: string) {
+        const parts = x.toString().split('.');
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, `'`);
+        return parts.join('.');
+    }
+
     renderCell = (params: any, column: m.ColumnDef) => {
         if (column.cellRenderer) {
             return column.cellRenderer(params);
@@ -89,7 +100,7 @@ export class GridComponent implements OnInit, AfterViewInit {
                     }
                     value = parseFloat(params[column.field]);
                     if (_.isNumber(value)) {
-                        return column.currencySymbol ? column.currencySymbol + ' ' + value.toFixed(2) : params['metric'] + ' ' + value.toFixed(2);
+                        return this.numberWithQuote(column.currencySymbol ? column.currencySymbol + ' ' + value.toFixed(2) : params['metric'] + ' ' + value.toFixed(2));
                     } else {
                         return params[column.field];
                     }
@@ -99,7 +110,7 @@ export class GridComponent implements OnInit, AfterViewInit {
                     }
                     value = parseFloat(params[column.field]);
                     if (_.isNumber(value)) {
-                        return value.toFixed(2);
+                        return this.numberWithQuote(value.toFixed(2));
                     } else {
                         return params[column.field];
                     }
@@ -112,6 +123,18 @@ export class GridComponent implements OnInit, AfterViewInit {
                 default:
                     return params[column.field];
             }
+        }
+    }
+
+    getTotal = (column: m.ColumnDef) => {
+        if (column.columnType === m.ColumnType.numeric) {
+            return this.dataSource.data.map(t => t[column.field]).reduce((acc, value) => acc + value, 0).toFixed(2);
+        } else if (column.columnType === m.ColumnType.currency) {
+            return this.numberWithQuote(column.currencySymbol + ' ' + this.dataSource.data.map(t => t[column.field]).reduce((acc, value) => {
+                return parseFloat(acc) + parseFloat(value);
+            }, 0).toFixed(2).toString());
+        } else {
+            return '';
         }
     }
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, ElementRef, ViewChild, ViewContainerRef, ViewEncapsulation } from '@angular/core';
 import { FuseTranslationLoaderService } from '../../../../core/services/translation-loader.service';
-import { Angular5Csv } from 'angular5-csv/Angular5-csv';
+import * as csv from 'angular7-csv';
 import { fuseAnimations } from '../../../../core/animations';
 import { locale as english } from './i18n/en';
 import { locale as afrikaans } from './i18n/af';
@@ -13,7 +13,7 @@ import { ApiService } from '../../../services/api.service';
 import { MatSnackBar } from '@angular/material';
 import * as domtoimage from 'dom-to-image';
 import * as _ from 'lodash';
-import * as jsPDF from 'jspdf';
+declare const jsPDF;
 import { PTMManagementViewModel, Timesheet } from './ptmmanagement.models';
 
 @Component({
@@ -23,7 +23,7 @@ import { PTMManagementViewModel, Timesheet } from './ptmmanagement.models';
     animations: fuseAnimations,
     encapsulation: ViewEncapsulation.Emulated,
 })
-export class PTMManagementComponent {
+export class PTMManagementComponent implements OnInit {
 
     data: PTMManagementViewModel;
 
@@ -31,11 +31,17 @@ export class PTMManagementComponent {
         private translationLoader: FuseTranslationLoaderService,
         private apiService: ApiService,
         public snackBar: MatSnackBar) {
-        Promise.all([this.setupVariables()]);
+            this.setupVariables();
+        }
+
+    ngOnInit() {
+        return true;
     }
 
     private setupVariables = async () => {
         this.data = {} as PTMManagementViewModel;
+        this.data.progressCounter = 0;
+        this.data.pdfLoader = false;
         this.data.isDetailCollapsed = false;
         this.data.detailTitle = '';
         this.data.isSummaryCollapsed = false;
@@ -291,7 +297,7 @@ export class PTMManagementComponent {
         _.forEach(this.data.timesheetsGrid.getRowData(), (x: Timesheet) => {
             x.dateCreated = new Date(x.dateCreated).toDateString();
         });
-        new Angular5Csv(this.data.timesheetsGrid.getRowData(), 'Timesheets', options);
+        new csv.AngularCsv(this.data.timesheetsGrid.getRowData(), 'Timesheets', options);
     }
 
     public downloadPdf = async () => {
@@ -320,6 +326,7 @@ export class PTMManagementComponent {
                 quantity: x.metric
             });
         });
+        this.data.pdfLoader = true;
         setTimeout(() => {
             const self = this;
             const element = document.getElementById('formImage');
@@ -332,7 +339,7 @@ export class PTMManagementComponent {
                     const persist = () => {
                         doc.save(this.data.selectedTimesheet.code + '.pdf');
                         this.data.confirmForm = false;
-                        this.data.loader = false;
+                        this.data.pdfLoader = false;
                     };
                     img.onload = function () {
                         doc.addImage(this, 0, 0, 210, 297);
@@ -374,6 +381,19 @@ export class PTMManagementComponent {
         } else {
             const columns = await this.setLimitedColumns();
             this.data.timesheetsGrid.api.setColumnDefs(columns);
+        }
+    }
+
+    pdfDownloadProgress = () => {
+        if (this.data.pdfLoader) {
+            setInterval(() => {
+                this.data.progressCounter += this.data.progressCounter + 1000;
+                return this.data.progressCounter;
+            }, 1000);
+        } else {
+            this.data.progressCounter = 0;
+            clearInterval();
+            return 0;
         }
     }
 }

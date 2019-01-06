@@ -24,21 +24,18 @@ import {
 export class GroupManagementComponent implements OnInit {
 
     data: GroupManagementViewModel;
-    datasource;
-    displayedColumns;
 
     constructor(
         private translationLoader: FuseTranslationLoaderService,
         private apiService: ApiService) {
             this.ngOnInit();
-         }
+        }
 
     public ngOnInit = async () => {
         this.translationLoader.loadTranslations(en, af);
         this.data = {} as GroupManagementViewModel;
         this.data.isGroupListCollapsed = false;
         this.data.isGroupDetailCollapsed = false;
-        this.datasource = new MatTableDataSource();
         this.getGroups();
         this.data.availableModules = await this.apiService.post('User/GetAvailableModules');
         this.data.availableAccess = [
@@ -63,7 +60,6 @@ export class GroupManagementComponent implements OnInit {
                 selected: false
             }
         ];
-        this.displayedColumns = ['id', 'title', 'description', 'modules', 'accessLevel'];
     }
 
     addNewGroup = () => {
@@ -77,15 +73,15 @@ export class GroupManagementComponent implements OnInit {
     }
 
     public enableDelete = () => {
-        return _.filter(this.datasource.data, { isSelected: true }).length > 0;
+        return this.data.groupsGrid.api ? this.data.groupsGrid.api.getSelectedRows().length > 0 : false;
     }
 
     public enableEdit = () => {
-        return _.filter(this.datasource.data, { isSelected: true }).length === 1;
+        return this.data.groupsGrid.api ? this.data.groupsGrid.api.getSelectedRows().length === 1 : false;
     }
 
     editGroup = () => {
-        this.data.selectedGroup = <any>_.find(this.datasource.data, { isSelected: true });
+        this.data.selectedGroup = <any>this.data.groupsGrid.api.getSelectedRows()[0];
         const modulesArray = this.data.selectedGroup.modules.split(',');
         this.data.selectedModules = [] as Array<s.DropdownModel<number>>;
         _.forEach(modulesArray, (x) => {
@@ -108,7 +104,7 @@ export class GroupManagementComponent implements OnInit {
 
     deleteGroup = async () => {
         const groups = [];
-        _.forEach(this.datasource.data, (x) => {
+        _.forEach(this.data.groupsGrid.rowData, (x) => {
             if (x.isSelected) {
                 groups.push({ groupsId: x.id });
             }
@@ -116,8 +112,8 @@ export class GroupManagementComponent implements OnInit {
         const input = {
             groupsIds: groups
         };
-        const result = await this.apiService.post('User/DeleteGroups', input);
-        if (result.isSuccess) {
+        const isDeleted = await this.apiService.post('User/DeleteGroups', input);
+        if (isDeleted.isSuccess) {
             this.getGroups();
         }
     }
@@ -130,8 +126,8 @@ export class GroupManagementComponent implements OnInit {
             modules: this.data.groupDetail.modules,
             access: this.data.groupDetail.accessLevel
         };
-        const result = await this.apiService.post('User/SaveGroup', input);
-        if (result.isSuccess) {
+        const isSaved = await this.apiService.post('User/SaveGroup', input);
+        if (isSaved.isSuccess) {
             this.data.showDetailsPanel = false;
             this.data.isGroupListCollapsed = false;
             this.data.isGroupDetailCollapsed = true;
@@ -140,9 +136,9 @@ export class GroupManagementComponent implements OnInit {
     }
 
     public getGroups = async (): Promise<void> => {
-        const data = await this.apiService
+        const groups = await this.apiService
             .post('User/GetGroups');
-        _.forEach(data, g => {
+        _.forEach(groups, g => {
             const modules = JSON.parse(g.modules);
             const stringArray = <Array<string>>_.map(modules, m => {
                 return m.name;
@@ -150,6 +146,6 @@ export class GroupManagementComponent implements OnInit {
             g.modules = stringArray.join(',');
             g['isSelected'] = false;
         });
-        this.datasource.data = data;
+        this.data.groupsGrid.api.setRowData(groups);
     }
 }

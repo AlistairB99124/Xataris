@@ -16,6 +16,8 @@ export interface PTMManagementViewModel {
   isDetailCollapsed: boolean;
   isDetailShown: boolean;
   detailTitle: string;
+  pdfLoader: boolean;
+  progressCounter: number;
 }
 
 export interface Timesheet {

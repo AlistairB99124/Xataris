@@ -132,3 +132,25 @@ mat-card {
 .fuse-widget-front {
     display: initial !important;
 }
+
+mat-checkbox {
+    margin-left: -18px !important;
+}
+
+.mat-header-cell {
+    font-size: 14px;
+}
+
+.mat-footer-cell {
+    strong {
+        font-weight: 500;
+    }
+}
+
+.mat-footer-row {
+    background-color: lightslategray !important;
+}
+
+.mat-header-row {
+    background-color: lightslategray !important;
+}

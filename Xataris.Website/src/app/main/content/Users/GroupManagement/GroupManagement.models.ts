@@ -1,4 +1,4 @@
-import { DropdownModel } from '../../../../core/models/sharedModels';
+import { DropdownModel, GridOptions } from '../../../../core/models/sharedModels';
 
 export interface GroupManagementViewModel {
   isGroupListCollapsed: boolean;
@@ -11,6 +11,7 @@ export interface GroupManagementViewModel {
   accessLevel: Array<any>;
   groupDetail: GroupDetail<Array<DropdownModel<number>>>;
   availableAccess: Array<DropdownModel<number>>;
+  groupsGrid: GridOptions;
 }
 
 export interface GroupDetail<T> {

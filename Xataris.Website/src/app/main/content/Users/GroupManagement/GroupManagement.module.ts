@@ -4,7 +4,6 @@ import { RouterModule } from '@angular/router';
 import { SharedModule } from '../../../../core/modules/shared.module';
 import { FuseWidgetModule } from '../../../../core/components/widget/widget.module';
 import { GroupManagementComponent } from './GroupManagement.Component';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 const routes = [
     {
@@ -21,7 +20,6 @@ const routes = [
         SharedModule,
         RouterModule.forChild(routes),
         FuseWidgetModule,
-        NgxChartsModule
     ],
     exports     : [
         GroupManagementComponent

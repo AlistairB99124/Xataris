@@ -40,33 +40,7 @@
                 <mat-card *ngIf="!data.isGroupListCollapsed">
                     <mat-card-content>
                         <div>
-                            <mat-table #table [dataSource]="datasource">
-                                <!-- Position Column -->
-                                <ng-container matColumnDef="id">
-                                    <mat-header-cell *matHeaderCellDef style="flex: 0 0 50px !important; white-space: unset !important;"></mat-header-cell>
-                                    <mat-cell *matCellDef="let element" style="flex: 0 0 50px !important; white-space: unset !important; text-align: center;">
-                                        <input type="checkbox" [(ngModel)]="element.isSelected" />
-                                    </mat-cell>
-                                </ng-container>
-                                <ng-container matColumnDef="title">
-                                    <mat-header-cell *matHeaderCellDef> Title </mat-header-cell>
-                                    <mat-cell *matCellDef="let element"> {{element.title}} </mat-cell>
-                                </ng-container>
-                                <ng-container matColumnDef="description">
-                                    <mat-header-cell *matHeaderCellDef> Description </mat-header-cell>
-                                    <mat-cell *matCellDef="let element"> {{element.description}} </mat-cell>
-                                </ng-container>
-                                <ng-container matColumnDef="modules">
-                                    <mat-header-cell *matHeaderCellDef> Modules </mat-header-cell>
-                                    <mat-cell *matCellDef="let element"> {{element.modules}} </mat-cell>
-                                </ng-container>
-                                <ng-container matColumnDef="accessLevel">
-                                    <mat-header-cell *matHeaderCellDef> Access </mat-header-cell>
-                                    <mat-cell *matCellDef="let element"> {{element.accessLevel}} </mat-cell>
-                                </ng-container>
-                                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-                            </mat-table>
+                           <fuse-grid [gridOptions]="data.groupsGrid" style="width: 100%"></fuse-grid>
                         </div>
                     </mat-card-content>
                 </mat-card>

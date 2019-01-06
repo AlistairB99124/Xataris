@@ -27,8 +27,6 @@ import { GroupManagementModule } from '../main/content/Users/GroupManagement/Gro
 import { OrdersModule } from '../main/content/Orders/Orders.module';
 import { PTMManagementModule } from '../main/content/PTM/Management/ptmmanagement.module';
 import { SiteDetailsModule } from '../main/content/Sites/Details/sitesDetails.module';
-import { FileDropModule } from 'ngx-file-drop';
-import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
 
 import { ScrabbleApiService } from '../main/content/Scrabble/scrabble.service';
 import { ElfApiService } from '../main/content/Elf/elf.service';
@@ -55,7 +53,6 @@ import { ElfApiService } from '../main/content/Elf/elf.service';
         LoginModule,
         UsersSummaryModule,
         InventoryModule,
-        FileDropModule,
         SiteManagementModule,
         SiteDetailsModule,
         GroupManagementModule,

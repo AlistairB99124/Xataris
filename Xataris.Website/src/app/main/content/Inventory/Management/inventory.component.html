@@ -35,7 +35,7 @@
                     <mat-toolbar-row>
                         <span fxFlex>Inventory</span>
                         <mat-select matTooltip="{{'INVENTORY.SELECTWAREHOUSE' | translate}}"
-                            (change)="reloadMaterialsGrid(); setEnableButton()" 
+                            (selectionChange)="reloadMaterialsGrid()" 
                             placeholder="{{'INVENTORY.SELECTWAREHOUSE' | translate}}"
                             style="max-width: 250px"
                             [(ngModel)]="data.selectedWarehouse">

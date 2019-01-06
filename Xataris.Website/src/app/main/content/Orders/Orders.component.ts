@@ -8,7 +8,7 @@ import { GridOptions, ColumnDef, ColumnType, MaterialPoco } from '../../../core/
 import { Router } from '@angular/router';
 import * as domtoimage from 'dom-to-image';
 import * as _ from 'lodash';
-import * as jsPDF from 'jspdf';
+declare const jsPDF;
 import * as m from './Orders.models';
 import { ApiService } from '../../services/api.service';
 import { ReplaySubject, Subject } from 'rxjs';

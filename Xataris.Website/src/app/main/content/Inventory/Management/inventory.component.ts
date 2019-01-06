@@ -70,7 +70,8 @@ export class InventoryComponent implements OnInit {
                     currencySymbol: 'R'
                 }
             ],
-            rowData: []
+            rowData: [],
+            showFooter: true
         };
     }
 
@@ -80,10 +81,17 @@ export class InventoryComponent implements OnInit {
             warehousesId: this.data.selectedWarehouse.id
         };
         this.apiService.post('Material/GetInventoryByWarehouse', input).then(res => {
-            this.data.inventoryGrid.api.setRowData(res);
+            this.data.inventoryGrid.api.setRowData(_.map(res, (x) => {
+                return {
+                    stockCode: x.stockCode,
+                    stockDescription: x.stockDescription,
+                    level: x.quantity,
+                    unitCostPrice: x.cost
+                };
+            }));
             this.startUpload = false;
             this.data.disableFilepicker = false;
-        });
+        }).then(this.setEnableButton);
     }
 
     deleteWarehouse(){
@@ -100,7 +108,14 @@ export class InventoryComponent implements OnInit {
         this.startUpload = true;
         const input = {
             warehousesId: this.data.selectedWarehouse.id,
-            inventory: this.data.inventoryGrid.getRowData()
+            inventory: _.map(this.data.inventoryGrid.getRowData(), (x) => {
+                return {
+                    stockCode: x.stockCode,
+                    stockDescription: x.stockDescription,
+                    quantity: x.level,
+                    cost: x.unitCostPrice
+                };
+            })
         };
         this.apiService.post('Material/SaveMaterials', input).then(res => {
             if (res.isSuccess) {

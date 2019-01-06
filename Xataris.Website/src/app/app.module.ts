@@ -46,6 +46,8 @@ import {MatTableModule} from '@angular/material/table';
 import {MatSortModule} from '@angular/material/sort';
 import {MatPaginatorModule} from '@angular/material/paginator';
 
+import { DragDropModule } from '@angular/cdk/drag-drop';
+
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 const appRoutes: Routes = [
@@ -98,7 +100,8 @@ const appRoutes: Routes = [
         MatTableModule,
         MatSortModule,
         MatPaginatorModule,
-        NgxMatSelectSearchModule
+        NgxMatSelectSearchModule,
+        DragDropModule
     ],
     providers   : [
         ApiService,
