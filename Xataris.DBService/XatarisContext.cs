@@ -39,14 +39,6 @@ namespace Xataris.DBService
                     Modules = "[{ 'Id':1,'Deleted':false,'Name':'PTM','Description':'Personal Timesheet Management'},{ 'Id':2,'Deleted':false,'Name':'Orders','Description':'Order management'},{ 'Id':3,'Deleted':false,'Name':'Sites','Description':'Site Management'},{ 'Id':4,'Deleted':false,'Name':'Inventory','Description':'Inventory Management'},{ 'Id':5,'Deleted':false,'Name':'Users','Description':'User and Group Management'}]",
                 });
 
-            builder.Entity<UserPoco>().HasData(
-                new UserPoco
-                {
-                    FirstName = "Admin",
-                    LastName = "Xataris",
-                    GroupId = 1
-                });
-
             builder.Entity<ModulePoco>().HasData(
                 new List<ModulePoco>
                 {

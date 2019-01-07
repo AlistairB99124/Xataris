@@ -10,7 +10,7 @@ namespace Xataris.API.Controllers
 {
     [Produces("application/json")]
     [Route("api/Order")]
-    [Authorize]
+    //[Authorize]
     public class OrderController : BaseController
     {
         private readonly IOrders _order;

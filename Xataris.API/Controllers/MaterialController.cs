@@ -9,7 +9,7 @@ namespace Xataris.API.Controllers
 {
     [Produces("application/json")]
     [Route("api/Material")]
-    [Authorize]
+    //[Authorize]
     public class MaterialController : BaseController
     {
         private IMaterial _material;

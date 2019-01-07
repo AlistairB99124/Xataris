@@ -15,7 +15,6 @@ using Xataris.Domain.Interfaces;
 using Xataris.Domain.Pocos;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Xataris.API.Seeding;
 
 namespace Xataris.API
 {
