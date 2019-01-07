@@ -9,7 +9,7 @@ namespace Xataris.API.Controllers
 {
     [Produces("application/json")]
     [Route("api/Site")]
-    //[Authorize]
+    [Authorize]
     public class SiteController : BaseController
     {
         private readonly ISite _site;

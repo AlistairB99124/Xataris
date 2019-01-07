@@ -10,7 +10,7 @@ namespace Xataris.API.Controllers
 {
     [Produces("application/json")]
     [Route("api/Timesheet")]
-    //[Authorize]
+    [Authorize]
     public class TimesheetController : BaseController
     {
         private ITimesheet _timesheet;

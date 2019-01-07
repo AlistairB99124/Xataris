@@ -8,7 +8,7 @@ namespace Xataris.API.Controllers
 {
     [Produces("application/json")]
     [Route("api/Warehouse")]
-    //[Authorize]
+    [Authorize]
     public class WarehouseController : BaseController
     {
         private readonly IWarehouse _warehouse;
