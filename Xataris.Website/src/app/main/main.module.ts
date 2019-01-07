@@ -12,11 +12,8 @@ import { FuseNavigationModule } from '../core/components/navigation/navigation.m
 import { FuseNavbarVerticalToggleDirective } from './navbar/vertical/navbar-vertical-toggle.directive';
 import { FuseNavbarHorizontalComponent } from './navbar/horizontal/navbar-horizontal.component';
 import { FuseQuickPanelComponent } from './quick-panel/quick-panel.component';
-import { FuseThemeOptionsComponent } from '../core/components/theme-options/theme-options.component';
 import { FuseShortcutsModule } from '../core/components/shortcuts/shortcuts.module';
 import { FuseSearchBarModule } from '../core/components/search-bar/search-bar.module';
-import { ScrabbleModule  } from '../main/content/Scrabble/scrabble.module';
-import { ElfModule  } from '../main/content/Elf/elf.module';
 
 import { SiteManagementModule } from '../main/content/Sites/Management/siteManagement.module';
 import { TimesheetModule } from '../main/content/PTM/MyTimesheet/mytimesheet.module';
@@ -28,9 +25,6 @@ import { OrdersModule } from '../main/content/Orders/Orders.module';
 import { PTMManagementModule } from '../main/content/PTM/Management/ptmmanagement.module';
 import { SiteDetailsModule } from '../main/content/Sites/Details/sitesDetails.module';
 
-import { ScrabbleApiService } from '../main/content/Scrabble/scrabble.service';
-import { ElfApiService } from '../main/content/Elf/elf.service';
-
 @NgModule({
     declarations: [
         FuseContentComponent,
@@ -40,7 +34,6 @@ import { ElfApiService } from '../main/content/Elf/elf.service';
         FuseNavbarHorizontalComponent,
         FuseToolbarComponent,
         FuseNavbarVerticalToggleDirective,
-        FuseThemeOptionsComponent,
         FuseQuickPanelComponent
     ],
     imports     : [
@@ -58,16 +51,11 @@ import { ElfApiService } from '../main/content/Elf/elf.service';
         GroupManagementModule,
         OrdersModule,
         PTMManagementModule,
-        ScrabbleModule,
-        ElfModule,
     ],
     exports     : [
         FuseMainComponent
     ],
-    providers: [
-        ScrabbleApiService,
-        ElfApiService,
-    ]
+    providers: []
 })
 
 export class FuseMainModule

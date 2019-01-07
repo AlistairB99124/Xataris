@@ -7,7 +7,6 @@ import { locale as af } from './i18n/af';
 import * as s from '../../../../../core/models/sharedModels';
 import { ApiService } from '../../../../services/api.service';
 import { MatDialogRef, MatDialog } from '@angular/material';
-import { Router } from '@angular/router';
 import {
     UserFilter,
     UserFilterInput,

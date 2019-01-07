@@ -5,7 +5,6 @@ import { locale as en } from './i18n/en';
 import { locale as af } from './i18n/af';
 import { XatarisPermissions, DropdownModel } from '../../../../core/models/sharedModels';
 import { ApiService } from '../../../services/api.service';
-import { MatTableDataSource } from '@angular/material';
 import * as _ from 'lodash';
 import * as s from '../../../../core/models/sharedModels';
 import {

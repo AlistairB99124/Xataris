@@ -16,7 +16,7 @@ export class FuseNavigationModel implements FuseNavigationModelInterface
                 'show': true,
                 'children': [
                     {
-                        'id'   : 2,
+                        'id'   : 1,
                         'title': 'PTM',
                         'translate': 'NAV.PTM.TITLE',
                         'type' : 'collapse',
@@ -44,7 +44,7 @@ export class FuseNavigationModel implements FuseNavigationModelInterface
                         ]
                     },
                     {
-                        'id'   : 5,
+                        'id'   : 2,
                         'title': 'Orders',
                         'translate': 'NAV.ORDERS.TITLE',
                         'type' : 'collapse',
@@ -64,7 +64,7 @@ export class FuseNavigationModel implements FuseNavigationModelInterface
                         ]
                     },
                     {
-                        'id'   : 4,
+                        'id'   : 3,
                         'title': 'Sites',
                         'translate': 'NAV.SITES.TITLE',
                         'type' : 'collapse',
@@ -84,7 +84,7 @@ export class FuseNavigationModel implements FuseNavigationModelInterface
                         ]
                     },
                     {
-                        'id'   : 3,
+                        'id'   : 4,
                         'title': 'Inventory',
                         'translate': 'NAV.DATA.TITLE',
                         'type' : 'collapse',
@@ -104,7 +104,7 @@ export class FuseNavigationModel implements FuseNavigationModelInterface
                         ]
                     },
                     {
-                        'id'   : 10,
+                        'id'   : 5,
                         'title': 'Users',
                         'translate': 'NAV.USERS.TITLE',
                         'type' : 'collapse',
@@ -131,26 +131,6 @@ export class FuseNavigationModel implements FuseNavigationModelInterface
                             }
                         ]
                     },
-                    /*{
-                        'id'   : 6,
-                        'title': 'Scrabble',
-                        'translate': 'NAV.SCRABBLE.TITLE',
-                        'type' : 'item',
-                        'icon' : 'schedule',
-                        'url'  : 'scrabble',
-                        'show': true,
-                        'permission': 0
-                    },
-                    {
-                        'id'   : 1,
-                        'title': 'ELF IDEAS',
-                        'translate': 'NAV.ELF.TITLE',
-                        'type' : 'item',
-                        'icon' : 'cake',
-                        'url'  : 'elf',
-                        'show': true,
-                        'permission': 0
-                    }*/
                 ]
             }
         ];

@@ -11,8 +11,8 @@ import { locale as en } from './i18n/en';
 import { locale as af } from './i18n/af';
 import { locale as fr } from './i18n/fr';
 import * as _ from 'lodash';
-import { SimpleResult } from '../../Scrabble/scrabble.models';
 import { LoginViewModel } from './login.models';
+import { SimpleResult } from '../../../../core/models/sharedModels';
 
 @Component({
     selector   : 'fuse-login',
@@ -98,7 +98,7 @@ export class LoginComponent implements OnInit
               localStorage.setItem('userId', res.id.toString());
               this.router.navigate(['PTM/MyTimesheet']);
           } else {
-            this.translateService.get(res.error).subscribe(result => {
+            this.translateService.get(res.errorMessage).subscribe(result => {
                 this.snackBar.open(result, '', { duration: 5000 });
             });
           }

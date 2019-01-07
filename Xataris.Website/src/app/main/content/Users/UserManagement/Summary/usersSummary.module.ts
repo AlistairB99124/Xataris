@@ -3,7 +3,7 @@ import { RouterModule } from '@angular/router';
 
 import { SharedModule } from '../../../../../core/modules/shared.module';
 import { FuseWidgetModule } from '../../../../../core/components/widget/widget.module';
-import { UsersSummaryComponent } from './UsersSummary.Component';
+import { UsersSummaryComponent } from './usersSummary.component';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 
 const routes = [
@@ -22,9 +22,6 @@ const routes = [
         RouterModule.forChild(routes),
         FuseWidgetModule,
         MatDatepickerModule
-    ],
-    exports     : [
-        UsersSummaryComponent
     ]
 })
 

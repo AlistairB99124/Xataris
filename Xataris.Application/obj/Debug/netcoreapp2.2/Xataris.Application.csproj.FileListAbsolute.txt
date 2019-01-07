@@ -1,3 +1,6 @@
+C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Application\obj\Debug\netcoreapp2.2\Xataris.Application.csproj.CoreCompileInputs.cache
+C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Application\obj\Debug\netcoreapp2.2\Xataris.Application.AssemblyInfoInputs.cache
+C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Application\obj\Debug\netcoreapp2.2\Xataris.Application.AssemblyInfo.cs
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Application\bin\Debug\netcoreapp2.2\Xataris.Application.deps.json
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Application\bin\Debug\netcoreapp2.2\Xataris.Application.dll
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Application\bin\Debug\netcoreapp2.2\Xataris.Application.pdb
@@ -14,9 +17,6 @@ C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Application\bin\Debug\netcore
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Application\bin\Debug\netcoreapp2.2\Xataris.Infrastructure.ApplicationVariables.pdb
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Application\bin\Debug\netcoreapp2.2\StackExchange.Redis.StrongName.xml
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Application\obj\Debug\netcoreapp2.2\Xataris.Application.csprojAssemblyReference.cache
-C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Application\obj\Debug\netcoreapp2.2\Xataris.Application.csproj.CoreCompileInputs.cache
-C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Application\obj\Debug\netcoreapp2.2\Xataris.Application.AssemblyInfoInputs.cache
-C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Application\obj\Debug\netcoreapp2.2\Xataris.Application.AssemblyInfo.cs
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Application\obj\Debug\netcoreapp2.2\Xataris.Application.csproj.CopyComplete
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Application\obj\Debug\netcoreapp2.2\Xataris.Application.dll
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Application\obj\Debug\netcoreapp2.2\Xataris.Application.pdb

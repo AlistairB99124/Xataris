@@ -19,6 +19,7 @@ import { ApiService } from '../../../services/api.service';
 export class InventoryComponent implements OnInit {
     data: Models.MaterialManagementViewModel;
     startUpload = false;
+    pathArr = [];
 
     constructor(
         private apiService: ApiService,

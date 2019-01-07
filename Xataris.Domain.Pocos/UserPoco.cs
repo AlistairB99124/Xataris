@@ -19,6 +19,5 @@ namespace Xataris.Domain.Pocos
 
         public List<WarehousePoco> Warehouses { get; set; }
         public List<TimeSheetPoco> Timesheets{get;set;}
-        public List<Quote> Quotes { get; set; }
     }
 }
