@@ -19,6 +19,12 @@ $RECYCLE.BIN/
 *.msm
 *.msp
 *.dll
+*.xml
+*.pdb
+*.cache
+*.txt
+*.CopyComplete
+.suo
 
 # Windows shortcuts
 *.lnk
@@ -27,3 +33,4 @@ $RECYCLE.BIN/
 # Operating System Files
 # =========================
 /.vs/Xataris/v15/Server/sqlite3
+.vs/
