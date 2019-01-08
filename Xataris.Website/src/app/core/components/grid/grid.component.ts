@@ -17,18 +17,18 @@ import {
 
 export class GridComponent implements OnInit, AfterViewInit {
 
-    dataSource = new MatTableDataSource();
-    shownColumns = new Array<string>();
-    showFooter = false;
-    @Input('gridOptions') gridOptions: GridOptions;
-    @ViewChild(MatPaginator) paginator: MatPaginator;
-    @ViewChild(MatSort) sort: MatSort;
+    public dataSource = new MatTableDataSource();
+    public shownColumns = new Array<string>();
+    public showFooter = false;
+    @Input('gridOptions') public gridOptions: GridOptions;
+    @ViewChild(MatPaginator) public paginator: MatPaginator;
+    @ViewChild(MatSort) public sort: MatSort;
 
     constructor(private elementRef: ElementRef) {
 
     }
 
-    public ngOnInit () {
+    public ngOnInit() {
         this.elementRef.nativeElement.style.width = '100%';
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
@@ -93,7 +93,7 @@ export class GridComponent implements OnInit, AfterViewInit {
         return parts.join('.');
     }
 
-    renderCell(params: any, column: ColumnDef) {
+    public renderCell(params: any, column: ColumnDef) {
         if (column.cellRenderer) {
             return column.cellRenderer(params);
         } else {
@@ -134,7 +134,7 @@ export class GridComponent implements OnInit, AfterViewInit {
         }
     }
 
-    getTotal(column: ColumnDef) {
+    public getTotal(column: ColumnDef) {
         if (column.columnType === ColumnType.numeric) {
             return this.dataSource.data.map(t => t[column.field]).reduce((acc, value) => acc + value, 0).toFixed(2);
         } else if (column.columnType === ColumnType.currency) {
