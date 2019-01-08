@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<parameters>
-  <parameter name="IIS Web Application Name" description="" value="daviesalistair-001-subsite2" tags="IisApp">
-    <parameterEntry kind="ProviderPath" scope="IisApp" match="^C:\\Users\\Alistair\\Documents\\GitHub\\Xataris\\Xataris\.API\\obj\\Release\\netcoreapp2\.2\\PubTmp\\Out\\$" />
-  </parameter>
-</parameters>
