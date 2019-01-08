@@ -3,7 +3,9 @@ Thumbs.db
 ehthumbs.db
 ehthumbs_vista.db
 
-website/node_modules
+Xataris.Website/node_modules
+Xataris.API/bin
+Xataris.API/obj
 
 # Folder config file
 Desktop.ini
