@@ -1,9 +1,10 @@
 import * as m from '../../../../core/models/sharedModels';
 import { MatDialogRef } from '@angular/material';
 import { MapModalComponent } from './map-modal/map-modal.component';
+import { GridOptions } from '../../../../core/components/grid/grid.models';
 
 export interface SiteManagementViewModel{
-    siteGrid: m.GridOptions;
+    siteGrid: GridOptions;
     loader: boolean;
     sites: Array<Site>;
     dialogRef: MatDialogRef<MapModalComponent>;

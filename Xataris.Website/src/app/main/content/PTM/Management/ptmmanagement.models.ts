@@ -1,4 +1,4 @@
-import { GridOptions } from '../../../../core/models/sharedModels';
+import { GridOptions } from '../../../../core/components/grid/grid.models';
 
 export interface PTMManagementViewModel {
   allTimesheets: Array<Timesheet>;

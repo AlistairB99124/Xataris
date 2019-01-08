@@ -15,6 +15,7 @@ import {
 } from './usersSummary.models';
 import * as _ from 'lodash';
 import { FuseConfirmDialogComponent } from '../../../../../core/components/confirm-dialog/confirm-dialog.component';
+import { ColumnType, ColumnDef, GridOptions, RenderType } from '../../..;/../../../../core/components/grid/grid.models';
 
 @Component({
     selector: 'fuse-user-summary',
@@ -71,33 +72,34 @@ export class UsersSummaryComponent implements OnInit {
         this.loader = true;
         this.translationLoader.loadTranslations(en, af);
         this.data = {} as UsersManagementViewModel;
-        this.data.usersGrid = <s.GridOptions>{
+        this.data.usersGrid = <GridOptions>{
             columnDefs: [
-                <s.ColumnDef>{
+                <ColumnDef>{
                     field: 'id',
                     title: '',
-                    columnType: s.ColumnType.checkbox
+                    columnType: ColumnType.checkbox
                 },
-                <s.ColumnDef>{
+                <ColumnDef>{
                     field: 'firstName',
                     title: 'First Name',
-                    columnType: s.ColumnType.text
+                    columnType: ColumnType.text
                 },
-                <s.ColumnDef>{
+                <ColumnDef>{
                     field: 'lastName',
                     title: 'Last Name',
-                    columnType: s.ColumnType.text
+                    columnType: ColumnType.input,
+                    renderType: RenderType.Text
                 },
-                <s.ColumnDef>{
+                <ColumnDef>{
                     field: 'dateRegistered',
-                    title: 'dateRegistered',
-                    columnType: s.ColumnType.date,
+                    title: 'Date Registered',
+                    columnType: ColumnType.date,
                     currencySymbol: 'R'
                 },
-                <s.ColumnDef>{
+                <ColumnDef>{
                     field: 'email',
                     title: 'Email',
-                    columnType: s.ColumnType.text
+                    columnType: ColumnType.text
                 },
             ],
             rowData: []

@@ -3,7 +3,7 @@ import { FuseTranslationLoaderService } from '../../../../core/services/translat
 import { fuseAnimations } from '../../../../core/animations';
 import { locale as en } from './i18n/en';
 import { locale as af } from './i18n/af';
-import { GridOptions, ColumnDef, ColumnType } from '../../../../core/models/sharedModels';
+import { GridOptions, ColumnDef, ColumnType } from '../../../../core/components/grid/grid.models';
 import { MatDialog } from '@angular/material';
 import * as m from './siteManagement.models';
 import { Router } from '@angular/router';

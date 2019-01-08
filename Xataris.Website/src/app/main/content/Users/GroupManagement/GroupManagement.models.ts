@@ -1,4 +1,5 @@
-import { DropdownModel, GridOptions } from '../../../../core/models/sharedModels';
+import { DropdownModel } from '../../../../core/models/sharedModels';
+import { GridOptions } from '../../../../core/components/grid/grid.models';
 
 export interface GroupManagementViewModel {
   isGroupListCollapsed: boolean;

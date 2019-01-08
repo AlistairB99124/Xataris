@@ -39,7 +39,7 @@
                 <mat-divider></mat-divider>
                 <mat-card *ngIf="!data.isGroupListCollapsed" class="p-0">
                     <mat-card-content>
-                           <fuse-grid [gridOptions]="data.groupsGrid" style="width: 100%"></fuse-grid>
+                           <app-grid [gridOptions]="data.groupsGrid"></app-grid>
                     </mat-card-content>
                 </mat-card>
                 <mat-toolbar class="mat-white-bg mat-elevation-z4" style="margin-top: 20px;" *ngIf="data.showDetailsPanel">

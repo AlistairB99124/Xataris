@@ -7,11 +7,13 @@ import { XatarisPermissions, DropdownModel } from '../../../../core/models/share
 import { ApiService } from '../../../services/api.service';
 import * as _ from 'lodash';
 import * as s from '../../../../core/models/sharedModels';
+
 import {
     GroupManagementViewModel,
     GroupDetail,
     SaveGroupInput
 } from './GroupManagement.models';
+import { ColumnDef, ColumnType } from '../../../../core/components/grid/grid.models';
 
 @Component({
     selector: 'fuse-group-management',
@@ -36,30 +38,30 @@ export class GroupManagementComponent implements OnInit {
         this.data.isGroupDetailCollapsed = false;
         this.data.groupsGrid = {
             columnDefs: [
-                <s.ColumnDef>{
+                <ColumnDef>{
                     field: 'id',
                     title: '',
-                    columnType: s.ColumnType.checkbox
+                    columnType: ColumnType.checkbox
                 },
-                <s.ColumnDef>{
+                <ColumnDef>{
                     field: 'title',
                     title: 'Title',
-                    columnType: s.ColumnType.text
+                    columnType: ColumnType.text
                 },
-                <s.ColumnDef>{
+                <ColumnDef>{
                     field: 'description',
                     title: 'Description',
-                    columnType: s.ColumnType.text
+                    columnType: ColumnType.text
                 },
-                <s.ColumnDef>{
+                <ColumnDef>{
                     field: 'modules',
                     title: 'Modules',
-                    columnType: s.ColumnType.text
+                    columnType: ColumnType.text
                 },
-                <s.ColumnDef>{
+                <ColumnDef>{
                     field: 'accessLevel',
                     title: 'Access Level',
-                    columnType: s.ColumnType.text,
+                    columnType: ColumnType.text,
                 },
             ],
             rowData: [],

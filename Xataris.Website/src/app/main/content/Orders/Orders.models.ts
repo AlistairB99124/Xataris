@@ -1,9 +1,10 @@
 import * as m from '../../../core/models/sharedModels';
 import { ReplaySubject } from 'rxjs';
 import { FormGroup, FormControl } from '@angular/forms';
+import { GridOptions } from '../../../core/components/grid/grid.models';
 
 export interface OrdersViewModel{
-    ordersGrid: m.GridOptions;
+    ordersGrid: GridOptions;
     ordersDetail: OrderPoco;
     orders: Array<OrderPoco>;
     sitesAvailable: Array<m.SitePoco>;

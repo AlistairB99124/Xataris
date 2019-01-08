@@ -4,7 +4,7 @@ import { FuseConfirmDialogComponent } from '../../../../core/components/confirm-
 import {
   MatDialogRef
 } from '@angular/material';
-import { GridOptions } from '../../../../core/models/sharedModels';
+import { GridOptions, ColumnType } from '../../../../core/components/grid/grid.models';
 import { ReplaySubject } from 'rxjs';
 
 export interface TimesheetViewModel {
@@ -61,20 +61,6 @@ export interface Column {
     columnType: ColumnType;
     columnName: string;
     width: number;
-}
-
-export enum ColumnType {
-    General = 1,
-    Number = 2,
-    Currency = 3,
-    Accounting = 4,
-    ShortDate = 5,
-    LongDate = 6,
-    Time = 7,
-    Percentage = 8,
-    Fraction = 9,
-    Scientific = 10,
-    Text = 11
 }
 
 export interface Site {

@@ -1,4 +1,5 @@
 import * as s from '../../../../../core/models/sharedModels';
+import { GridOptions } from '../../../../../core/components/grid/grid.models';
 
 export interface UsersManagementViewModel {
     tileCounts: TileCount;
@@ -13,7 +14,7 @@ export interface UsersManagementViewModel {
     showUsersList: boolean;
     isUserDetailsGridCollapsed: boolean;
     selectedFilter: UserFilter;
-    usersGrid: s.GridOptions;
+    usersGrid: GridOptions;
 }
 export interface GridData{
     columns: Array<any>;

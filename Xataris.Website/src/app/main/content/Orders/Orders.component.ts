@@ -4,8 +4,7 @@ import { FuseTranslationLoaderService } from '../../../core/services/translation
 import { fuseAnimations } from '../../../core/animations';
 import { locale as english } from './i18n/en';
 import { locale as afrikaans } from './i18n/af';
-import { GridOptions, ColumnDef, ColumnType, MaterialPoco } from '../../../core/models/sharedModels';
-import { Router } from '@angular/router';
+import { GridOptions, ColumnDef, ColumnType } from '../../../core/components/grid/grid.models';
 import * as domtoimage from 'dom-to-image';
 import * as _ from 'lodash';
 declare const jsPDF;

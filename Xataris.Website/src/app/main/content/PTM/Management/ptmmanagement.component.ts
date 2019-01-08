@@ -8,7 +8,7 @@ import {
   GridOptions,
   ColumnDef,
   ColumnType
-} from '../../../../core/models/sharedModels';
+} from '../../../../core/components/grid/grid.models';
 import { ApiService } from '../../../services/api.service';
 import { MatSnackBar } from '@angular/material';
 import * as domtoimage from 'dom-to-image';

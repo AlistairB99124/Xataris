@@ -8,6 +8,7 @@ import * as _ from 'lodash';
 import * as Models from './inventory.models';
 import * as m from '../../../../core/models/sharedModels';
 import { ApiService } from '../../../services/api.service';
+import { ColumnDef, ColumnType, GridOptions } from '../../../../core/components/grid/grid.models';
 
 @Component({
     selector: 'fuse-material-inventory',
@@ -29,8 +30,6 @@ export class InventoryComponent implements OnInit {
     public ngOnInit(){
         this.data = {} as Models.MaterialManagementViewModel;
         this.translationLoader.loadTranslations(english, afrikaans);
-        this.data.files = [] as Array<Models.FileDetail>;
-        this.data.file = {} as Models.FileDetail;
         this.data.materialsToLoad = [];
         this.data.materialsToDisplay = [];
         this.data.selectedWarehouse = {} as any;
@@ -47,27 +46,27 @@ export class InventoryComponent implements OnInit {
         this.apiService.post('Warehouse/GetWarehouses', {}).then(res => {
             this.data.availableWarehouses = res;
         });
-        this.data.inventoryGrid = <m.GridOptions>{
+        this.data.inventoryGrid = <GridOptions>{
             columnDefs: [
-                <m.ColumnDef>{
+                <ColumnDef>{
                     field: 'stockCode',
                     title: 'Stock Code',
-                    columnType: m.ColumnType.text
+                    columnType: ColumnType.text
                 },
-                <m.ColumnDef>{
+                <ColumnDef>{
                     field: 'stockDescription',
                     title: 'Stock Description',
-                    columnType: m.ColumnType.text
+                    columnType: ColumnType.text
                 },
-                <m.ColumnDef>{
+                <ColumnDef>{
                     field: 'level',
                     title: 'Level',
-                    columnType: m.ColumnType.numeric
+                    columnType: ColumnType.numeric
                 },
-                <m.ColumnDef>{
+                <ColumnDef>{
                     field: 'unitCostPrice',
                     title: 'Unit Cost',
-                    columnType: m.ColumnType.currency,
+                    columnType: ColumnType.currency,
                     currencySymbol: 'R'
                 }
             ],
@@ -128,10 +127,6 @@ export class InventoryComponent implements OnInit {
                 this.startUpload = false;
             }
         });
-    }
-
-    setSelectedMap = () => {
-        this.data.selectedColumnMap = _.find(this.data.availableColumnMaps, { id: this.data.selectedColumnMapId });
     }
 
     formatTime = (input: string) => {

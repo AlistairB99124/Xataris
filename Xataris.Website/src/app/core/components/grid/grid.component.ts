@@ -1,12 +1,16 @@
-import { Component, Input, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { GridOptions } from '../../models/sharedModels';
+import { Component, Input, OnInit, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
 import { MatPaginator, MatTableDataSource, MatSort } from '@angular/material';
-import * as m from '../../models/sharedModels';
 import * as _ from 'lodash';
-import { ColumnType } from '../../../main/content/PTM/MyTimesheet/mytimesheet.models';
+import {
+    ColumnDef,
+    ColumnType,
+    GridApi,
+    GridOptions,
+    RenderType,
+} from './grid.models';
 
 @Component({
-    selector : 'fuse-grid',
+    selector : 'app-grid',
     templateUrl : './grid.component.html',
     styleUrls: ['./grid.component.scss']
 })
@@ -20,16 +24,21 @@ export class GridComponent implements OnInit, AfterViewInit {
     @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild(MatSort) sort: MatSort;
 
+    constructor(private elementRef: ElementRef) {
+
+    }
+
     public ngOnInit () {
+        this.elementRef.nativeElement.style.width = '100%';
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
-        this.gridOptions.api = {} as m.GridApi;
+        this.gridOptions.api = {} as GridApi;
         this.showFooter = this.gridOptions.showFooter;
         if (this.gridOptions.columnDefs.length > 0) {
             this.setColumns(this.gridOptions.columnDefs);
         }
         if (!this.gridOptions.api){
-            this.gridOptions.api = {} as m.GridApi;
+            this.gridOptions.api = {} as GridApi;
         }
 
         this.gridOptions.api.getSelectedRows = () => _.filter(this.gridOptions.rowData, x => x.selected === true);
@@ -40,12 +49,12 @@ export class GridComponent implements OnInit, AfterViewInit {
             this.dataSource.data = data;
         };
 
-        this.gridOptions.api.setColumnDefs = (columns: Array<m.ColumnDef>) => {
+        this.gridOptions.api.setColumnDefs = (columns: Array<ColumnDef>) => {
             this.setColumns(columns);
         };
     }
 
-    private setColumns = (columns: Array<m.ColumnDef>) => {
+    private setColumns(columns: Array<ColumnDef>) {
         this.shownColumns = [];
         this.gridOptions.columnDefs = columns;
         for (let i = 0; i < columns.length; i++) {
@@ -53,27 +62,27 @@ export class GridComponent implements OnInit, AfterViewInit {
                 this.shownColumns.push(columns[i].field);
             }
             switch (columns[i].columnType) {
-                case m.ColumnType.currency:
-                case m.ColumnType.numeric:
-                case m.ColumnType.percentage:
-                columns[i].class = 'text-right';
+                case ColumnType.currency:
+                case ColumnType.numeric:
+                case ColumnType.percentage:
+                    columns[i].class = 'text-right';
                 break;
-                case m.ColumnType.text:
-                    if (columns[i].renderType === m.RenderType.Anchor) {
+                case ColumnType.text:
+                    if (columns[i].renderType === RenderType.Anchor) {
                         columns[i].class = 'text-centre';
                     } else {
                         columns[i].class = 'text-left';
                     }
                 break;
-                case m.ColumnType.percentage:
-                case m.ColumnType.checkbox:
+                case ColumnType.percentage:
+                case ColumnType.checkbox:
                     columns[i].class = 'text-centre';
                 break;
             }
         }
     }
 
-    public ngAfterViewInit () {
+    public ngAfterViewInit() {
         if (this.gridOptions.onReady) {
             this.gridOptions.onReady(this.dataSource);
         }
@@ -85,15 +94,15 @@ export class GridComponent implements OnInit, AfterViewInit {
         return parts.join('.');
     }
 
-    renderCell = (params: any, column: m.ColumnDef) => {
+    renderCell(params: any, column: ColumnDef) {
         if (column.cellRenderer) {
             return column.cellRenderer(params);
         } else {
             let value = 0;
             switch (column.columnType) {
-                case m.ColumnType.percentage:
+                case ColumnType.percentage:
                     return (params[column.field] * 100).toFixed(2) + ' %';
-                case m.ColumnType.currency:
+                case ColumnType.currency:
                     if (params[column.field]) {
                         params[column.field] = params[column.field].toString().replace(',', '');
                         params[column.field] = params[column.field].toString().replace('.', ',');
@@ -104,7 +113,7 @@ export class GridComponent implements OnInit, AfterViewInit {
                     } else {
                         return params[column.field];
                     }
-                case m.ColumnType.numeric:
+                case ColumnType.numeric:
                     if (_.last(params[column.field]) === '.') {
                         params[column.field] = (<string>params[column.field]).substring(0, params[column.field].length - 1);
                     }
@@ -114,11 +123,11 @@ export class GridComponent implements OnInit, AfterViewInit {
                     } else {
                         return params[column.field];
                     }
-                case m.ColumnType.text:
+                case ColumnType.text:
                     return params[column.field];
-                case m.ColumnType.date:
+                case ColumnType.date:
                     return new Date(params[column.field]).toDateString();
-                    case m.ColumnType.boolean:
+                case ColumnType.boolean:
                     return (params[column.field] as string).toLowerCase() === 'true' ? 'Yes' : 'No';
                 default:
                     return params[column.field];
@@ -126,10 +135,10 @@ export class GridComponent implements OnInit, AfterViewInit {
         }
     }
 
-    getTotal = (column: m.ColumnDef) => {
-        if (column.columnType === m.ColumnType.numeric) {
+    getTotal(column: ColumnDef) {
+        if (column.columnType === ColumnType.numeric) {
             return this.dataSource.data.map(t => t[column.field]).reduce((acc, value) => acc + value, 0).toFixed(2);
-        } else if (column.columnType === m.ColumnType.currency) {
+        } else if (column.columnType === ColumnType.currency) {
             return this.numberWithQuote(column.currencySymbol + ' ' + this.dataSource.data.map(t => t[column.field]).reduce((acc, value) => {
                 return parseFloat(acc) + parseFloat(value);
             }, 0).toFixed(2).toString());

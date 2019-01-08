@@ -4,12 +4,14 @@ import { FuseTranslationLoaderService } from '../../../../core/services/translat
 import { fuseAnimations } from '../../../../core/animations';
 import { locale as en } from './i18n/en';
 import { locale as af } from './i18n/af';
-import { DropdownModel, GridOptions, ColumnDef, NotificationType } from '../../../../core/models/sharedModels';
+import { DropdownModel, NotificationType } from '../../../../core/models/sharedModels';
 import { MatDialog, MatSnackBar, MatStepper } from '@angular/material';
 import { FuseConfirmDialogComponent } from '../../../../core/components/confirm-dialog/confirm-dialog.component';
 import * as _ from 'lodash';
 import * as Models from './mytimesheet.models';
-import { ColumnType } from '../../../../core/models/sharedModels';
+import {
+    GridOptions, ColumnDef, ColumnType
+} from '../../../../core/components/grid/grid.models';
 import { ApiService } from '../../../services/api.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { Subject, ReplaySubject } from 'rxjs';
