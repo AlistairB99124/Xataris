@@ -1,6 +1,3 @@
-C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.DBService\obj\Debug\netcoreapp2.2\Xataris.DBService.csproj.CoreCompileInputs.cache
-C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.DBService\obj\Debug\netcoreapp2.2\Xataris.DBService.AssemblyInfoInputs.cache
-C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.DBService\obj\Debug\netcoreapp2.2\Xataris.DBService.AssemblyInfo.cs
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.DBService\bin\Debug\netcoreapp2.2\Xataris.DBService.deps.json
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.DBService\bin\Debug\netcoreapp2.2\Xataris.DBService.runtimeconfig.json
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.DBService\bin\Debug\netcoreapp2.2\Xataris.DBService.runtimeconfig.dev.json
@@ -11,6 +8,9 @@ C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.DBService\bin\Debug\netcoreap
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.DBService\bin\Debug\netcoreapp2.2\Xataris.Domain.Pocos.pdb
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.DBService\bin\Debug\netcoreapp2.2\Xataris.Infrastructure.ApplicationVariables.pdb
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.DBService\obj\Debug\netcoreapp2.2\Xataris.DBService.csprojAssemblyReference.cache
+C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.DBService\obj\Debug\netcoreapp2.2\Xataris.DBService.csproj.CoreCompileInputs.cache
+C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.DBService\obj\Debug\netcoreapp2.2\Xataris.DBService.AssemblyInfoInputs.cache
+C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.DBService\obj\Debug\netcoreapp2.2\Xataris.DBService.AssemblyInfo.cs
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.DBService\obj\Debug\netcoreapp2.2\Xataris.DBService.csproj.CopyComplete
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.DBService\obj\Debug\netcoreapp2.2\Xataris.DBService.dll
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.DBService\obj\Debug\netcoreapp2.2\Xataris.DBService.pdb

@@ -64,7 +64,7 @@ export class AccessLevelDirective implements OnInit
             }
             if (details) {
                 _.forEach(modules, (x) => {
-                    if (x.id === module) {
+                    if (x.Id === module) {
                         if (permission <= details.AccessLevel) {
                             this.AccessLevel = true;
                         }

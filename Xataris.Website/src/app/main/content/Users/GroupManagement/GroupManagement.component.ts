@@ -169,10 +169,9 @@ export class GroupManagementComponent implements OnInit {
         _.forEach(groups, g => {
             const modules = JSON.parse(g.modules);
             const stringArray = <Array<string>>_.map(modules, m => {
-                return m.name;
+                return m.name ? m.name : m.Name;
             });
             g.modules = stringArray.join(',');
-            g['isSelected'] = false;
         });
         this.data.groupsGrid.api.setRowData(groups);
     }

@@ -1,12 +1,12 @@
-C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Domain.Pocos\obj\Debug\netcoreapp2.2\Xataris.Domain.Pocos.csprojAssemblyReference.cache
-C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Domain.Pocos\obj\Debug\netcoreapp2.2\Xataris.Domain.Pocos.csproj.CoreCompileInputs.cache
-C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Domain.Pocos\obj\Debug\netcoreapp2.2\Xataris.Domain.Pocos.AssemblyInfoInputs.cache
-C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Domain.Pocos\obj\Debug\netcoreapp2.2\Xataris.Domain.Pocos.AssemblyInfo.cs
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Domain.Pocos\bin\Debug\netcoreapp2.2\Xataris.Domain.Pocos.deps.json
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Domain.Pocos\bin\Debug\netcoreapp2.2\Xataris.Domain.Pocos.dll
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Domain.Pocos\bin\Debug\netcoreapp2.2\Xataris.Domain.Pocos.pdb
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Domain.Pocos\bin\Debug\netcoreapp2.2\Xataris.Infrastructure.ApplicationVariables.dll
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Domain.Pocos\bin\Debug\netcoreapp2.2\Xataris.Infrastructure.ApplicationVariables.pdb
+C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Domain.Pocos\obj\Debug\netcoreapp2.2\Xataris.Domain.Pocos.csprojAssemblyReference.cache
+C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Domain.Pocos\obj\Debug\netcoreapp2.2\Xataris.Domain.Pocos.csproj.CoreCompileInputs.cache
+C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Domain.Pocos\obj\Debug\netcoreapp2.2\Xataris.Domain.Pocos.AssemblyInfoInputs.cache
+C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Domain.Pocos\obj\Debug\netcoreapp2.2\Xataris.Domain.Pocos.AssemblyInfo.cs
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Domain.Pocos\obj\Debug\netcoreapp2.2\Xataris.Domain.Pocos.csproj.CopyComplete
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Domain.Pocos\obj\Debug\netcoreapp2.2\Xataris.Domain.Pocos.dll
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.Domain.Pocos\obj\Debug\netcoreapp2.2\Xataris.Domain.Pocos.pdb
