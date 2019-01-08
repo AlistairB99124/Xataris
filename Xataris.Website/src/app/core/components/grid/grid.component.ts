@@ -33,7 +33,6 @@ export class GridComponent implements OnInit, AfterViewInit {
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
         this.gridOptions.api = {} as GridApi;
-        this.showFooter = this.gridOptions.showFooter;
         if (this.gridOptions.columnDefs.length > 0) {
             this.setColumns(this.gridOptions.columnDefs);
         }

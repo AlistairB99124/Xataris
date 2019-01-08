@@ -44,7 +44,7 @@
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="shownColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: shownColumns;"></tr>
-        <div *ngIf="showFooter">
+        <div *ngIf="gridOptions.showFooter">
             <tr mat-footer-row *matFooterRowDef="shownColumns"></tr>
         </div>
     </table>
