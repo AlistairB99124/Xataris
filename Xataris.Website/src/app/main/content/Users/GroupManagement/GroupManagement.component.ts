@@ -5,7 +5,6 @@ import { locale as en } from './i18n/en';
 import { locale as af } from './i18n/af';
 import { XatarisPermissions, DropdownModel } from '../../../../core/models/sharedModels';
 import { ApiService } from '../../../services/api.service';
-import { MatTableDataSource } from '@angular/material';
 import * as _ from 'lodash';
 import * as s from '../../../../core/models/sharedModels';
 import {
@@ -170,10 +169,9 @@ export class GroupManagementComponent implements OnInit {
         _.forEach(groups, g => {
             const modules = JSON.parse(g.modules);
             const stringArray = <Array<string>>_.map(modules, m => {
-                return m.name;
+                return m.name ? m.name : m.Name;
             });
             g.modules = stringArray.join(',');
-            g['isSelected'] = false;
         });
         this.data.groupsGrid.api.setRowData(groups);
     }

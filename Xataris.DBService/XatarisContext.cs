@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using Xataris.Domain.Pocos;
 using static Xataris.DBService.Configuration;
 
@@ -26,20 +27,58 @@ namespace Xataris.DBService
             builder.ApplyConfiguration(new NonMaterialItemMap());
             builder.ApplyConfiguration(new WarehouseMap());
             builder.ApplyConfiguration(new LookupValuesMap());
-            //builder.ApplyConfiguration(new GamesMap());
-            //builder.ApplyConfiguration(new PlayerMap());
 
-            //builder.ApplyConfiguration(new QuoteMap());
-            //builder.ApplyConfiguration(new QuoteItemMap());
-            //builder.ApplyConfiguration(new QuoteProductMap());
-            //builder.ApplyConfiguration(new ItemMap());
-            //builder.ApplyConfiguration(new ItemInventoryMap());
-            //builder.ApplyConfiguration(new CustomerMap());
-            //builder.ApplyConfiguration(new ItemTypeMap());
-            //builder.ApplyConfiguration(new ItemTypeGroupMap());
-            //builder.ApplyConfiguration(new PredefinedItemMap());
-            //builder.ApplyConfiguration(new SupplierMap());
-            //builder.ApplyConfiguration(new ProductMap());
+            builder.Entity<UserGroupPoco>().HasData(
+                new UserGroupPoco
+                {
+                    Id = 1,
+                    AccessLevel = AccessLevel.Admin,
+                    Description = "Admin Accounts",
+                    Deleted = false,
+                    Title = "Admin",
+                    Modules = "[{ 'Id':1,'Deleted':false,'Name':'PTM','Description':'Personal Timesheet Management'},{ 'Id':2,'Deleted':false,'Name':'Orders','Description':'Order management'},{ 'Id':3,'Deleted':false,'Name':'Sites','Description':'Site Management'},{ 'Id':4,'Deleted':false,'Name':'Inventory','Description':'Inventory Management'},{ 'Id':5,'Deleted':false,'Name':'Users','Description':'User and Group Management'}]",
+                });
+
+            builder.Entity<ModulePoco>().HasData(
+                new List<ModulePoco>
+                {
+                    new ModulePoco
+                    {
+                        Deleted = false,
+                        Description = "Personal Timesheet Management",
+                        Id = 1,
+                        Name = "PTM"
+                    },
+                    new ModulePoco
+                    {
+                        Deleted = false,
+                        Description = "Order management",
+                        Id = 2,
+                        Name = "Orders"
+                    },
+                    new ModulePoco
+                    {
+                        Deleted = false,
+                        Description = "Site Management",
+                        Id = 3,
+                        Name = "Sites"
+                    },
+                    new ModulePoco
+                    {
+                        Deleted = false,
+                        Description = "Inventory Management",
+                        Id = 4,
+                        Name = "Inventory"
+                    },
+                    new ModulePoco
+                    {
+                        Deleted = false,
+                        Description = "User and Group Management",
+                        Id = 5,
+                        Name = "Users"
+                    }
+                }
+            );
         }
 
         public DbSet<InventoryPoco> Inventories { get; set; }
@@ -54,20 +93,6 @@ namespace Xataris.DBService
         public DbSet<SitePoco> Sites { get; set; }
         public DbSet<OrderPoco> Orders { get; set; }
         public DbSet<OrderItemPoco> OrderItems { get; set; }
-        public DbSet<LookupValue> LookupValues { get; set; }
-        //public DbSet<Game> Games { get; set; }
-        //public DbSet<Player> Players { get; set; }
-
-        //public DbSet<Quote> Quotes { get; set; }
-        //public DbSet<QuoteItem> QuoteItems { get; set; }
-        //public DbSet<QuoteProduct> QuoteProducts { get; set; }
-        //public DbSet<Item> Items { get; set; }
-        //public DbSet<ItemInventory> ItemInventories { get; set; }
-        //public DbSet<Customer> Customers { get; set; }
-        //public DbSet<ItemType> ItemTypes { get; set; }
-        //public DbSet<ItemTypeGroup> ItemTypeGroups { get; set; }
-        //public DbSet<PredefinedItem> PredefinedItems { get; set; }
-        //public DbSet<Supplier> Suppliers { get; set; }
-        //public DbSet<Product> Products { get; set; }        
+        public DbSet<LookupValue> LookupValues { get; set; }      
     }
 }

@@ -87,8 +87,6 @@ namespace Xataris.API
             services.AddTransient<IOrderDomain, OrderDomain>();
             services.AddTransient<IDashboard, Dashboard>();
             services.AddTransient<IEmailSender, EmailSender>();
-            services.AddTransient<IScrabble, Scrabble>();
-            services.AddTransient<IJoey, Joey>();
             services.AddTransient<IProcedureService, ProcedureService>();
             services.AddSingleton<IUserSettings, UserSettings>();
         }

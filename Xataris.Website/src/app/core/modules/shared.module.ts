@@ -17,7 +17,6 @@ import { FuseHighlightComponent } from '../components/highlight/highlight.compon
 import { FusePerfectScrollbarDirective } from '../directives/fuse-perfect-scrollbar/fuse-perfect-scrollbar.directive';
 import { FuseIfOnDomDirective } from '../directives/fuse-if-on-dom/fuse-if-on-dom.directive';
 import { AccessLevelDirective } from '../directives/fuse-access-level/accessLevel.directive';
-import { FuseMaterialColorPickerComponent } from '../components/material-color-picker/material-color-picker.component';
 import { FuseTranslationLoaderService } from '../services/translation-loader.service';
 import { CookieService } from 'ngx-cookie-service';
 import { TranslateModule } from '@ngx-translate/core';
@@ -36,7 +35,6 @@ import { XSelectComponent } from '../components/select/select.component';
         FuseIfOnDomDirective,
         AccessLevelDirective,
         FusePerfectScrollbarDirective,
-        FuseMaterialColorPickerComponent,
         GridComponent,
         XSelectComponent
     ],
@@ -64,7 +62,6 @@ import { XSelectComponent } from '../components/select/select.component';
         ColorPickerModule,
         FuseIfOnDomDirective,
         AccessLevelDirective,
-        FuseMaterialColorPickerComponent,
         GridComponent,
         TranslateModule,
         XSelectComponent

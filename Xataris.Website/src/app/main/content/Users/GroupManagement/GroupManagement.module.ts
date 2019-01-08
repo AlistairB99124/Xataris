@@ -3,7 +3,7 @@ import { RouterModule } from '@angular/router';
 
 import { SharedModule } from '../../../../core/modules/shared.module';
 import { FuseWidgetModule } from '../../../../core/components/widget/widget.module';
-import { GroupManagementComponent } from './GroupManagement.Component';
+import { GroupManagementComponent } from './GroupManagement.component';
 
 const routes = [
     {
@@ -20,9 +20,6 @@ const routes = [
         SharedModule,
         RouterModule.forChild(routes),
         FuseWidgetModule,
-    ],
-    exports     : [
-        GroupManagementComponent
     ]
 })
 
