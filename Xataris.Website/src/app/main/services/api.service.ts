@@ -20,7 +20,7 @@ export class ApiService {
         const header = new HttpHeaders({ Authorization: 'Bearer ' + localStorage.getItem(this.TOKEN_KEY) });
         if (localStorage.getItem(this.TOKEN_KEY) === null) {
             this.http.post(this.BASE_URL + 'Account/Logout', { headers: header }).subscribe(() => {
-                this.router.navigate(['Account/Login']);
+                this.router.navigate(['account/login']);
             });
         } else {
             return this.http.post(this.BASE_URL + url, params, { headers: header }).toPromise().then((res) => {

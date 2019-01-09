@@ -1,6 +1,5 @@
 import { Directive, Input, OnInit, ElementRef } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import {SimpleResult, UserLevel, ApiResult, XatarisPermissions, XatarisModules, LoginResult } from '../../models/sharedModels';
+import { XatarisPermissions, XatarisModules } from '../../models/sharedModels';
 import * as _ from 'lodash';
 
 @Directive({
@@ -17,7 +16,13 @@ export class AccessLevelDirective implements OnInit
     AccessLevel = false;
     @Input() set accessLevel(value: string) {
         if (value !== '' && _.includes(value, '::')) {
-            const details = <any>JSON.parse(localStorage.getItem('Modules'))[0];
+            let details;
+            try {
+                details = <any>JSON.parse(localStorage.getItem('Modules'))[0];
+            } catch {
+                this.AccessLevel = true;
+                return;
+            }
             const modules = JSON.parse(details.Modules);
             const accessLevel = value.split('::');
             let module = 0;
