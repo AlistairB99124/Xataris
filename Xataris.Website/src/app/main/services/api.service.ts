@@ -18,7 +18,7 @@ export class ApiService {
         }
 
         const header = new HttpHeaders({ Authorization: 'Bearer ' + localStorage.getItem(this.TOKEN_KEY) });
-        if (localStorage.getItem(this.TOKEN_KEY) === null) {
+        if (localStorage.getItem(this.TOKEN_KEY) === null && !url.toLowerCase().includes('login')) {
             this.http.post(this.BASE_URL + 'Account/Logout', { headers: header }).subscribe(() => {
                 this.router.navigate(['account/login']);
             });
