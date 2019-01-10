@@ -155,7 +155,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
     enableDelete = (): boolean => {
         if (this.data.ordersGrid && this.data.ordersGrid.api) {
-            if (this.data.ordersGrid.getRowData()) {
+            if (this.data.ordersGrid.api.getRowData()) {
                 return this.data.ordersGrid.api.getSelectedRows().length > 0;
             } else {
                 return false;

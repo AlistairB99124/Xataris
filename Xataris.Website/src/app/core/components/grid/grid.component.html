@@ -14,7 +14,7 @@
                 <th mat-header-cell *matHeaderCellDef><strong>{{column.title}}</strong></th>
                 <td mat-cell *matCellDef="let element">
                     <mat-form-field fxFlex>
-                        <input matInput type="text" [(ngModel)]="element[column.field]" *ngIf="column.renderType === 2">
+                        <input matInput type="text" [(ngModel)]="element[column.field]" (change)="onInputChange(element)" *ngIf="column.renderType === 2">
                     </mat-form-field>
                 </td>
                 <td mat-footer-cell *matFooterCellDef><strong>{{getTotal(column)}}</strong></td>

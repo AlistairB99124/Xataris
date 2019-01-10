@@ -108,7 +108,7 @@ export class InventoryComponent implements OnInit {
         this.startUpload = true;
         const input = {
             warehousesId: this.data.selectedWarehouse.id,
-            inventory: _.map(this.data.inventoryGrid.getRowData(), (x) => {
+            inventory: _.map(this.data.inventoryGrid.api.getRowData(), (x) => {
                 return {
                     stockCode: x.stockCode,
                     stockDescription: x.stockDescription,
@@ -171,7 +171,7 @@ export class InventoryComponent implements OnInit {
           rows.splice(0, 1);
           this.data.materialsToLoad = rows;
           this.data.inventoryGrid.api.setRowData(rows);
-          this.data.enableUpload = this.data.selectedWarehouse.id !== undefined && this.data.inventoryGrid.getRowData().length !== 0;
+          this.data.enableUpload = this.data.selectedWarehouse.id !== undefined && this.data.inventoryGrid.api.getRowData().length !== 0;
           this.startUpload = false;
         };
         reader.readAsBinaryString(target.files[0]);
@@ -182,7 +182,7 @@ export class InventoryComponent implements OnInit {
     }
 
     setEnableButton(){
-        this.data.enableUpload = this.data.selectedWarehouse.id !== null && this.data.inventoryGrid.getRowData().length !== 0;
+        this.data.enableUpload = this.data.selectedWarehouse.id !== null && this.data.inventoryGrid.api.getRowData().length !== 0;
     }
 
     saveWarehouse = () => {

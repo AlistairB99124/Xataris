@@ -1,5 +1,18 @@
-import { Component, Input, OnInit, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
-import { MatPaginator, MatTableDataSource, MatSort } from '@angular/material';
+import {
+    Component,
+    Input,
+    OnInit,
+    ViewChild,
+    AfterViewInit,
+    ElementRef,
+    Output,
+    EventEmitter
+} from '@angular/core';
+import {
+    MatPaginator,
+    MatTableDataSource,
+    MatSort
+} from '@angular/material';
 import * as _ from 'lodash';
 import {
     ColumnDef,
@@ -21,6 +34,7 @@ export class GridComponent implements OnInit, AfterViewInit {
     public shownColumns = new Array<string>();
     public showFooter = false;
     @Input('gridOptions') public gridOptions: GridOptions;
+    @Output('inputChange') public inputChange: EventEmitter<any>;
     @ViewChild(MatPaginator) public paginator: MatPaginator;
     @ViewChild(MatSort) public sort: MatSort;
 
@@ -32,52 +46,9 @@ export class GridComponent implements OnInit, AfterViewInit {
         this.elementRef.nativeElement.style.width = '100%';
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
-        this.gridOptions.api = {} as GridApi;
+        this.gridOptions.api = this.initiliseApi();
         if (this.gridOptions.columnDefs.length > 0) {
             this.setColumns(this.gridOptions.columnDefs);
-        }
-        if (!this.gridOptions.api){
-            this.gridOptions.api = {} as GridApi;
-        }
-
-        this.gridOptions.api.getSelectedRows = () => _.filter(this.gridOptions.rowData, x => x.selected === true);
-
-        this.gridOptions.getRowData = () => this.dataSource.data;
-        this.gridOptions.api.setRowData = (data: Array<any>) => {
-            this.gridOptions.rowData = data;
-            this.dataSource.data = data;
-        };
-
-        this.gridOptions.api.setColumnDefs = (columns: Array<ColumnDef>) => {
-            this.setColumns(columns);
-        };
-    }
-
-    private setColumns(columns: Array<ColumnDef>) {
-        this.shownColumns = [];
-        this.gridOptions.columnDefs = columns;
-        for (let i = 0; i < columns.length; i++) {
-            if (columns[i].hide !== true) {
-                this.shownColumns.push(columns[i].field);
-            }
-            switch (columns[i].columnType) {
-                case ColumnType.currency:
-                case ColumnType.numeric:
-                case ColumnType.percentage:
-                    columns[i].class = 'text-right';
-                break;
-                case ColumnType.text:
-                    if (columns[i].renderType === RenderType.Anchor) {
-                        columns[i].class = 'text-centre';
-                    } else {
-                        columns[i].class = 'text-left';
-                    }
-                break;
-                case ColumnType.percentage:
-                case ColumnType.checkbox:
-                    columns[i].class = 'text-centre';
-                break;
-            }
         }
     }
 
@@ -87,7 +58,57 @@ export class GridComponent implements OnInit, AfterViewInit {
         }
     }
 
-    private numberWithQuote(x: string) {
+    public onInputChange(element: any) {
+        this.inputChange.emit(element);
+    }
+
+    private initiliseApi(): GridApi {
+        const api = {} as GridApi;
+        api.getSelectedRows = () => {
+            return this.gridOptions.rowData.filter(x => x.selected === true);
+        };
+        api.getRowData = () => {
+            return this.dataSource.data;
+        };
+        api.setRowData = (data: Array<any>) => {
+            this.gridOptions.rowData = data;
+            this.dataSource.data = data;
+        };
+        api.setColumnDefs = (columns: Array<ColumnDef>) => {
+            this.setColumns(columns);
+        };
+        return api;
+    }
+
+    private setColumns(columns: Array<ColumnDef>): void {
+        this.shownColumns = [];
+        this.gridOptions.columnDefs = columns;
+        for (const column of columns) {
+            if (column.hide !== true) {
+                this.shownColumns.push(column.field);
+            }
+            switch (column.columnType) {
+                case ColumnType.currency:
+                case ColumnType.numeric:
+                case ColumnType.percentage:
+                    column.class = 'text-right';
+                break;
+                case ColumnType.text:
+                    if (column.renderType === RenderType.Anchor) {
+                        column.class = 'text-centre';
+                    } else {
+                        column.class = 'text-left';
+                    }
+                break;
+                case ColumnType.percentage:
+                case ColumnType.checkbox:
+                    column.class = 'text-centre';
+                break;
+            }
+        }
+    }
+
+    private thousandsSeprator(x: string) {
         const parts = x.toString().split('.');
         parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, `'`);
         return parts.join('.');
@@ -108,7 +129,7 @@ export class GridComponent implements OnInit, AfterViewInit {
                     }
                     value = parseFloat(params[column.field]);
                     if (_.isNumber(value)) {
-                        return this.numberWithQuote(column.currencySymbol ? column.currencySymbol + ' ' + value.toFixed(2) : params['metric'] + ' ' + value.toFixed(2));
+                        return this.thousandsSeprator(column.currencySymbol ? column.currencySymbol + ' ' + value.toFixed(2) : params['metric'] + ' ' + value.toFixed(2));
                     } else {
                         return params[column.field];
                     }
@@ -118,7 +139,7 @@ export class GridComponent implements OnInit, AfterViewInit {
                     }
                     value = parseFloat(params[column.field]);
                     if (_.isNumber(value)) {
-                        return this.numberWithQuote(value.toFixed(2));
+                        return this.thousandsSeprator(value.toFixed(2));
                     } else {
                         return params[column.field];
                     }
@@ -138,7 +159,7 @@ export class GridComponent implements OnInit, AfterViewInit {
         if (column.columnType === ColumnType.numeric) {
             return this.dataSource.data.map(t => t[column.field]).reduce((acc, value) => acc + value, 0).toFixed(2);
         } else if (column.columnType === ColumnType.currency) {
-            return this.numberWithQuote(column.currencySymbol + ' ' + this.dataSource.data.map(t => t[column.field]).reduce((acc, value) => {
+            return this.thousandsSeprator(column.currencySymbol + ' ' + this.dataSource.data.map(t => t[column.field]).reduce((acc, value) => {
                 return parseFloat(acc) + parseFloat(value);
             }, 0).toFixed(2).toString());
         } else {

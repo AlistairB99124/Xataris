@@ -294,7 +294,7 @@ export class PTMManagementComponent implements OnInit {
                 'Site'
             ]
         };
-        new csv.AngularCsv(this.data.timesheetsGrid.getRowData(), 'Timesheets', options);
+        new csv.AngularCsv(this.data.timesheetsGrid.api.getRowData(), 'Timesheets', options);
     }
 
     public downloadPdf = async () => {

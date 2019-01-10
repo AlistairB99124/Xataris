@@ -1,3 +1,5 @@
+import { MatTableDataSource } from '@angular/material';
+
 export enum ColumnType{
     text,
     currency,
@@ -33,13 +35,13 @@ export interface GridApi{
     getSelectedRows: () => Array<any>;
     setRowData: (data: Array<any>) => void;
     setColumnDefs: (columns: ColumnDef[]) => void;
+    getRowData: () => Array<any>;
 }
 
 export interface GridOptions{
     columnDefs: Array<ColumnDef>;
     rowData: Array<any>;
     api?: GridApi;
-    getRowData?: () => any;
-    onReady: (param?) => void;
+    onReady: (param: MatTableDataSource<any>) => void;
     showFooter?: boolean;
 }
