@@ -87,8 +87,7 @@ export class UsersSummaryComponent implements OnInit {
                 <ColumnDef>{
                     field: 'lastName',
                     title: 'Last Name',
-                    columnType: ColumnType.input,
-                    renderType: RenderType.Text
+                    columnType: ColumnType.text,
                 },
                 <ColumnDef>{
                     field: 'dateRegistered',

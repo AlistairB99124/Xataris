@@ -21,6 +21,8 @@ import {
     GridOptions,
     RenderType,
 } from './grid.models';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { DropdownModel } from '../../models/sharedModels';
 
 @Component({
     selector : 'app-grid',
@@ -33,6 +35,10 @@ export class GridComponent implements OnInit, AfterViewInit {
     public dataSource = new MatTableDataSource();
     public shownColumns = new Array<string>();
     public showFooter = false;
+    public allSelected = false;
+    public searchOption;
+    public searchOptions;
+    public searchTest;
     @Input('gridOptions') public gridOptions: GridOptions;
     @Output('inputChange') public inputChange: EventEmitter<any>;
     @ViewChild(MatPaginator) public paginator: MatPaginator;
@@ -43,6 +49,7 @@ export class GridComponent implements OnInit, AfterViewInit {
     }
 
     public ngOnInit() {
+        this.searchOptions = [] as DropdownModel<string>[];
         this.elementRef.nativeElement.style.width = '100%';
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
@@ -50,6 +57,8 @@ export class GridComponent implements OnInit, AfterViewInit {
         if (this.gridOptions.columnDefs.length > 0) {
             this.setColumns(this.gridOptions.columnDefs);
         }
+        this.dataSource.filterPredicate = (data, filterValue) =>
+            data[this.searchOption].trim().toLowerCase().indexOf(filterValue) !== -1;
     }
 
     public ngAfterViewInit() {
@@ -81,6 +90,16 @@ export class GridComponent implements OnInit, AfterViewInit {
     }
 
     private setColumns(columns: Array<ColumnDef>): void {
+        columns.forEach((x) => {
+            if (x.title !== '') {
+                this.searchOptions.push({
+                    value: x['field'],
+                    text: x['title'],
+                    selected: false
+                });
+            }
+        });
+        this.searchOption = this.searchOptions[0].value;
         this.shownColumns = [];
         this.gridOptions.columnDefs = columns;
         for (const column of columns) {
@@ -165,5 +184,15 @@ export class GridComponent implements OnInit, AfterViewInit {
         } else {
             return '';
         }
+    }
+
+    public selectAll() {
+        this.dataSource.data.forEach((x: any) => {
+            x.selected = this.allSelected;
+        });
+    }
+
+    public onSearchClick() {
+        this.dataSource.filter = this.searchTest.trim().toLowerCase();
     }
 }

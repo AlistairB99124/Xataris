@@ -1,9 +1,34 @@
 <div fxLayout="column" fxFlex>
+    <ng-container>
+        <div fxFlex="row">
+            <div fxFlex>
+                <mat-form-field>
+                    <input type="text" matInput autocomplete="off" [(ngModel)]="searchTest" placeholder="Search....">
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-select matInput (selectionChange)="reloadMaterials()" [(ngModel)]="searchOption">
+                        <mat-option *ngFor="let op of searchOptions" [value]="op.value">
+                            {{ op.text }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <button mat-button mat-icon-button (click)="onSearchClick()">
+                    <mat-icon style="color: #039be5;">search</mat-icon>
+                </button>
+            </div>
+            <div fxFlex>
+                <mat-paginator [pageSizeOptions]="[5, 10]" showFirstLastButtons></mat-paginator>
+                
+            </div>
+        </div>
+    </ng-container>
     <table mat-table fxFlex #table [dataSource]="dataSource" matSort class="mat-elevation-z8">
         <ng-container *ngFor="let column of gridOptions.columnDefs" matColumnDef="{{column.field}}">
             <!--Render Checkbox-->        
             <div *ngIf="column.columnType === 4">
-                <th mat-header-cell *matHeaderCellDef class="checkbox"><strong>{{column.title}}</strong></th>
+                <th mat-header-cell *matHeaderCellDef class="checkbox">
+                    <mat-checkbox style="margin-left: -17px" *ngIf="column.renderType === undefined" [(ngModel)]="allSelected" (change)="selectAll()"></mat-checkbox>
+                </th>
                 <td mat-cell *matCellDef="let element" class="checkbox">
                     <mat-checkbox *ngIf="column.renderType === undefined" [(ngModel)]="element.selected"></mat-checkbox>
                 </td>
@@ -48,5 +73,4 @@
             <tr mat-footer-row *matFooterRowDef="shownColumns"></tr>
         </div>
     </table>
-    <mat-paginator [pageSizeOptions]="[5, 10]" showFirstLastButtons></mat-paginator>
 </div>

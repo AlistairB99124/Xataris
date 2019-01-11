@@ -23,6 +23,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { GridComponent } from '../components/grid/grid.component';
 import { NotificationService, NotificationComponent } from '../services/notification.service';
 import { XSelectComponent } from '../components/select/select.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
     declarations   : [
@@ -46,6 +47,7 @@ import { XSelectComponent } from '../components/select/select.component';
         FusePipesModule,
         ReactiveFormsModule,
         ColorPickerModule,
+        DragDropModule
     ],
     exports        : [
         FlexLayoutModule,
