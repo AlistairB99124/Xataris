@@ -78,7 +78,8 @@ export class SiteManagementComponent implements OnInit {
                     columnType: ColumnType.text
                 }
             ],
-            rowData: []
+            rowData: [],
+            idRow: 'id'
         };
         this.data.loader = true;
     }

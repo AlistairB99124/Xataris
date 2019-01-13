@@ -29,6 +29,14 @@ export interface ColumnDef{
     iconName?: string;
     onClick?: (params?) => any;
     cellRenderer?: (params?) => void;
+    actions?: Action[];
+}
+
+export interface Action {
+    id: number;
+    icon: string;
+    label: string;
+    onClick: (data?) => void;
 }
 
 export interface GridApi{
@@ -44,4 +52,12 @@ export interface GridOptions{
     api?: GridApi;
     onReady: (param: MatTableDataSource<any>) => void;
     showFooter?: boolean;
+    idRow?;
+    aggragateResults?: boolean;
+    aggregateMap?: AggregateMap;
+}
+
+export interface AggregateMap {
+    metric: string;
+    value: string;
 }

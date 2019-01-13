@@ -10,10 +10,8 @@ import { FuseMatSidenavHelperDirective, FuseMatSidenavTogglerDirective } from '.
 import { FuseMatSidenavHelperService } from '../directives/fuse-mat-sidenav-helper/fuse-mat-sidenav-helper.service';
 import { FusePipesModule } from '../pipes/pipes.module';
 import { FuseConfirmDialogComponent } from '../components/confirm-dialog/confirm-dialog.component';
-import { FuseCountdownComponent } from '../components/countdown/countdown.component';
 import { FuseMatchMedia } from '../services/match-media.service';
 import { FuseNavbarVerticalService } from '../../main/navbar/vertical/navbar-vertical.service';
-import { FuseHighlightComponent } from '../components/highlight/highlight.component';
 import { FusePerfectScrollbarDirective } from '../directives/fuse-perfect-scrollbar/fuse-perfect-scrollbar.directive';
 import { FuseIfOnDomDirective } from '../directives/fuse-if-on-dom/fuse-if-on-dom.directive';
 import { AccessLevelDirective } from '../directives/fuse-access-level/accessLevel.directive';
@@ -22,8 +20,8 @@ import { CookieService } from 'ngx-cookie-service';
 import { TranslateModule } from '@ngx-translate/core';
 import { GridComponent } from '../components/grid/grid.component';
 import { NotificationService, NotificationComponent } from '../services/notification.service';
-import { XSelectComponent } from '../components/select/select.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 @NgModule({
     declarations   : [
@@ -31,13 +29,10 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
         FuseMatSidenavTogglerDirective,
         FuseConfirmDialogComponent,
         NotificationComponent,
-        FuseCountdownComponent,
-        FuseHighlightComponent,
         FuseIfOnDomDirective,
         AccessLevelDirective,
         FusePerfectScrollbarDirective,
         GridComponent,
-        XSelectComponent
     ],
     imports        : [
         FlexLayoutModule,
@@ -47,7 +42,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
         FusePipesModule,
         ReactiveFormsModule,
         ColorPickerModule,
-        DragDropModule
+        DragDropModule,
+        ScrollingModule
     ],
     exports        : [
         FlexLayoutModule,
@@ -57,8 +53,6 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
         FuseMatSidenavHelperDirective,
         FuseMatSidenavTogglerDirective,
         FusePipesModule,
-        FuseCountdownComponent,
-        FuseHighlightComponent,
         FusePerfectScrollbarDirective,
         ReactiveFormsModule,
         ColorPickerModule,
@@ -66,7 +60,6 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
         AccessLevelDirective,
         GridComponent,
         TranslateModule,
-        XSelectComponent
     ],
     entryComponents: [
         FuseConfirmDialogComponent,

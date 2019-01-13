@@ -116,26 +116,25 @@ button {
     background-color: rgba(139, 63, 139, 1) !important;
 }
 
-fuse-widget > .fuse-widget-front {
-    border-radius: 15px !important;
-}
-
-mat-toolbar {
-    border-radius: 15px 15px 0px 0px !important;
-}
-
-mat-card {
-    border-radius: 0px 0px 15px 15px !important;
-    overflow: hidden !important;
-}
-
 .fuse-widget-front {
     display: initial !important;
 }
 
 td.checkbox {
+    max-width: 48px !important;
+    width: 48px !important;
+    text-align: center !important;
     mat-checkbox {
-        margin-left: -18px !important;
+        margin-left: 0px !important;
+    }
+}
+
+th.checkbox {
+    max-width: 48px !important;
+    width: 48px !important;
+    text-align: center !important;
+    mat-checkbox {
+        margin-left: 0px !important;
     }
 }
 
@@ -150,10 +149,26 @@ td.checkbox {
     }
 }
 
-.mat-footer-row {
-    background-color: lightslategray !important;
+th, td {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    border-right: 1px solid rgba(0, 0, 0, 0.12) !important;
+}
+
+th {
+    padding-left: 10px !important;
+    padding-right: 0px !important;
+    border-right: 1px solid rgba(0, 0, 0, 0.12) !important;
 }
 
 .mat-header-row {
-    background-color: lightslategray !important;
+    background: rgb(197, 197, 197);
+}
+
+.mat-footer-row {
+    background: rgb(197, 197, 197);
+}
+
+mat-card {
+    border-radius: 0px !important;
 }

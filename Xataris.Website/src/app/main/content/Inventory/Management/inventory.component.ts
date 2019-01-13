@@ -8,7 +8,7 @@ import * as _ from 'lodash';
 import * as Models from './inventory.models';
 import * as m from '../../../../core/models/sharedModels';
 import { ApiService } from '../../../services/api.service';
-import { ColumnDef, ColumnType, GridOptions } from '../../../../core/components/grid/grid.models';
+import { ColumnDef, ColumnType, GridOptions, Action, AggregateMap } from '../../../../core/components/grid/grid.models';
 
 @Component({
     selector: 'fuse-material-inventory',
@@ -68,11 +68,27 @@ export class InventoryComponent implements OnInit {
                     title: 'Unit Cost',
                     columnType: ColumnType.currency,
                     currencySymbol: 'R'
-                }
+                },
             ],
             rowData: [],
-            showFooter: true
+            showFooter: true,
+            idRow: 'stockCode',
+            aggragateResults: true,
+            aggregateMap: {
+                metric: 'level',
+                value: 'unitCostPrice'
+            } as AggregateMap
         };
+    }
+
+    public addInventory = (data) => {
+        console.log('add: ', data);
+    }
+    public editInventory = (data) => {
+        console.log('edit: ', data);
+    }
+    public deleteInventory = (data) => {
+        console.log('delete: ', data);
     }
 
     reloadMaterialsGrid(){
@@ -181,7 +197,7 @@ export class InventoryComponent implements OnInit {
         this.data.enableAddWarehouse = true;
     }
 
-    setEnableButton(){
+    setEnableButton = () => {
         this.data.enableUpload = this.data.selectedWarehouse.id !== null && this.data.inventoryGrid.api.getRowData().length !== 0;
     }
 

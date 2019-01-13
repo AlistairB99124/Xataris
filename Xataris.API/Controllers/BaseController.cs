@@ -21,24 +21,44 @@ namespace Xataris.API.Controllers
 
         protected async Task<JsonResult> GenerateResult(object originalResult, IUserSettings userSettings)
         {
-            dynamic result = new ExpandoObject();
-            result.data = originalResult;
-            var user = await this.xatarisContext.Users.FindAsync(userSettings.UsersId);
-            user.LastLoggedIn = DateTime.Now;
-            await xatarisContext.SaveChangesAsync();
-            userSettings.CountLoggedIn = await xatarisContext.Users.Where(x => x.LastLoggedIn > DateTime.Now.AddHours(-1)).CountAsync();
             try
             {
-                result.localJwt = userSettings.LocalJwt.Token;
-                result.modules = userSettings.Modules;
-                result.logout = false;
-            }
-            catch
+                dynamic result = new ExpandoObject();
+                result.data = originalResult;
+                var user = await this.xatarisContext.Users.FindAsync(userSettings.UsersId);
+                user.LastLoggedIn = DateTime.Now;
+                await xatarisContext.SaveChangesAsync();
+                userSettings.CountLoggedIn = await xatarisContext.Users.Where(x => x.LastLoggedIn > DateTime.Now.AddHours(-1)).CountAsync();
+                try
+                {
+                    result.localJwt = userSettings.LocalJwt.Token;
+                    result.modules = userSettings.Modules;
+                    result.logout = false;
+                }
+                catch
+                {
+                    result.logout = true;
+                }
+                result.version = Assembly.GetAssembly(GetType()).GetName().Version.ToString();
+                return Json(result);
+
+            } catch
             {
-                result.logout = true;
+                dynamic result = new ExpandoObject();
+                result.data = originalResult;
+                try
+                {
+                    result.localJwt = userSettings.LocalJwt.Token;
+                    result.modules = userSettings.Modules;
+                    result.logout = false;
+                }
+                catch
+                {
+                    result.logout = true;
+                }
+                result.version = Assembly.GetAssembly(GetType()).GetName().Version.ToString();
+                return Json(result);
             }
-            result.version = Assembly.GetAssembly(GetType()).GetName().Version.ToString();
-            return Json(result);
         }
     }
 }

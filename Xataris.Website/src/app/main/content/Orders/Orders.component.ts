@@ -86,7 +86,8 @@ export class OrdersComponent implements OnInit, OnDestroy {
                 }
             ],
             rowData: [],
-            onReady: this.getAll
+            onReady: this.getAll,
+            idRow: 'id'
         };
         this.getMaterials().then(() => {
             this.apiService.post('order/getSites').then(res => {

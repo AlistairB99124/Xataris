@@ -1,4 +1,4 @@
-<div id="file-manager" class="page-layout simple right-sidenav" fusePerfectScrollbar>
+<div id="file-manager" class="page-layout simple right-sidenav">
     <mat-drawer-container autosize hasBackdrop="true">
         <div class="center" fxFlex>
             <div class="header xataris-accent-bg p-0" fxLayout="column" fxLayoutAlign="space-between start">
@@ -51,6 +51,7 @@
                         </button>
                     </mat-toolbar-row>
                 </mat-toolbar>
+                <mat-divider></mat-divider>
                 <mat-card class="p-0">
                     <mat-card-content>
                         <app-grid [gridOptions]="data.inventoryGrid"></app-grid>

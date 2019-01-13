@@ -58,7 +58,8 @@ export class PTMManagementComponent implements OnInit {
             columnDefs: await this.setAllColumns(),
             rowData: [],
             api: {} as any,
-            onReady: this.loadPage
+            onReady: this.loadPage,
+            idRow: 'timesheetId'
         };
         this.data.materialDetailGrid = <GridOptions>{
             columnDefs: await this.setMaterialColumns(),

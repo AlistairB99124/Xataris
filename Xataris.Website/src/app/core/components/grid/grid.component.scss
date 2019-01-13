@@ -64,3 +64,24 @@
   .example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
   }
+
+.cdk-overlay-pane {
+    max-height: 240px !important;
+}
+
+.filter-button {
+    width: 30px !important;
+    height: 30px !important;
+    line-height: 30px !important;
+    mat-icon {
+        font-size: 20px;
+    }
+}
+
+.highlight-row {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.table-container {
+    max-height: 488px;
+}

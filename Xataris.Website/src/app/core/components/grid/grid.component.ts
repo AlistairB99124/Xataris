@@ -23,6 +23,7 @@ import {
 } from './grid.models';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DropdownModel } from '../../models/sharedModels';
+import { filter } from 'rxjs/operators';
 
 @Component({
     selector : 'app-grid',
@@ -38,10 +39,16 @@ export class GridComponent implements OnInit, AfterViewInit {
     public allSelected = false;
     public searchOption;
     public searchOptions;
-    public searchTest;
+    public searchText;
+
+    public filterOptions: any[];
+    public filterOptionsFiltered: any[];
+    public allFilteredSelected: boolean;
+    public filterText: string;
+
     @Input('gridOptions') public gridOptions: GridOptions;
     @Output('inputChange') public inputChange: EventEmitter<any>;
-    @ViewChild(MatPaginator) public paginator: MatPaginator;
+    // @ViewChild(MatPaginator) public paginator: MatPaginator;
     @ViewChild(MatSort) public sort: MatSort;
 
     constructor(private elementRef: ElementRef) {
@@ -51,14 +58,19 @@ export class GridComponent implements OnInit, AfterViewInit {
     public ngOnInit() {
         this.searchOptions = [] as DropdownModel<string>[];
         this.elementRef.nativeElement.style.width = '100%';
-        this.dataSource.paginator = this.paginator;
+        this.filterOptions = [];
+        this.filterOptionsFiltered = [];
+        // this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
         this.gridOptions.api = this.initiliseApi();
+        this.gridOptions.idRow = this.gridOptions.idRow ? this.gridOptions.idRow : '';
         if (this.gridOptions.columnDefs.length > 0) {
             this.setColumns(this.gridOptions.columnDefs);
         }
-        this.dataSource.filterPredicate = (data, filterValue) =>
-            data[this.searchOption].trim().toLowerCase().indexOf(filterValue) !== -1;
+        this.dataSource.filterPredicate = (data: any, filterValue: string) => {
+            return _.filter(filterValue.split('|'), (x) =>
+            data[this.searchOption].trim().toLowerCase().indexOf(x) !== -1).length !== 0;
+        };
     }
 
     public ngAfterViewInit() {
@@ -178,9 +190,29 @@ export class GridComponent implements OnInit, AfterViewInit {
         if (column.columnType === ColumnType.numeric) {
             return this.dataSource.data.map(t => t[column.field]).reduce((acc, value) => acc + value, 0).toFixed(2);
         } else if (column.columnType === ColumnType.currency) {
-            return this.thousandsSeprator(column.currencySymbol + ' ' + this.dataSource.data.map(t => t[column.field]).reduce((acc, value) => {
-                return parseFloat(acc) + parseFloat(value);
-            }, 0).toFixed(2).toString());
+            if (this.gridOptions.aggragateResults) {
+                let aggregateTotal = 0;
+                this.dataSource.data.map(t =>  {
+                    return {
+                        value: parseFloat(t[this.gridOptions.aggregateMap.value]),
+                        metric: parseFloat(t[this.gridOptions.aggregateMap.metric])
+                    };
+                }).reduce((acc: any, value: any) =>  {
+                    aggregateTotal += (value.value * value.metric);
+                    return {
+                        value: value.value,
+                        metric: value.metric
+                    };
+                }, {
+                    value: 0,
+                    metric: 0
+                });
+                return column.currencySymbol + ' ' + this.thousandsSeprator(aggregateTotal.toFixed(2));
+            } else {
+                return column.currencySymbol + ' ' + this.thousandsSeprator(column.currencySymbol + ' ' + this.dataSource.data.map(t => t[column.field]).reduce((acc, value) => {
+                    return parseFloat(acc) + parseFloat(value);
+                }, 0).toFixed(2).toString());
+            }
         } else {
             return '';
         }
@@ -193,6 +225,43 @@ export class GridComponent implements OnInit, AfterViewInit {
     }
 
     public onSearchClick() {
-        this.dataSource.filter = this.searchTest.trim().toLowerCase();
+        this.dataSource.filter = this.searchText.trim().toLowerCase();
     }
+
+    public onFilterClick(column: ColumnDef) {
+        this.allFilteredSelected = true;
+        this.filterOptions = _.map(this.dataSource.data, (x) => {
+            return {
+                field: x[column.field],
+                id: x[this.gridOptions.idRow],
+                selected: true,
+            };
+        });
+        this.filterOptionsFiltered = _.cloneDeep(this.filterOptions);
+    }
+
+    public searchFilter($event: Event) {
+        this.filterOptionsFiltered = _.filter(this.filterOptions, (x) =>
+        _.includes(x.field.toString().toLowerCase(), this.filterText.toString().toLowerCase()));
+    }
+
+    public selectAllFiltered() {
+        _.forEach(this.filterOptionsFiltered, (x) => {
+            x.selected = this.allFilteredSelected;
+        });
+        if (this.allFilteredSelected) {
+            this.dataSource.data = this.gridOptions.rowData;
+        } else {
+            this.dataSource.data = [];
+        }
+    }
+
+    public setFilteredData() {
+        const filteredData = [];
+        _.forEach(this.filterOptionsFiltered.filter(o => o.selected), (x) => {
+            filteredData.push(_.find(this.gridOptions.rowData, i => i[this.gridOptions.idRow] === x.id));
+        });
+        this.dataSource.data = filteredData;
+    }
+
 }

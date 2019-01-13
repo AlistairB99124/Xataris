@@ -65,7 +65,8 @@ export class GroupManagementComponent implements OnInit {
                 },
             ],
             rowData: [],
-            onReady: this.getGroups
+            onReady: this.getGroups,
+            idRow: 'id'
         };
         this.data.availableModules = await this.apiService.post('User/GetAvailableModules');
         this.data.availableAccess = [

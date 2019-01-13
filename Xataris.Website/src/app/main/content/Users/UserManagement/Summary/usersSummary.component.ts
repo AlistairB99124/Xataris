@@ -101,7 +101,8 @@ export class UsersSummaryComponent implements OnInit {
                     columnType: ColumnType.text
                 },
             ],
-            rowData: []
+            rowData: [],
+            idRow: 'id'
         };
         this.data.filterText = 'Logged In Users';
         this.data.selectedFilter = UserFilter.LoggedIn;

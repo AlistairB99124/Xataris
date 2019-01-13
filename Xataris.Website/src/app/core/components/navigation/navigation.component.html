@@ -2,7 +2,7 @@
      [ngClass]="{'horizontal':layout === 'horizontal', 'vertical':layout === 'vertical'}">
 
     <!-- Vertical Navigation Layout -->
-    <ng-container *ngIf="layout === 'vertical'">
+    <ng-container>
 
         <ng-container *ngFor="let item of navigationModel">
 
@@ -13,20 +13,4 @@
         </ng-container>
 
     </ng-container>
-    <!-- / Vertical Navigation Layout -->
-
-    <!-- Horizontal Navigation Layout -->
-    <ng-container *ngIf="layout === 'horizontal'">
-
-        <ng-container *ngFor="let item of navigationModel">
-
-            <fuse-nav-horizontal-collapse *ngIf="item.type=='group'" [item]="item"></fuse-nav-horizontal-collapse>
-            <fuse-nav-horizontal-collapse *ngIf="item.type=='collapse'" [item]="item"></fuse-nav-horizontal-collapse>
-            <fuse-nav-horizontal-item *ngIf="item.type=='item'" [item]="item"></fuse-nav-horizontal-item>
-
-        </ng-container>
-
-    </ng-container>
-    <!-- / Horizontal Navigation Layout -->
-
 </div>
