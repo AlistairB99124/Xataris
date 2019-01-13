@@ -249,12 +249,27 @@ export class UsersSummaryComponent implements OnInit {
 
     }
 
-    async getTileCounts() {
+    public async getTileCounts() {
         this.loader = true;
         const res = await this.apiService.post('User/GetUserManagementCounts');
         if (res) {
             this.data.tileCounts = res;
         }
         this.loader = false;
+    }
+
+    public sendPasswordReset() {
+        const users = this.data.usersGrid.api.getSelectedRows();
+        for (const user of users) {
+            const input = {
+                email: user.email
+            };
+            this.apiService.post('User/ForgotPassword', input).then((res: s.SimpleResult) => {
+                if (res.isSuccess) {
+                    this.data.resetForm.reset();
+                    this.data.forgotPassword = false;
+                }
+            });
+        }
     }
 }
