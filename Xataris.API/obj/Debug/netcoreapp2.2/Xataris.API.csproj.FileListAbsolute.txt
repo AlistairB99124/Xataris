@@ -32,5 +32,4 @@ C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.API\obj\Debug\netcoreapp2.2\X
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.API\obj\Debug\netcoreapp2.2\Xataris.API.csproj.CopyComplete
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.API\obj\Debug\netcoreapp2.2\Xataris.API.dll
 C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.API\obj\Debug\netcoreapp2.2\Xataris.API.pdb
-C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.API\bin\Debug\netcoreapp2.2\Xataris.API.exe
-C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.API\obj\Debug\netcoreapp2.2\Razor\Views\Index\Index.cshtml.g.cs
+C:\Users\Alistair\Documents\GitHub\Xataris\Xataris.API\obj\Debug\netcoreapp2.2\Razor\Views\Index\Index.g.cshtml.cs
