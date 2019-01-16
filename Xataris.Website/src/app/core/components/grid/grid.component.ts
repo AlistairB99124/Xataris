@@ -6,7 +6,8 @@ import {
     AfterViewInit,
     ElementRef,
     Output,
-    EventEmitter
+    EventEmitter,
+    ViewChildren
 } from '@angular/core';
 import {
     MatPaginator,
@@ -102,16 +103,6 @@ export class GridComponent implements OnInit, AfterViewInit {
     }
 
     private setColumns(columns: Array<ColumnDef>): void {
-        columns.forEach((x) => {
-            if (x.title !== '') {
-                this.searchOptions.push({
-                    value: x['field'],
-                    text: x['title'],
-                    selected: false
-                });
-            }
-        });
-        this.searchOption = this.searchOptions[0].value;
         this.shownColumns = [];
         this.gridOptions.columnDefs = columns;
         for (const column of columns) {
@@ -199,10 +190,7 @@ export class GridComponent implements OnInit, AfterViewInit {
                     };
                 }).reduce((acc: any, value: any) =>  {
                     aggregateTotal += (value.value * value.metric);
-                    return {
-                        value: value.value,
-                        metric: value.metric
-                    };
+                    return value;
                 }, {
                     value: 0,
                     metric: 0
