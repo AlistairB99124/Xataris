@@ -43,10 +43,14 @@
                         <a *ngIf="column.renderType === 0" style="cursor: pointer;" (click)="column.onClick(element)">{{renderCell(element, column)}}</a>
                     </div>
                 </td>
-                <div *ngIf="options.showFooter">
-                    <td mat-footer-cell *matFooterCellDef><strong [ngStyle]="{'float': column.columnType === 1 || column.columnType === 2 ? 'right' : ''}">{{getTotal(column)}}</strong></td>
-                </div>
+                <td mat-footer-cell *matFooterCellDef><strong [ngStyle]="{'float': column.columnType === 1 || column.columnType === 2 ? 'right' : ''}">{{getTotal(column)}}</strong></td>
+
             </div>
             <!-------Text-End-------->
     </ng-container>
+    <tr mat-header-row *matHeaderRowDef="shownColumns; sticky: true"></tr>
+    <tr mat-row *matRowDef="let row; columns: shownColumns;"></tr>
+    <div *ngIf="gridOptions.showFooter">
+        <tr mat-footer-row *matFooterRowDef="shownColumns; sticky: true"></tr>
+    </div>
 </table>
