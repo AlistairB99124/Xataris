@@ -1,5 +1,5 @@
 import * as m from '../../../core/models/sharedModels';
-import { ReplaySubject } from 'rxjs';
+import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { FormGroup, FormControl } from '@angular/forms';
 import { GridOptions } from '../../../core/components/grid/grid.models';
 

@@ -14,7 +14,8 @@ import {
 } from '../../../../core/components/grid/grid.models';
 import { ApiService } from '../../../services/api.service';
 import { NotificationService } from '../../../../core/services/notification.service';
-import { Subject, ReplaySubject } from 'rxjs';
+import { Subject } from 'rxjs/Subject';
+import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({

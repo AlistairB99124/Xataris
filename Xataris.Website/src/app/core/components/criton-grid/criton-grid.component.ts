@@ -10,17 +10,13 @@ import {
     ViewChildren
 } from '@angular/core';
 import {
-    MatPaginator,
     MatTableDataSource,
-    MatSort
 } from '@angular/material';
 import * as _ from 'lodash';
 import {
     ColumnDef,
     ColumnType,
-    ICritonGridApi,
     GridOptions,
-    RenderType,
     CritonGridApi,
 } from './criton-grid.model';
 
@@ -38,13 +34,16 @@ export class CritonGridComponent implements OnInit, AfterViewInit {
 
     @Input('options') public options: GridOptions;
 
-    constructor() {
+    constructor(elementRef: ElementRef) {
+        elementRef.nativeElement.style.width = '100%';
     }
-
     /*-----Public Methods-------*/
 
     public ngOnInit() {
         this.options.api = new CritonGridApi(this.dataSource, this.options, this.shownColumns);
+        if (this.options.columnDefs.length > 0) {
+            this.options.api.setColumnDefs(this.options.columnDefs);
+        }
     }
 
     public ngAfterViewInit() {

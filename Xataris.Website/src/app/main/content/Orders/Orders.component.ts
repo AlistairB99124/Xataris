@@ -10,7 +10,8 @@ import * as _ from 'lodash';
 declare const jsPDF;
 import * as m from './Orders.models';
 import { ApiService } from '../../services/api.service';
-import { ReplaySubject, Subject } from 'rxjs';
+import { Subject } from 'rxjs/Subject';
+import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
