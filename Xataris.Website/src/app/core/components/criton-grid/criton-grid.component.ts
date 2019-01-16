@@ -108,7 +108,8 @@ export class CritonGridComponent implements OnInit, AfterViewInit {
         });
         return column.currencySymbol + ' ' + this.thousandsSeprator(aggregateTotal.toFixed(2));
       } else {
-        return column.currencySymbol + ' ' + this.thousandsSeprator(column.currencySymbol + ' ' + this.dataSource.data.map(t => t[column.field]).reduce((acc, value) => {
+        return column.currencySymbol + ' ' + this.thousandsSeprator(column.currencySymbol + ' ' +
+        this.dataSource.data.map(t => t[column.field]).reduce((acc, value) => {
           return parseFloat(acc) + parseFloat(value);
         }, 0).toFixed(2).toString());
       }
