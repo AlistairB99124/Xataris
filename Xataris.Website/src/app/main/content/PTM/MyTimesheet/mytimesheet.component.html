@@ -26,19 +26,30 @@
         <mat-card>
             <mat-card-content>
                 <mat-horizontal-stepper [linear]="true" #stepper="matHorizontalStepper">
-                    <mat-step [stepControl]="data.form">
+                    <mat-step [stepControl]="form">
                         <ng-template matStepLabel>{{'MYTIMESHEET.DETAILS' | translate}}</ng-template>
-                        <form class="p-0" fxLayout="column" fxLayoutAlign="start" fxFlex name="form" [formGroup]="data.form">
-                            <mat-progress-bar mode="query" *ngIf="data.loadMaterials"></mat-progress-bar>
+                        <form class="p-0" fxLayout="column" fxLayoutAlign="start" fxFlex name="form" [formGroup]="form">
+                            <mat-progress-bar mode="query" *ngIf="loadMaterials"></mat-progress-bar>
                             <div fxLayout="row">
                                 <div fxLayout="column" fxFlex fxLayoutAlign="start center">
                                     <div fxLayout="row" style="width:100%">
                                         <mat-form-field fxFlex>
-                                            <mat-select fxFlex matInput #primaryTechnician (selectionChange)="reloadMaterials()"
+                                            <mat-select fxFlex matInput #primaryTechnician (selectionChange)="getWarehouses()"
                                                 required placeholder="{{'MYTIMESHEET.TECHNICIAN' | translate}}"
                                                 formControlName="primaryTechnician">
-                                                <mat-option *ngFor="let op of data.operators" [value]="op.value">
+                                                <mat-option *ngFor="let op of operators" [value]="op.value">
                                                     {{ op.text }}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <div fxLayout="row" style="width:100%">
+                                        <mat-form-field fxFlex>
+                                            <mat-select fxFlex matInput #primaryTechnician (selectionChange)="reloadMaterials()"
+                                                required placeholder="Warehouses"
+                                                formControlName="warehouse">
+                                                <mat-option *ngFor="let warehouse of warehouses" [value]="warehouse.id">
+                                                    {{ warehouse.name }}
                                                 </mat-option>
                                             </mat-select>
                                         </mat-form-field>
@@ -47,7 +58,7 @@
                                         <mat-form-field fxFlex>
                                             <mat-select fxFlex matInput #site (selectionChange)="updateSite()" placeholder="{{'MYTIMESHEET.SITE' | translate}}"
                                                 formControlName="site" required>
-                                                <mat-option *ngFor="let site of data.sites" [value]="site.id">
+                                                <mat-option *ngFor="let site of sites" [value]="site.id">
                                                     {{site.name}}
                                                 </mat-option>
                                             </mat-select>
@@ -57,7 +68,7 @@
                                         <mat-form-field fxFlex>
                                             <mat-select fxFlex matInput #status placeholder="{{'MYTIMESHEET.STATUS' | translate}}"
                                                 formControlName="status" required>
-                                                <mat-option *ngFor="let status of data.statusAvailable" [value]="status.value">
+                                                <mat-option *ngFor="let status of statusAvailable" [value]="status.value">
                                                     {{status.text}}
                                                 </mat-option>
                                             </mat-select>
@@ -89,11 +100,11 @@
                                     </div>
                                     <div fxLayout="row" style="width:100%; height: 70px" fxLayoutAlign="start center">
                                         <div fxLayout="column" class="mr-16" fxFlex="30">
-                                            <mat-checkbox fxFlex matInput [(ngModel)]="data.quoteEnabled"
+                                            <mat-checkbox fxFlex matInput [(ngModel)]="quoteEnabled"
                                                 [ngModelOptions]="{standalone: true}">{{'MYTIMESHEET.QUOTENO' |
                                                 translate}}</mat-checkbox>
                                         </div>
-                                        <div fxLayout="column" fxFlex="60" *ngIf="data.quoteEnabled">
+                                        <div fxLayout="column" fxFlex="60" *ngIf="quoteEnabled">
                                             <mat-form-field style="width: 100%;">
                                                 <input matInput #quoteNo placeholder="{{'MYTIMESHEET.QUOTENUMBER' | translate}}"
                                                     formControlName="quoteNumber">
@@ -107,12 +118,12 @@
                                             </div>
                                             <div fxLayout="row" fxLayoutAlign="start center">
                                                 <mat-form-field fxFlex="50">
-                                                    <!--<x-select [input]="data.hoursAvailable">
+                                                    <!--<x-select [input]="hoursAvailable">
                                                     </x-select>-->
                                                     <mat-select matInput #primaryHours placeholder="{{'MYTIMESHEET.HR' | translate}}"
                                                         matTooltip="{{'MYTIMESHEET.HOURS' | translate}}"
                                                         formControlName="primaryHours">
-                                                        <mat-option *ngFor="let hour of data.hoursAvailable" [value]="hour.value">
+                                                        <mat-option *ngFor="let hour of hoursAvailable" [value]="hour.value">
                                                             {{hour.text}}
                                                         </mat-option>
                                                     </mat-select>
@@ -121,7 +132,7 @@
                                                     <mat-select matInput #primaryMins placeholder="{{'MYTIMESHEET.MIN' | translate}}"
                                                         matTooltip="{{'MYTIMESHEET.MINUTES' | translate}}"
                                                         formControlName="primaryMins">
-                                                        <mat-option *ngFor="let min of data.minsAvailable" [value]="min.value">
+                                                        <mat-option *ngFor="let min of minsAvailable" [value]="min.value">
                                                             {{min.text}}
                                                         </mat-option>
                                                     </mat-select>
@@ -139,7 +150,7 @@
                                                     <mat-select matInput #secondaryHours placeholder="{{'MYTIMESHEET.HR' | translate}}"
                                                         matTooltip="{{'MYTIMESHEET.HOURS' | translate}}"
                                                         formControlName="secondaryHours">
-                                                        <mat-option *ngFor="let hour of data.hoursAvailable" [value]="hour.value">
+                                                        <mat-option *ngFor="let hour of hoursAvailable" [value]="hour.value">
                                                             {{hour.text}}
                                                         </mat-option>
                                                     </mat-select>
@@ -148,7 +159,7 @@
                                                     <mat-select matInput #secondaryMins placeholder="{{'MYTIMESHEET.MIN' | translate}}"
                                                         matTooltip="{{'MYTIMESHEET.MINUTES' | translate}}"
                                                         formControlName="secondaryMins">
-                                                        <mat-option *ngFor="let min of data.minsAvailable" [value]="min.value">
+                                                        <mat-option *ngFor="let min of minsAvailable" [value]="min.value">
                                                             {{min.text}}
                                                         </mat-option>
                                                     </mat-select>
@@ -164,33 +175,33 @@
                             <button mat-button matStepperNext>{{'MYTIMESHEET.NEXT' | translate}}</button>
                         </div>
                     </mat-step>
-                    <mat-step [stepControl]="data.materialForm">
+                    <mat-step [stepControl]="materialForm">
                         <form class="p-0" fxLayout="column" fxLayoutAlign="start" fxFlex name="materialForm"
-                            [formGroup]="data.materialForm">
+                            [formGroup]="materialForm">
                             <ng-template matStepLabel>{{'MYTIMESHEET.MATERIALS' | translate}}</ng-template>
                             <div fxLayout="row">
                                 <div fxLayout="column" fxFlex>
                                     <div fxLayout="row" style="width:100%">
                                         <div fxLayout="column" fxFlex>
-                                            <mat-checkbox matInput [(ngModel)]="data.nonStockItem" [ngModelOptions]="{standalone: true}">{{'MYTIMESHEET.NONSTOCKITEMQ'
+                                            <mat-checkbox matInput [(ngModel)]="nonStockItem" [ngModelOptions]="{standalone: true}">{{'MYTIMESHEET.NONSTOCKITEMQ'
                                                 | translate}}</mat-checkbox>
                                         </div>
                                     </div>
                                     <div fxLayout="row" style="width:100%" class="mt-6">
-                                        <div fxLayout="column" fxFlex *ngIf="data.nonStockItem">
+                                        <div fxLayout="column" fxFlex *ngIf="nonStockItem">
                                             <mat-form-field class="example-full-width" style="width:100%">
                                                 <input matInput #nonMaterial placeholder="{{'MYTIMESHEET.NONSTOCKITEM' | translate}}"
                                                     formControlName="nonMaterial">
                                             </mat-form-field>
                                         </div>
-                                        <div fxLayout="column" fxFlex *ngIf="!data.nonStockItem">
+                                        <div fxLayout="column" fxFlex *ngIf="!nonStockItem">
                                                 <mat-form-field fxFlex>
                                                     <mat-select formControlName="material" placeholder="Materials" #singleSelect>
                                                             <ngx-mat-select-search 
                                                                     [formControl]="materialCtrl" 
                                                                     noEntriesFoundLabel="No Materials Found" 
                                                                     placeholderLabel="Search Materials..."></ngx-mat-select-search>
-                                                            <mat-option *ngFor="let inv of data.filterMaterials | async" [value]="inv.value">
+                                                            <mat-option *ngFor="let inv of filterMaterials | async" [value]="inv.value">
                                                               {{inv.text}}
                                                             </mat-option>
                                                           </mat-select>
@@ -203,11 +214,11 @@
                                         </mat-form-field>
                                     </div>
                                     <div fxLayout="row" style="width:100%">
-                                        <mat-form-field fxFlex *ngIf="data.nonStockItem">
+                                        <mat-form-field fxFlex *ngIf="nonStockItem">
                                             <input matInput #quantity placeholder="{{'MYTIMESHEET.QUANTITY' | translate}}"
                                                 formControlName="quantity">
                                         </mat-form-field>
-                                        <mat-form-field fxFlex *ngIf="!data.nonStockItem">
+                                        <mat-form-field fxFlex *ngIf="!nonStockItem">
                                             <input matInput #quantity placeholder="{{'MYTIMESHEET.QUANTITY' | translate}}"
                                                 type="number" formControlName="quantity">
                                         </mat-form-field>
@@ -220,9 +231,9 @@
                                     </div>
                                     <div fxLayout="row" style="width:100%" class="mb-20">
                                         <mat-list fxFlex>
-                                            <mat-list-item class="material-item" *ngFor="let item of data.materials; index as i">
+                                            <mat-list-item class="material-item" *ngFor="let item of materials; index as i">
                                                 <span class="truncate" fxFlex>{{item.stockCode + ': ' + item.stockDescription + ' | ' + item.bomNo + ' (' + item.quantity + ')'}}</span>
-                                                <button mat-button mat-icon-button (click)="data.materials.splice(i)" attr.aria-label="{{'MYTIMESHEET.ADDMATERIAL' | translate}}">
+                                                <button mat-button mat-icon-button (click)="materials.splice(i)" attr.aria-label="{{'MYTIMESHEET.ADDMATERIAL' | translate}}">
                                                     <mat-icon attr.aria-label="Remove Material" matTooltip="Remove Material">close</mat-icon>
                                                 </button>
                                             </mat-list-item>

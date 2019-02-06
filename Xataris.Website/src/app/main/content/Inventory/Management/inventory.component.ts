@@ -81,16 +81,6 @@ export class InventoryComponent implements OnInit {
         };
     }
 
-    public addInventory = (data) => {
-        console.log('add: ', data);
-    }
-    public editInventory = (data) => {
-        console.log('edit: ', data);
-    }
-    public deleteInventory = (data) => {
-        console.log('delete: ', data);
-    }
-
     reloadMaterialsGrid(){
         this.startUpload = true;
         const input = {
@@ -153,7 +143,7 @@ export class InventoryComponent implements OnInit {
         const seconds = _.parseInt(secondDaytime[0]);
         const Daytime = secondDaytime[1];
         if (Daytime === 'AM') {
-            if (hour === 12){
+            if (hour === 12) {
                 return new Date(1901, 1, 1, 0, minute, seconds);
             } else {
                 return new Date(1901, 1, 1, hour, minute, seconds);
@@ -179,8 +169,8 @@ export class InventoryComponent implements OnInit {
                   rows.push({
                       stockCode: x[0],
                       stockDescription: x[1],
-                      level: x[2],
-                      unitCostPrice: x[3]
+                      level: _.parseInt(x[2]).toFixed(2),
+                      unitCostPrice: parseFloat(x[3]).toFixed(2)
                   });
               }
           });

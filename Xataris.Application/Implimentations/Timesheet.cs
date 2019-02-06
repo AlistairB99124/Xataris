@@ -207,12 +207,11 @@ namespace Xataris.Application.Implimentations
             }
         }
 
-        public async Task<List<DropdownModel>> GetMaterials(MaterialIdInput input)
+        public async Task<List<DropdownModel>> GetMaterials(IdInput input)
         {
             try
             {
-                var warehouse = await _context.Warehouses.Where(x => x.UserId == input.PrimaryTechnicianId).FirstOrDefaultAsync();
-                return await _procedureService.CallProcedureAsync<DropdownModel>("[dbo].[ReadInventoryFromWarehouseDropdown]", new { WarehousesId = warehouse.Id });
+                return await _procedureService.CallProcedureAsync<DropdownModel>("[dbo].[ReadInventoryFromWarehouseDropdown]", new { WarehousesId = input.Id });
             }
             catch (Exception ex)
             {
@@ -368,6 +367,17 @@ namespace Xataris.Application.Implimentations
             catch
             {
                 return new List<GetMaterialsByTimesheetView>();
+            }
+        }
+
+        public async Task<List<WarehousePoco>> GetWarehouses(MaterialIdInput input)
+        {
+            try
+            {
+                return await _procedureService.CallProcedureAsync<WarehousePoco>("[dbo].[ReadWarehouseByPlumber]", new { PlumbersId = input.PrimaryTechnicianId });
+            } catch
+            {
+                return new List<WarehousePoco>();
             }
         }
     }

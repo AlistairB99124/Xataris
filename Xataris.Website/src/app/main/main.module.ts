@@ -22,6 +22,7 @@ import { GroupManagementModule } from '../main/content/Users/GroupManagement/Gro
 import { OrdersModule } from '../main/content/Orders/Orders.module';
 import { PTMManagementModule } from '../main/content/PTM/Management/ptmmanagement.module';
 import { SiteDetailsModule } from '../main/content/Sites/Details/sitesDetails.module';
+import { FacebookModule } from 'ngx-facebook';
 
 @NgModule({
     declarations: [
@@ -47,6 +48,7 @@ import { SiteDetailsModule } from '../main/content/Sites/Details/sitesDetails.mo
         GroupManagementModule,
         OrdersModule,
         PTMManagementModule,
+        FacebookModule.forRoot(),
     ],
     exports     : [
         FuseMainComponent

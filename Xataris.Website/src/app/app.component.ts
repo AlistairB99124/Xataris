@@ -7,6 +7,8 @@ import { FuseNavigationService } from './core/components/navigation/navigation.s
 import { FuseNavigationModel } from './navigation/navigation.model';
 import { locale as navigationEnglish } from './navigation/i18n/en';
 import { locale as navigationAfrikaans } from './navigation/i18n/af';
+import { FacebookService, LoginOptions, LoginResponse, FBPageComponent } from 'ngx-facebook';
+declare const FB;
 
 @Component({
     selector   : 'fuse-root',
@@ -19,7 +21,8 @@ export class AppComponent
         private fuseNavigationService: FuseNavigationService,
         private fuseSplashScreen: FuseSplashScreenService,
         private translate: TranslateService,
-        private translationLoader: FuseTranslationLoaderService
+        private translationLoader: FuseTranslationLoaderService,
+        private facebookService: FacebookService,
     )
     {
         // Add languages

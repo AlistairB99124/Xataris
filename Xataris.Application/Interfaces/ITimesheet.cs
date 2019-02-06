@@ -14,7 +14,7 @@ namespace Xataris.Application.Interfaces
     {
         Task<TimesheetResult> AddTimesheet(TimesheetViewModel input);
         Task<IDropdownModel<string>[]> GetUsers();
-        Task<List<DropdownModel>> GetMaterials(MaterialIdInput input);
+        Task<List<DropdownModel>> GetMaterials(IdInput input);
         Task<object> GetMaterial(InventoryIdInput input);
         Task<InventoryTimesheetViewModel> GetInventory();
         Task<SimpleResult> UploadTimesheet(ByteInput input);
@@ -23,5 +23,6 @@ namespace Xataris.Application.Interfaces
         Task<object> GetTimesheetMaterials(TimesheetIdInput input);
         Task<SimpleResult> SaveMaterialItems(TimesheetCodeInput input);
         Task<List<GetMaterialsByTimesheetView>> GetMaterialsByTimesheet(long input);
+        Task<List<WarehousePoco>> GetWarehouses(MaterialIdInput input);
     }
 }

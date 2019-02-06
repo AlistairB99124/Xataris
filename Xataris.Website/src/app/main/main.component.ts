@@ -24,6 +24,9 @@ export class FuseMainComponent implements OnInit, OnDestroy
         @Inject(DOCUMENT) private document: any
     )
     {
+        if (location.href.includes('http://')  && !location.href.includes('localhost')) {
+            location.href = 'https://www.xataris.co.uk';
+        }
         this.onSettingsChanged =
             this.fuseConfig.onSettingsChanged
                 .subscribe(

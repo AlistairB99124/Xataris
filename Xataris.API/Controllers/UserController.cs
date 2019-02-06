@@ -151,7 +151,7 @@ namespace Xataris.API.Controllers
                     }
                 }
 
-                var url = HtmlEncoder.Default.Encode("http://www.xataris.com/#/account/login/" + sb.ToString());
+                var url = HtmlEncoder.Default.Encode("https://www.xataris.co.uk/#/account/login/" + sb.ToString());
                 var body = "<p>Follow the following link to reset your password: </p><a href='" + url + "'>Reset Password</a>";
 
                 var emailResult = await _emailSender.SendEmailAsync(input.Email, "Password Reset", body, true);

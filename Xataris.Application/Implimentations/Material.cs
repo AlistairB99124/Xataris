@@ -115,7 +115,7 @@ namespace Xataris.Application.Implimentations
             try
             {
                 var warehouse = await _context.Warehouses.FindAsync(input.WarehousesId);
-                var existingInventory = warehouse.Inventory;
+                var existingInventory =_context.Inventories.Where(x => x.WarehouseId == warehouse.Id);
                 if(existingInventory != null)
                 {
                     _context.Inventories.RemoveRange(existingInventory);

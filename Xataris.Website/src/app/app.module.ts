@@ -50,6 +50,9 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
+import { FacebookModule } from 'ngx-facebook';
+import { FacebookService } from 'ngx-facebook';
+
 const appRoutes: Routes = [
     {
         path      : '',
@@ -101,7 +104,8 @@ const appRoutes: Routes = [
         MatSortModule,
         MatPaginatorModule,
         NgxMatSelectSearchModule,
-        DragDropModule
+        DragDropModule,
+        FacebookModule.forRoot(),
     ],
     providers   : [
         ApiService,
@@ -112,7 +116,8 @@ const appRoutes: Routes = [
             provide: HTTP_INTERCEPTORS,
             useClass: HttpInterceptorService,
             multi: true
-        }
+        },
+        FacebookService,
     ],
     bootstrap   : [
         AppComponent

@@ -145,10 +145,6 @@ export class GridComponent implements OnInit, AfterViewInit {
                 case ColumnType.percentage:
                     return (params[column.field] * 100).toFixed(2) + ' %';
                 case ColumnType.currency:
-                    if (params[column.field]) {
-                        params[column.field] = params[column.field].toString().replace(',', '');
-                        params[column.field] = params[column.field].toString().replace('.', ',');
-                    }
                     value = parseFloat(params[column.field]);
                     if (_.isNumber(value)) {
                         return this.thousandsSeprator(column.currencySymbol ? column.currencySymbol + ' ' + value.toFixed(2) : params['metric'] + ' ' + value.toFixed(2));
@@ -179,7 +175,7 @@ export class GridComponent implements OnInit, AfterViewInit {
 
     public getTotal(column: ColumnDef) {
         if (column.columnType === ColumnType.numeric) {
-            return this.dataSource.data.map(t => t[column.field]).reduce((acc, value) => acc + value, 0).toFixed(2);
+            return this.dataSource.data.map(t => t[column.field]).reduce((acc, value) => parseFloat(acc) + parseFloat(value), 0);
         } else if (column.columnType === ColumnType.currency) {
             if (this.gridOptions.aggragateResults) {
                 let aggregateTotal = 0;
@@ -218,13 +214,13 @@ export class GridComponent implements OnInit, AfterViewInit {
 
     public onFilterClick(column: ColumnDef) {
         this.allFilteredSelected = true;
-        this.filterOptions = _.map(this.dataSource.data, (x) => {
+        this.filterOptions = _.uniqBy(_.map(this.dataSource.data, (x) => {
             return {
                 field: x[column.field],
                 id: x[this.gridOptions.idRow],
                 selected: true,
             };
-        });
+        }), x => x.field);
         this.filterOptionsFiltered = _.cloneDeep(this.filterOptions);
     }
 

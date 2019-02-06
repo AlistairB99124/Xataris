@@ -1,22 +1,20 @@
 import { Component, OnInit, ElementRef, ViewChild, OnDestroy, ViewContainerRef } from '@angular/core';
-import { FormBuilder, FormControl } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { FuseTranslationLoaderService } from '../../../../core/services/translation-loader.service';
 import { fuseAnimations } from '../../../../core/animations';
 import { locale as en } from './i18n/en';
 import { locale as af } from './i18n/af';
 import { DropdownModel, NotificationType } from '../../../../core/models/sharedModels';
-import { MatDialog, MatSnackBar, MatStepper } from '@angular/material';
+import { MatDialog, MatSnackBar, MatStepper, MatDialogRef } from '@angular/material';
 import { FuseConfirmDialogComponent } from '../../../../core/components/confirm-dialog/confirm-dialog.component';
 import * as _ from 'lodash';
 import * as Models from './mytimesheet.models';
-import {
-    GridOptions, ColumnDef, ColumnType
-} from '../../../../core/components/grid/grid.models';
 import { ApiService } from '../../../services/api.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { Subject } from 'rxjs/Subject';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { takeUntil } from 'rxjs/operators';
+import { FacebookService } from 'ngx-facebook';
 
 @Component({
     selector: 'fuse-mytimesheet',
@@ -25,11 +23,39 @@ import { takeUntil } from 'rxjs/operators';
     animations: fuseAnimations
 })
 export class MyTimesheetComponent implements OnInit, OnDestroy {
-    data: Models.TimesheetViewModel;
+    public title: string;
+    public sites: Array<Models.SiteViewModel>;
+    public operators: Array<DropdownModel<number>>;
+    public todaysDate: string;
+    public quoteEnabled: boolean;
+    public hoursAvailable: Array<DropdownModel<number>>;
+    public minsAvailable: Array<DropdownModel<number>>;
+    public statusAvailable: Array<DropdownModel<number>>;
+    private materialsAvailable: Array<DropdownModel<number>>;
+    public nonStockItem: boolean;
+    public filterMaterials: ReplaySubject<Array<DropdownModel<number>>>;
+    public confirmForm: boolean;
+    public date: string;
+    public technician: string;
+    public pdfForm: any;
+    public siteName: string;
+    public loader: boolean;
+    public timesheetNo: string;
+    public statusLabel: string;
+    public form: FormGroup;
+    public materialForm: FormGroup;
+    private formErrors: any;
+    public materials: Array<any>;
+    public searchInput: string;
+    private dialogRef: MatDialogRef<FuseConfirmDialogComponent>;
+    public hoursSelected: Array<DropdownModel<any>>;
+    public loadMaterials: boolean;
+
     _onDestroy = new Subject<void>();
     @ViewChild('stepper') stepper: MatStepper;
     @ViewChild('content') content: ElementRef;
     materialCtrl: FormControl;
+    warehouses = [];
 
     constructor(
         private translationLoader: FuseTranslationLoaderService,
@@ -38,7 +64,13 @@ export class MyTimesheetComponent implements OnInit, OnDestroy {
         public dialog: MatDialog,
         public snackBar: MatSnackBar,
         private notificationService: NotificationService,
-        private viewContainerRef: ViewContainerRef) {
+        private viewContainerRef: ViewContainerRef,
+        private facebookService: FacebookService) {
+        facebookService.init({
+            appId: '525756511255352',
+            version: 'v3.2',
+            xfbml: true,
+        });
         this.setupVariables();
     }
 
@@ -57,44 +89,43 @@ export class MyTimesheetComponent implements OnInit, OnDestroy {
     }
 
     private filterBanks() {
-        if (!this.data.filterMaterials) {
+        if (!this.filterMaterials) {
           return;
         }
         // get the search keyword
         let search = this.materialCtrl.value;
         if (!search) {
-          this.data.filterMaterials.next(this.data.materialsAvailable.slice());
+          this.filterMaterials.next(this.materialsAvailable.slice());
           return;
         } else {
           search = search.toLowerCase();
         }
         // filter the banks
-        this.data.filterMaterials.next(
-          this.data.materialsAvailable.filter((option) => option.text.toLowerCase().includes(search))
+        this.filterMaterials.next(
+          this.materialsAvailable.filter((option) => option.text.toLowerCase().includes(search))
         );
       }
 
     private setupVariables = async () => {
-        this.data = {} as Models.TimesheetViewModel;
-        this.data.loadMaterials = false;
-        this.data.filterMaterials = new ReplaySubject<any>(1);
+        this.loadMaterials = false;
+        this.filterMaterials = new ReplaySubject<any>(1);
         this.materialCtrl = new FormControl();
-        this.data.hoursSelected = [];
+        this.hoursSelected = [];
         this.translationLoader.loadTranslations(en, af);
-        this.data.materials = [];
-        this.data.loader = false;
+        this.materials = [];
+        this.loader = false;
         const dateNow = new Date();
-        this.data.technician = '';
-        this.data.date = dateNow.toLocaleDateString();
-        this.data.confirmForm = false;
-        this.data.searchInput = '';
-        this.data.quoteEnabled = false;
+        this.technician = '';
+        this.date = dateNow.toLocaleDateString();
+        this.confirmForm = false;
+        this.searchInput = '';
+        this.quoteEnabled = false;
         const today = new Date();
-        this.data.todaysDate = today.toString();
-        this.data.hoursAvailable = this.timeOptions().hours;
-        this.data.minsAvailable = this.timeOptions().minutes;
-        this.data.statusAvailable = this.getStatuses();
-        this.data.form = this.formBuilder.group({
+        this.todaysDate = today.toString();
+        this.hoursAvailable = this.timeOptions().hours;
+        this.minsAvailable = this.timeOptions().minutes;
+        this.statusAvailable = this.getStatuses();
+        this.form = this.formBuilder.group({
             specificLocation: [''],
             detailedPoint: [''],
             description: [''],
@@ -106,104 +137,110 @@ export class MyTimesheetComponent implements OnInit, OnDestroy {
             primaryMins: [0],
             primaryTechnician: [''],
             site: [''],
-            status: [0]
+            status: [0],
+            warehouse: ['']
         });
 
-        this.data.materialForm = this.formBuilder.group({
+        this.materialForm = this.formBuilder.group({
             nonMaterial: [''],
             material: [''],
             quantity: [''],
             bomNo: ['']
         });
 
-        this.data.form.valueChanges.subscribe(() => {
+        this.form.valueChanges.subscribe(() => {
             this.onFormValuesChanged();
         });
     }
 
+    public getWarehouses = async () => {
+        this.warehouses = await this.apiService
+        .post('Timesheet/GetWarehouses', { primaryTechnicianId: this.form.controls.primaryTechnician.value });
+    }
+
     private loadPage = async () => {
-        this.data.operators = await this.apiService
+        this.operators = await this.apiService
             .post('Timesheet/GetUsers');
-        this.data.sites = await this.apiService
+        this.sites = await this.apiService
             .post('Site/GetSiteNames');
     }
 
     private onFormValuesChanged = () => {
-        for (const field in this.data.formErrors) {
-            if (!this.data.formErrors.hasOwnProperty(field)) {
+        for (const field in this.formErrors) {
+            if (!this.formErrors.hasOwnProperty(field)) {
                 continue;
             }
-            this.data.formErrors[field] = {};
-            const control = this.data.form.get(field);
+            this.formErrors[field] = {};
+            const control = this.form.get(field);
             if (control && control.dirty && !control.valid) {
-                this.data.formErrors[field] = control.errors;
+                this.formErrors[field] = control.errors;
             }
         }
     }
 
     public updateSite = () => {
-        const site = _.find(this.data.sites, x => x.id === this.data.form.controls.site.value);
-        this.data.siteName = site.name;
+        const site = _.find(this.sites, x => x.id === this.form.controls.site.value);
+        this.siteName = site.name;
     }
 
     public openConfirmationMaterialDialog = (data) => {
-        this.data.dialogRef = this.dialog.open(FuseConfirmDialogComponent, {
+        this.dialogRef = this.dialog.open(FuseConfirmDialogComponent, {
             disableClose: false
         });
-        this.data.dialogRef.componentInstance.confirmMessage = 'You have exceeded the available inventory. If you proceed, please submit an Order Form';
+        this.dialogRef.componentInstance.confirmMessage = 'You have exceeded the available inventory. If you proceed, please submit an Order Form';
 
-        this.data.dialogRef.afterClosed().subscribe(result => {
+        this.dialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.data.materials.push(data);
-                this.data.materialForm.reset();
+                this.materials.push(data);
+                this.materialForm.reset();
             }
-            this.data.dialogRef = null;
+            this.dialogRef = null;
         });
     }
 
     public reloadMaterials = async () => {
-        this.data.loadMaterials = true;
+        this.loadMaterials = true;
         const input = {
-            primaryTechnicianId: this.data.form.controls.primaryTechnician.value
+            id: this.form.controls.warehouse.value
         };
         const res = await this.apiService
             .post('Timesheet/GetMaterials', input);
         if (res) {
-            this.data.materialsAvailable = res;
-            this.data.filterMaterials.next(this.data.materialsAvailable.slice());
-            this.data.loadMaterials = false;
+            this.materialsAvailable = res;
+            this.filterMaterials.next(this.materialsAvailable.slice());
+            this.loadMaterials = false;
         } else {
-            this.data.materialsAvailable = [];
-            this.data.loadMaterials = false;
+            this.materialsAvailable = [];
+            this.loadMaterials = false;
         }
     }
 
 
     public saveTimesheet = async () => {
-        const input = _.cloneDeep(this.data.form.value);
-        input['originalQuote'] = this.data.quoteEnabled;
-        input['materials'] = this.data.materials;
-        this.data.statusLabel = _.find(this.data.statusAvailable, x => x.value === this.data.form.controls.status.value).text;
-        this.data.technician = _.find(this.data.operators, x => x.value === this.data.form.controls.primaryTechnician.value).text;
+        const input = _.cloneDeep(this.form.value);
+        input['originalQuote'] = this.quoteEnabled;
+        input['materials'] = this.materials;
+        this.statusLabel = _.find(this.statusAvailable, x => x.value === this.form.controls.status.value).text;
+        this.technician = _.find(this.operators, x => x.value === this.form.controls.primaryTechnician.value).text;
         const isTimesheetAdded = await this.apiService
             .post('Timesheet/AddTimesheet', input);
 
         if (isTimesheetAdded.isSuccess) {
             const matInput = {
                 code: isTimesheetAdded.timesheetCode,
-                materials: this.data.materials
+                materials: this.materials
             };
             const areMatereialsAdded = await this.apiService
                 .post('Timesheet/SaveMaterialItems', matInput);
 
             if (areMatereialsAdded.isSuccess) {
-                this.data.timesheetNo = isTimesheetAdded.timesheetCode;
-                this.data.filterMaterials.unsubscribe();
-                this.data.materialsAvailable = [];
-                this.data.confirmForm = false;
-                this.data.form.reset();
-                this.data.materialForm.reset();
-                this.data.materials = [];
+                this.timesheetNo = isTimesheetAdded.timesheetCode;
+                this.filterMaterials.unsubscribe();
+                this.materialsAvailable = [];
+                this.confirmForm = false;
+                this.form.reset();
+                this.materialForm.reset();
+                this.materials = [];
                 this.stepper.selectedIndex = 0;
                 this.notificationService.addMessage(this.viewContainerRef, 'Save Successful', NotificationType.Success);
             } else {
@@ -217,17 +254,17 @@ export class MyTimesheetComponent implements OnInit, OnDestroy {
     }
 
     public addMaterial = async () => {
-        if (this.data.nonStockItem) {
+        if (this.nonStockItem) {
             const row = {
-                bomNo: this.data.materialForm.controls.bomNo.value,
-                quantity: this.data.materialForm.controls.quantity.value,
+                bomNo: this.materialForm.controls.bomNo.value,
+                quantity: this.materialForm.controls.quantity.value,
                 stockCode: '',
-                stockDescription: this.data.materialForm.controls.nonMaterial.value
+                stockDescription: this.materialForm.controls.nonMaterial.value
             };
-            this.data.materials.push(row);
-            this.data.materialForm.reset();
+            this.materials.push(row);
+            this.materialForm.reset();
         } else {
-            let quantity = this.data.materialForm.controls.quantity.value;
+            let quantity = this.materialForm.controls.quantity.value;
             if (typeof quantity === 'string') {
                 quantity = parseFloat(quantity);
             }
@@ -235,8 +272,8 @@ export class MyTimesheetComponent implements OnInit, OnDestroy {
                 quantity = 0;
             }
             const input = {
-                id: this.data.materialForm.controls.material.value,
-                bomNo: this.data.materialForm.controls.bomNo.value,
+                id: this.materialForm.controls.material.value,
+                bomNo: this.materialForm.controls.bomNo.value,
                 quantity: quantity
             };
             const result = await this.apiService
@@ -245,8 +282,8 @@ export class MyTimesheetComponent implements OnInit, OnDestroy {
             if (result.exceeded) {
                 this.openConfirmationMaterialDialog(result);
             } else {
-                this.data.materials.push(result);
-                this.data.materialForm.reset();
+                this.materials.push(result);
+                this.materialForm.reset();
             }
         }
     }
